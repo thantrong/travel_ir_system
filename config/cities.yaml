@@ -1,0 +1,375 @@
+cities:
+  - name: Tuyên Quang
+    code: TQ
+    geo_id: "30010697"
+    enabled: true
+    region: bac
+    city_type: mountain
+    crawl_priority: 3
+    merged_from: Hà Giang + Tuyên Quang
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Cao Bằng
+    code: CB
+    geo_id: "10009997"
+    enabled: true
+    region: bac
+    city_type: mountain
+    crawl_priority: 4
+    merged_from: Giữ nguyên
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Lai Châu
+    code: LC
+    geo_id: "30010644"
+    enabled: true
+    region: bac
+    city_type: mountain
+    crawl_priority: 5
+    merged_from: Giữ nguyên
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Lào Cai
+    code: LCA
+    geo_id: "10010002"
+    enabled: true
+    region: bac
+    city_type: mountain
+    crawl_priority: 2
+    merged_from: Lào Cai + Yên Bái
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Thái Nguyên
+    code: TNG
+    geo_id: "10009879"
+    enabled: true
+    region: bac
+    city_type: mountain
+    crawl_priority: 3
+    merged_from: Bắc Kạn + Thái Nguyên
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Điện Biên
+    code: DB
+    geo_id: "30010621"
+    enabled: true
+    region: bac
+    city_type: mountain
+    crawl_priority: 5
+    merged_from: Giữ nguyên
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Lạng Sơn
+    code: LS
+    geo_id: "10009814"
+    enabled: true
+    region: bac
+    city_type: mountain
+    crawl_priority: 4
+    merged_from: Giữ nguyên
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Sơn La
+    code: SL
+    geo_id: "10009798"
+    enabled: true
+    region: bac
+    city_type: mountain
+    crawl_priority: 4
+    merged_from: Giữ nguyên
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Phú Thọ
+    code: PT
+    geo_id: "10009907"
+    enabled: true
+    region: bac
+    city_type: plain
+    crawl_priority: 2
+    merged_from: Hòa Bình + Vĩnh Phúc + Phú Thọ
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Bắc Ninh
+    code: BN
+    geo_id: "10009803"
+    enabled: true
+    region: bac
+    city_type: plain
+    crawl_priority: 2
+    merged_from: Bắc Giang + Bắc Ninh
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Quảng Ninh
+    code: QN
+    geo_id: "10009904"
+    enabled: true
+    region: bac
+    city_type: coastal
+    crawl_priority: 1
+    merged_from: Giữ nguyên
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: TP Hà Nội
+    code: HN
+    geo_id: "10009843"
+    enabled: true
+    region: bac
+    city_type: metro
+    crawl_priority: 1
+    merged_from: Giữ nguyên
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: TP Hải Phòng
+    code: HP
+    geo_id: "10009800"
+    enabled: true
+    region: bac
+    city_type: metro
+    crawl_priority: 1
+    merged_from: Hải Dương + TP Hải Phòng
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Hưng Yên
+    code: HY
+    geo_id: "10009835"
+    enabled: true
+    region: bac
+    city_type: plain
+    crawl_priority: 3
+    merged_from: Thái Bình + Hưng Yên
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Ninh Bình
+    code: NB
+    geo_id: "30010653"
+    enabled: true
+    region: bac
+    city_type: plain
+    crawl_priority: 2
+    merged_from: Hà Nam + Nam Định + Ninh Bình
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Thanh Hóa
+    code: TH
+    geo_id: "10009808"
+    enabled: true
+    region: trung
+    city_type: coastal
+    crawl_priority: 3
+    merged_from: Giữ nguyên
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Nghệ An
+    code: NA
+    geo_id: "10009860"
+    enabled: true
+    region: trung
+    city_type: coastal
+    crawl_priority: 3
+    merged_from: Giữ nguyên
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Hà Tĩnh
+    code: HT
+    geo_id: "10010066"
+    enabled: true
+    region: trung
+    city_type: coastal
+    crawl_priority: 4
+    merged_from: Giữ nguyên
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Quảng Trị
+    code: QT
+    geo_id: "10009820"
+    enabled: true
+    region: trung
+    city_type: coastal
+    crawl_priority: 3
+    merged_from: Quảng Bình + Quảng Trị
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: TP Huế
+    code: HUE
+    geo_id: "10010312"
+    enabled: true
+    region: trung
+    city_type: coastal
+    crawl_priority: 2
+    merged_from: Giữ nguyên
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: TP Đà Nẵng
+    code: DN
+    geo_id: "10010083"
+    enabled: true
+    region: trung
+    city_type: metro
+    crawl_priority: 1
+    merged_from: Quảng Nam + TP Đà Nẵng
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Quảng Ngãi
+    code: QNG
+    geo_id: "10010571"
+    enabled: true
+    region: trung
+    city_type: coastal
+    crawl_priority: 3
+    merged_from: Quảng Ngãi + Kon Tum
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Gia Lai
+    code: GL
+    geo_id: "10009960"
+    enabled: true
+    region: trung
+    city_type: mountain
+    crawl_priority: 3
+    merged_from: Gia Lai + Bình Định
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Đắk Lắk
+    code: DLK
+    geo_id: "10010050"
+    enabled: true
+    region: trung
+    city_type: mountain
+    crawl_priority: 3
+    merged_from: Phú Yên + Đắk Lắk
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Khánh Hòa
+    code: KH
+    geo_id: "10009841"
+    enabled: true
+    region: trung
+    city_type: coastal
+    crawl_priority: 1
+    merged_from: Khánh Hòa + Ninh Thuận
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Lâm Đồng
+    code: LD
+    geo_id: "10010000"
+    enabled: true
+    region: trung
+    city_type: mountain
+    crawl_priority: 2
+    merged_from: Đắk Nông + Lâm Đồng + Bình Thuận
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Đồng Nai
+    code: DNA
+    geo_id: "10009790"
+    enabled: true
+    region: nam
+    city_type: plain
+    crawl_priority: 2
+    merged_from: Bình Phước + Đồng Nai
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Tây Ninh
+    code: TN
+    geo_id: "10009931"
+    enabled: true
+    region: nam
+    city_type: plain
+    crawl_priority: 3
+    merged_from: Long An + Tây Ninh
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: TP Hồ Chí Minh
+    code: HCM
+    geo_id: "10009794"
+    enabled: true
+    region: nam
+    city_type: metro
+    crawl_priority: 1
+    merged_from: Bình Dương + TP.HCM + Bà Rịa - Vũng Tàu
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Đồng Tháp
+    code: DTH
+    geo_id: "10009926"
+    enabled: true
+    region: nam
+    city_type: plain
+    crawl_priority: 3
+    merged_from: Tiền Giang + Đồng Tháp
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: An Giang
+    code: AG
+    geo_id: "10009929"
+    enabled: true
+    region: nam
+    city_type: plain
+    crawl_priority: 3
+    merged_from: Kiên Giang + An Giang
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Vĩnh Long
+    code: VL
+    geo_id: "10009887"
+    enabled: true
+    region: nam
+    city_type: plain
+    crawl_priority: 3
+    merged_from: Bến Tre + Vĩnh Long + Trà Vinh
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: TP Cần Thơ
+    code: CT
+    geo_id: "10009866"
+    enabled: true
+    region: nam
+    city_type: metro
+    crawl_priority: 2
+    merged_from: Sóc Trăng + Hậu Giang + TP Cần Thơ
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Cà Mau
+    code: CM
+    geo_id: "10010058"
+    enabled: true
+    region: nam
+    city_type: plain
+    crawl_priority: 4
+    merged_from: Bạc Liêu + Cà Mau
+    notes: Đơn vị cấp tỉnh theo NQ 202/2025/QH15
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100

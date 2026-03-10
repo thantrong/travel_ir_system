@@ -1,0 +1,23 @@
+sources:
+  - name: tripadvisor
+    enabled: true
+    only_vietnamese: true
+    type: csv
+    input_path: /Users/thantrong/Code_TH/THTT/dataset_DOAN/Reviews.csv
+    mapping:
+      review_text: text
+      review_rating: rating
+      source_review_id: id
+      source_hotel_id: locationId
+      hotel_name: [hotelName, coord_name]
+      location: [parentGeo, coord_parentGeo]
+      review_date: createdDate
+    defaults:
+      hotel_name: Tripadvisor Reviews Dataset
+      location: Vietnam
+    lookup:
+      path: /Users/thantrong/Code_TH/THTT/dataset_DOAN/hotel_coordinate.csv
+      type: csv
+      key_field: locationId
+      source_key_field: locationId
+      prefix: coord_

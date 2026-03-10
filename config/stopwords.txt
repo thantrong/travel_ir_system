@@ -1,0 +1,20 @@
+# Vietnamese stopwords 
+và
+là
+của
+cho
+được
+với
+nhưng
+rất
+này
+khi
+thì
+có
+ở
+đã
+mình
+chúng
+tôi
+bạn
+không

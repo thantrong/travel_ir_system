@@ -1,0 +1,7 @@
+playwright
+playwright-stealth
+beautifulsoup4
+PyYAML
+pymongo
+underthesea
+rank-bm25
