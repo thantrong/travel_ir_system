@@ -23,6 +23,7 @@ _CATEGORY_TEXT_HINTS: dict[str, tuple[str, ...]] = {
     "family": ("gia đình", "trẻ em", "family", "kid"),
     "budget": ("giá rẻ", "bình dân", "tiết kiệm", "hợp lý"),
     "luxury": ("sang trọng", "cao cấp", "luxury", "5 sao", "resort", "villa"),
+<<<<<<< HEAD
     "center": ("trung tâm", "phố đi bộ", "chợ đêm", "gần chợ","phố cổ","hồ gươm", "hồ tây"),
     "amenity_pool": ("hồ bơi", "bể bơi", "pool", "vô cực"),
     "amenity_breakfast": ("ăn sáng", "buffet", "điểm tâm"),
@@ -32,6 +33,11 @@ _CATEGORY_TEXT_HINTS: dict[str, tuple[str, ...]] = {
     "photo": ("sống ảo", "chụp hình", "vintage", "đẹp", "decor"),
     "quiet": ("yên tĩnh", "nghỉ dưỡng", "đọc sách", "người lớn tuổi"),
     "pet": ("thú cưng", "chó", "mèo", "pet")
+=======
+    "center": ("trung tâm", "phố đi bộ", "chợ đêm", "gần chợ"),
+    "amenity_pool": ("hồ bơi", "bể bơi", "pool", "vô cực"),
+    "amenity_breakfast": ("ăn sáng", "buffet", "điểm tâm"),
+>>>>>>> 49a78af (cập nhật mới hệ thống)
 }
 
 
@@ -58,6 +64,7 @@ def _normalize_scores(scores: np.ndarray) -> np.ndarray:
     return scores
 
 
+<<<<<<< HEAD
 # def _descriptor_supported_by_reviews(descriptor_tokens: list[str], review_texts: list[str]) -> bool:
 #     """Check whether at least one descriptor token appears in top review content."""
 #     if not descriptor_tokens:
@@ -161,6 +168,40 @@ def _descriptor_supported_by_reviews(descriptor_tokens: list[str], review_texts:
                 
     return False
 
+=======
+def _descriptor_supported_by_reviews(descriptor_tokens: list[str], review_texts: list[str]) -> bool:
+    """Check whether at least one descriptor token appears in top review content."""
+    if not descriptor_tokens:
+        return True
+
+    descriptor_set: set[str] = set()
+    for t in descriptor_tokens:
+        low = (t or "").lower().strip()
+        if not low:
+            continue
+        descriptor_set.add(low)
+        if "_" in low:
+            descriptor_set.update(p for p in low.split("_") if p)
+
+    if not descriptor_set:
+        return True
+
+    for text in review_texts:
+        norm = normalize_text(text or "")
+        if not norm:
+            continue
+        tokens: set[str] = set()
+        for tok in tokenize_vi(norm):
+            low = tok.lower()
+            tokens.add(low)
+            if "_" in low:
+                tokens.update(p for p in low.split("_") if p)
+        if descriptor_set.intersection(tokens):
+            return True
+    return False
+
+
+>>>>>>> 49a78af (cập nhật mới hệ thống)
 def _infer_doc_categories(doc: dict) -> set[str]:
     tags = doc.get("category_tags")
     if isinstance(tags, list) and tags:
@@ -346,6 +387,7 @@ def search_hybrid(
         max_b_score = max(r["bm25_score"] for r in top_reviews)
 
         top_review_texts = [r["doc"].get("review_text", "") for r in top_reviews]
+<<<<<<< HEAD
         # descriptor_supported = _descriptor_supported_by_reviews(qu.descriptor_tokens, top_review_texts)
 
         # # If query includes descriptors (e.g. "view núi"), drop hotels that only match by name.
@@ -477,6 +519,38 @@ def search_hybrid(
             "top_reviews": top_review_texts[:3],
         })
 
+=======
+        descriptor_supported = _descriptor_supported_by_reviews(qu.descriptor_tokens, top_review_texts)
+
+        # If query includes descriptors (e.g. "view núi"), drop hotels that only match by name.
+        if qu.descriptor_tokens and strict_descriptor_filter and not descriptor_supported:
+            continue
+
+        if qu.descriptor_tokens and not descriptor_supported:
+            hotel_score *= descriptor_mismatch_penalty
+
+        # PHẦN 7: Location Boosting
+        loc_matched = False
+        if qu.detected_location and location_matched(qu.detected_location, first_doc.get("location", "")):
+            hotel_score *= location_boost_factor
+            loc_matched = True
+
+        results.append({
+            "source": first_doc.get("source", ""),
+            "source_hotel_id": hid,
+            "hotel_name": first_doc.get("hotel_name", ""),
+            "location": first_doc.get("location", ""),
+            "rating": first_doc.get("rating", ""),
+            "review_count": len(r_list),  # số review MATCHED với query
+            "hybrid_score": float(hotel_score),
+            "vector_score": float(max_v_score), # Truyền điểm max vector cho UI
+            "bm25_score": float(max_b_score),   # Truyền điểm max bm25 cho UI
+            "location_matched": loc_matched,
+            "descriptor_matched": descriptor_supported,
+            "top_reviews": top_review_texts[:3],
+        })
+
+>>>>>>> 49a78af (cập nhật mới hệ thống)
     # Sort top K Hotel
     results.sort(key=lambda x: x["hybrid_score"], reverse=True)
     return results[:top_k], qu
