@@ -5,3 +5,7 @@ PyYAML
 pymongo
 underthesea
 rank-bm25
+numpy
+scikit-learn
+streamlit
+sentence-transformers

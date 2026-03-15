@@ -1,62 +1,105 @@
+"""
+Build BM25 Index (Review-level)
+PHẦN 2: DESIGN DATA REPRESENTATION (REVIEW-LEVEL)
+PHẦN 3: XÂY DỰNG INDEXING PIPELINE (Weight: hotel_name=3, location=2, text=1)
+"""
+
 import argparse
 import pickle
+import sys
 from pathlib import Path
+
+project_root = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(project_root))
 
 from rank_bm25 import BM25Okapi
 
 from database.mongo_connection import get_database
 
 
-def fetch_reviews_for_indexing(min_tokens: int = 1) -> list[dict]:
-    db = get_database()
-    reviews_col = db["reviews"]
-    cursor = reviews_col.find(
-        {"tokens": {"$exists": True, "$type": "array"}},
-        {
-            "_id": 0,
-            "review_id": 1,
-            "source": 1,
-            "source_hotel_id": 1,
-            "hotel_name": 1,
-            "location": 1,
-            "rating": 1,
-            "review_rating": 1,
-            "review_text": 1,
-            "tokens": 1,
-        },
-    )
+def _tokenize_text(text: str) -> list[str]:
+    if not text:
+        return []
+    import re
+    return [tok for tok in re.split(r'\W+', text.lower()) if tok]
 
-    rows = []
+
+def fetch_reviews_for_indexing() -> list[dict]:
+    """Kéo dữ liệu review và append thông tin hotel."""
+    db = get_database()
+    places_col = db["places"]
+    reviews_col = db["reviews"]
+
+    place_map = {}
+    for doc in places_col.find():
+        sid = doc.get("source_hotel_id", "")
+        if sid:
+            place_map[sid] = {
+                "hotel_name": doc.get("name", ""),
+                "location": doc.get("location", ""),
+            }
+
+    docs = []
+    cursor = reviews_col.find({"tokens": {"$exists": True, "$type": "array"}})
     for row in cursor:
+        sid = str(row.get("source_hotel_id", "")).strip()
+        if sid not in place_map:
+            continue
+            
         tokens = row.get("tokens", [])
         if not isinstance(tokens, list):
             continue
-        token_values = [str(tok).strip() for tok in tokens if str(tok).strip()]
-        if len(token_values) < min_tokens:
+            
+        valid_tokens = [str(tok).strip() for tok in tokens if str(tok).strip()]
+        if not valid_tokens:
             continue
-        row["tokens"] = token_values
-        rows.append(row)
-    return rows
+            
+        docs.append({
+            "review_id": row.get("review_id", ""),
+            "source": row.get("source", ""),
+            "source_hotel_id": sid,
+            "hotel_name": place_map[sid]["hotel_name"],
+            "location": place_map[sid]["location"],
+            "rating": place_map[sid].get("rating", row.get("review_rating", "")),
+            "review_rating": row.get("review_rating", ""),
+            "review_text": row.get("review_text", ""),
+            "tokens": valid_tokens,
+        })
+        
+    return docs
 
 
-def build_index_payload(rows: list[dict]) -> dict:
-    tokenized_corpus = [row["tokens"] for row in rows]
-    bm25 = BM25Okapi(tokenized_corpus) if tokenized_corpus else None
+def build_index_payload(reviews: list[dict]) -> dict:
+    tokenized_corpus = []
     documents = []
-    for row in rows:
-        documents.append(
-            {
-                "review_id": row.get("review_id", ""),
-                "source": row.get("source", ""),
-                "source_hotel_id": row.get("source_hotel_id", ""),
-                "hotel_name": row.get("hotel_name", ""),
-                "location": row.get("location", ""),
-                "rating": row.get("rating", ""),
-                "review_rating": row.get("review_rating", ""),
-                "review_text": row.get("review_text", ""),
-                "tokens": row.get("tokens", []),
-            }
-        )
+
+    for r in reviews:
+        doc_tokens = []
+        
+        # PHẦN 3: Field Weighting (hotel_name: 3, location: 2, text: 1)
+        hname_tokens = _tokenize_text(r["hotel_name"])
+        doc_tokens.extend(hname_tokens * 3)
+        
+        loc_tokens = _tokenize_text(r["location"])
+        doc_tokens.extend(loc_tokens * 2)
+        
+        doc_tokens.extend(r["tokens"])
+
+        tokenized_corpus.append(doc_tokens)
+        
+        # Schema Document Review-level (PHẦN 2)
+        documents.append({
+            "review_id": r["review_id"],
+            "source_hotel_id": r["source_hotel_id"],
+            "hotel_name": r["hotel_name"],
+            "location": r["location"],
+            "review_text": r["review_text"],
+            "review_rating": r["review_rating"],
+            "source": r["source"]
+        })
+
+    bm25 = BM25Okapi(tokenized_corpus) if tokenized_corpus else None
+
     return {
         "bm25": bm25,
         "documents": documents,
@@ -65,22 +108,22 @@ def build_index_payload(rows: list[dict]) -> dict:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Build BM25 index from MongoDB reviews")
-    parser.add_argument("--output", default="data/index/bm25_index.pkl", help="Output BM25 index path")
-    parser.add_argument("--min-tokens", type=int, default=1, help="Minimum tokens per review")
+    parser = argparse.ArgumentParser(description="Build BM25 index (Review-level)")
+    parser.add_argument("--output", default="data/index/bm25_index.pkl", help="Output path")
     args = parser.parse_args()
 
-    project_root = Path(__file__).resolve().parent.parent
     output_path = (project_root / args.output).resolve()
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    rows = fetch_reviews_for_indexing(min_tokens=max(1, int(args.min_tokens)))
-    payload = build_index_payload(rows)
+    reviews = fetch_reviews_for_indexing()
+    print(f"Bắt đầu index {len(reviews)} reviews...")
+    payload = build_index_payload(reviews)
+    
     with output_path.open("wb") as f:
         pickle.dump(payload, f)
 
     print(f"Indexed reviews: {payload['corpus_size']}")
-    print(f"Saved BM25 index: {output_path}")
+    print(f"Saved BM25 review-level index: {output_path}")
 
 
 if __name__ == "__main__":
