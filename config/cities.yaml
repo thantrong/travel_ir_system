@@ -375,31 +375,31 @@ cities:
     max_reviews_per_hotel: 100
   - name: Sa Pa
     code: Sapa
-    geo_id: "10009950" 
+    geo_id: "10009950"
     enabled: true
     region: bac
     city_type: mountain
     crawl_priority: 1
     max_hotels_per_city: 100
     max_reviews_per_hotel: 50
-  - name : Bình Thuận
+  - name: Bình Thuận
     code: BT
-    geo_id: "10009825" 
+    geo_id: "10009825"
     enabled: true
     region: trung
     city_type: coastal
     crawl_priority: 4
     merged_from: Bình Thuận + Lâm Đồng + Đắk Nông
-  - name : Phú Quốc
+  - name: Phú Quốc
     code: PQ
-    geo_id: "10009928" 
+    geo_id: "10009928"
     enabled: true
     region: nam
     city_type: coastal
     crawl_priority: 1
   - name: Phú Yên
     code: PY
-    geo_id: "10009823" 
+    geo_id: "10009823"
     enabled: true
     region: trung
     city_type: coastal

@@ -23,9 +23,15 @@ _CATEGORY_TEXT_HINTS: dict[str, tuple[str, ...]] = {
     "family": ("gia đình", "trẻ em", "family", "kid"),
     "budget": ("giá rẻ", "bình dân", "tiết kiệm", "hợp lý"),
     "luxury": ("sang trọng", "cao cấp", "luxury", "5 sao", "resort", "villa"),
-    "center": ("trung tâm", "phố đi bộ", "chợ đêm", "gần chợ"),
+    "center": ("trung tâm", "phố đi bộ", "chợ đêm", "gần chợ","phố cổ","hồ gươm", "hồ tây"),
     "amenity_pool": ("hồ bơi", "bể bơi", "pool", "vô cực"),
     "amenity_breakfast": ("ăn sáng", "buffet", "điểm tâm"),
+    "airport": ("sân bay", "tân sơn nhất", "nội bài", "ga"),
+    "spa_gym": ("gym", "spa", "massage", "thể hình", "xông hơi", "bồn tắm", "jacuzzi"),
+    "kitchen": ("bếp", "nấu ăn", "bbq", "nướng"),
+    "photo": ("sống ảo", "chụp hình", "vintage", "đẹp", "decor"),
+    "quiet": ("yên tĩnh", "nghỉ dưỡng", "đọc sách", "người lớn tuổi"),
+    "pet": ("thú cưng", "chó", "mèo", "pet")
 }
 
 
@@ -52,37 +58,108 @@ def _normalize_scores(scores: np.ndarray) -> np.ndarray:
     return scores
 
 
+# def _descriptor_supported_by_reviews(descriptor_tokens: list[str], review_texts: list[str]) -> bool:
+#     """Check whether at least one descriptor token appears in top review content."""
+#     if not descriptor_tokens:
+#         return True
+
+#     descriptor_set: set[str] = set()
+#     for t in descriptor_tokens:
+#         low = (t or "").lower().strip()
+#         if not low:
+#             continue
+#         descriptor_set.add(low)
+#         if "_" in low:
+#             descriptor_set.update(p for p in low.split("_") if p)
+
+#     if not descriptor_set:
+#         return True
+
+#     for text in review_texts:
+#         norm = normalize_text(text or "")
+#         if not norm:
+#             continue
+#         tokens: set[str] = set()
+#         for tok in tokenize_vi(norm):
+#             low = tok.lower()
+#             tokens.add(low)
+#             if "_" in low:
+#                 tokens.update(p for p in low.split("_") if p)
+#         if descriptor_set.intersection(tokens):
+#             return True
+#     return False
+
 def _descriptor_supported_by_reviews(descriptor_tokens: list[str], review_texts: list[str]) -> bool:
-    """Check whether at least one descriptor token appears in top review content."""
+    """Check whether descriptors match, robust to NLP tokens with underscores and view synonyms."""
     if not descriptor_tokens:
         return True
 
-    descriptor_set: set[str] = set()
+    # 1. Lọc từ rác & XỬ LÝ DẤU GẠCH DƯỚI TỪ BỘ NLP
+    stop_words = {
+        "khách", "sạn", "khách sạn", "phòng", "rất", "có", "là", "và", 
+        "những", "cho", "tại", "ở", "của", "resort", "homestay", "villa", 
+        "khu nghỉ dưỡng", "chỗ nghỉ", "motel", "hostel", "boutique"
+    }
+    important_descs = []
+    
     for t in descriptor_tokens:
-        low = (t or "").lower().strip()
-        if not low:
-            continue
-        descriptor_set.add(low)
-        if "_" in low:
-            descriptor_set.update(p for p in low.split("_") if p)
-
-    if not descriptor_set:
+        clean_t = t.replace("_", " ").lower().strip()
+        if clean_t and clean_t not in stop_words:
+            important_descs.append(clean_t)
+            
+    if not important_descs:
         return True
 
-    for text in review_texts:
-        norm = normalize_text(text or "")
-        if not norm:
-            continue
-        tokens: set[str] = set()
-        for tok in tokenize_vi(norm):
-            low = tok.lower()
-            tokens.add(low)
-            if "_" in low:
-                tokens.update(p for p in low.split("_") if p)
-        if descriptor_set.intersection(tokens):
-            return True
-    return False
+    # 2. Gom nhóm từ đồng nghĩa chỉ tầm nhìn
+    view_keywords = {"view", "hướng", "nhìn"}
+    has_view_req = any(vk in important_descs for vk in view_keywords)
+    targets = [w for w in important_descs if w not in view_keywords]
 
+    # 3. Quét từng bài review
+    for text in review_texts:
+        text_lower = text.lower()
+        
+        # NẾU LÀ TRUY VẤN TÌM VIEW (VD: "hướng núi", "view biển")
+        if has_view_req and targets:
+            valid_view = False
+            for target in targets:
+                phrases = [
+                    f"view {target}", 
+                    f"hướng {target}", 
+                    f"nhìn ra {target}",
+                    f"nhìn {target}",
+                    f"thấy {target}", 
+                    f"{target} view"
+                ]
+                if any(p in text_lower for p in phrases):
+                    valid_view = True
+                    break
+            
+            other_targets_exist = all(t in text_lower for t in targets)
+            if valid_view and other_targets_exist:
+                return True
+                
+        # NẾU LÀ TRUY VẤN BÌNH THƯỜNG (Giá rẻ, Trung tâm, Bể bơi...)
+        else:
+            # FIX Ở ĐÂY: Dùng từ điển đồng nghĩa để không đánh rớt kết quả oan uổng
+            match_all_descs = True
+            for desc in important_descs:
+                # Lấy danh sách từ đồng nghĩa của từ khóa hiện tại
+                synonyms = [desc]
+                for cat, hints in _CATEGORY_TEXT_HINTS.items():
+                    if desc in hints:
+                        synonyms = hints # Ví dụ: biến 'bình dân' thành ('giá rẻ', 'bình dân',...)
+                        break
+                
+                # CHỈ CẦN khớp 1 từ đồng nghĩa là ĐẠT
+                if not any(syn in text_lower for syn in synonyms):
+                    match_all_descs = False
+                    break 
+                    
+            if match_all_descs:
+                return True
+                
+    return False
 
 def _infer_doc_categories(doc: dict) -> set[str]:
     tags = doc.get("category_tags")
@@ -269,20 +346,121 @@ def search_hybrid(
         max_b_score = max(r["bm25_score"] for r in top_reviews)
 
         top_review_texts = [r["doc"].get("review_text", "") for r in top_reviews]
-        descriptor_supported = _descriptor_supported_by_reviews(qu.descriptor_tokens, top_review_texts)
+        # descriptor_supported = _descriptor_supported_by_reviews(qu.descriptor_tokens, top_review_texts)
 
-        # If query includes descriptors (e.g. "view núi"), drop hotels that only match by name.
-        if qu.descriptor_tokens and strict_descriptor_filter and not descriptor_supported:
-            continue
+        # # If query includes descriptors (e.g. "view núi"), drop hotels that only match by name.
+        # if qu.descriptor_tokens and strict_descriptor_filter and not descriptor_supported:
+        #     continue
 
-        if qu.descriptor_tokens and not descriptor_supported:
-            hotel_score *= descriptor_mismatch_penalty
+        # if qu.descriptor_tokens and not descriptor_supported:
+        #     hotel_score *= descriptor_mismatch_penalty
 
-        # PHẦN 7: Location Boosting
+        # LỌC DESCRIPTOR
+        tokens_to_check = qu.descriptor_tokens
+        descriptor_supported = True
+        if tokens_to_check:
+            descriptor_supported = _descriptor_supported_by_reviews(tokens_to_check, top_review_texts)
+            if strict_descriptor_filter and not descriptor_supported:
+                continue
+
+# PHẦN 7:POI Enforcer
+        raw_q_lower = qu.raw_query.lower()
+        
+        # 1. Tìm xem người dùng đang muốn nhóm danh mục nào (center, pool, beach...)
+        target_categories = {} 
+        for cat, hints in _CATEGORY_TEXT_HINTS.items():
+            for hint in hints:
+                if hint in raw_q_lower:
+                    if cat not in target_categories:
+                        target_categories[cat] = []
+                    target_categories[cat].append(hint)
+
+        if target_categories:
+            is_valid_poi = False
+            has_dealbreaker = False
+            
+            for cat, user_hints in target_categories.items():
+                valid_synonyms = _CATEGORY_TEXT_HINTS[cat]
+                
+                # LẬP DANH SÁCH ĐEN (Từ khóa phủ định)
+                negative_patterns = []
+                if cat == "center":
+                    negative_patterns = ["xa trung tâm", "cách xa trung tâm", "xa chợ", "ngoại ô", "cách xa", "hơi xa", "xa thành phố", "bất tiện","xa phố cổ","không gần phố cổ"]
+                elif cat == "beach":
+                    negative_patterns = ["xa biển", "không gần biển", "cách xa biển", "không có bãi biển"]
+                elif cat == "budget":
+                    negative_patterns = ["đắt đỏ", "giá cao", "mắc", "giá chát", "giá cắt cổ"]
+                cat_matched = False
+                
+                # Quét qua top reviews
+                for text in top_review_texts:
+                    text_lower = text.lower()
+                    
+                    if any(neg in text_lower for neg in negative_patterns):
+                        has_dealbreaker = True
+                        break
+                        
+                    # Nếu review khen đúng các từ đồng nghĩa
+                    if any(syn in text_lower for syn in valid_synonyms):
+                        cat_matched = True
+                    
+                if cat_matched:
+                    is_valid_poi = True
+
+            # 2. RA QUYẾT ĐỊNH (PHẠT / THƯỞNG)
+            if has_dealbreaker:
+                hotel_score *= 0.001 
+            elif is_valid_poi:
+                hotel_score *= 2.0
+            else:
+                hotel_score *= 0.1 
+
+        # PHẦN 8: Location Boosting
         loc_matched = False
         if qu.detected_location and location_matched(qu.detected_location, first_doc.get("location", "")):
             hotel_score *= location_boost_factor
             loc_matched = True
+       
+       # PHẦN 9: Phân loại hình lưu trú (Accommodation Type Boosting)
+        raw_q_lower = qu.raw_query.lower()
+        hotel_name_lower = str(first_doc.get("hotel_name", "")).lower()
+        
+        # 1. Định nghĩa các nhóm loại hình
+        acc_types = {
+            "resort": ["resort", "khu nghỉ dưỡng", "retreat"],
+            "homestay": ["homestay", "lodge", "cabin", "nhà dân"],
+            "villa": ["villa", "biệt thự"],
+            "hotel": ["hotel", "khách sạn", "boutique"]
+        }
+        
+        # 2. Nhận diện xem người dùng đang muốn tìm loại hình nào
+        target_type = None
+        for atype, keywords in acc_types.items():
+            if any(k in raw_q_lower for k in keywords):
+                target_type = atype
+                break # Ưu tiên loại hình được nhắc đến đầu tiên
+                
+        # 3. Đối chiếu và Thưởng/Phạt
+        if target_type:
+            # Kiểm tra xem tên nơi lưu trú có chứa từ khóa của loại hình đó không
+            is_correct_type = any(k in hotel_name_lower for k in acc_types[target_type])
+            
+            if is_correct_type:
+                hotel_score *= 1.5  # THƯỞNG 50% ĐIỂM: Tìm resort ra đúng chữ Resort trong tên
+            else:
+                # Kiểm tra xem nó có rành rành là một loại hình KHÁC không?
+                # VD: Tìm "Resort" nhưng tên lại là "Núi Homestay" -> Loại
+                is_conflicting_type = False
+                for other_type, other_keywords in acc_types.items():
+                    if other_type != target_type:
+                        if any(k in hotel_name_lower for k in other_keywords):
+                            is_conflicting_type = True
+                            break
+                
+                if is_conflicting_type:
+                    hotel_score *= 0.2  # PHẠT NẶNG (Mất 80% điểm): Sai loại hình hoàn toàn
+                else:
+                    hotel_score *= 0.9
 
         results.append({
             "source": first_doc.get("source", ""),
