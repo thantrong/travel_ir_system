@@ -54,6 +54,39 @@ _LOCATION_ALIASES: dict[str, str] = {
     "hải_phòng": "hải_phòng", "haiphong": "hải_phòng",
     "quảng_bình": "quảng_bình", "phong_nha": "phong_nha",
     "đông_hà": "đông_hà", "quảng_trị": "quảng_trị",
+    "tuyên_quang": "tuyên_quang", "tuyen_quang": "tuyên_quang",
+    "cao_bằng": "cao_bằng", "cao_bang": "cao_bằng",
+    "lai_châu": "lai_châu", "lai_chau": "lai_châu",
+    "lào_cai": "lào_cai", "lao_cai": "lào_cai",
+    "thái_nguyên": "thái_nguyên", "thai_nguyen": "thái_nguyên",
+    "điện_biên": "điện_biên", "dien_bien": "điện_biên",
+    "lạng_sơn": "lạng_sơn", "lang_son": "lạng_sơn",
+    "sơn_la": "sơn_la", "son_la": "sơn_la",
+    "phú_thọ": "phú_thọ", "phu_tho": "phú_thọ",
+    "bắc_ninh": "bắc_ninh", "bac_ninh": "bắc_ninh",
+    "quảng_ninh": "quảng_ninh", "quang_ninh": "quảng_ninh",
+    "hưng_yên": "hưng_yên", "hung_yen": "hưng_yên",
+    "thanh_hóa": "thanh_hóa", "thanh_hoa": "thanh_hóa",
+    "nghệ_an": "nghệ_an", "nghe_an": "nghệ_an",
+    "hà_tĩnh": "hà_tĩnh", "ha_tinh": "hà_tĩnh",
+    "quảng_ngãi": "quảng_ngãi", "quang_ngai": "quảng_ngãi",
+    "gia_lai": "gia_lai", "gialai": "gia_lai",
+    "đắk_lắk": "đắk_lắk", "dak_lak": "đắk_lắk",
+    "khánh_hòa": "khánh_hòa", "khanh_hoa": "khánh_hòa",
+    "lâm_đồng": "lâm_đồng", "lam_dong": "lâm_đồng",
+    "đồng_nai": "đồng_nai", "dong_nai": "đồng_nai",
+    "đồng_tháp": "đồng_tháp", "dong_thap": "đồng_tháp",
+    "an_giang": "an_giang", "angiang": "an_giang",
+    "vĩnh_long": "vĩnh_long", "vinh_long": "vĩnh_long",
+    "cà_mau": "cà_mau", "ca_mau": "cà_mau",
+    "bình_thuận": "bình_thuận", "binh_thuan": "bình_thuận",
+    "phú_yên": "phú_yên", "phu_yen": "phú_yên",
+    "tp_hồ_chí_minh": "hồ_chí_minh", "tp_hcm": "hồ_chí_minh", "tphcm": "hồ_chí_minh",
+    "tp_hà_nội": "hà_nội", "tphn": "hà_nội",
+    "tp_hải_phòng": "hải_phòng",
+    "tp_cần_thơ": "cần_thơ", "tp_cần thơ": "cần_thơ",
+    "bà_rịa_vũng_tàu": "vũng_tàu", "ba_ria_vung_tau": "vũng_tàu",
+    "kiên_giang": "phú_quốc", "kien_giang": "phú_quốc",
 }
 
 _LOCATION_BIGRAMS: dict[tuple[str, str], str] = {
@@ -82,12 +115,44 @@ _LOCATION_BIGRAMS: dict[tuple[str, str], str] = {
     ("phong", "nha"): "phong_nha",
     ("bảo", "lộc"): "bảo_lộc",
     ("tây", "ninh"): "tây_ninh",
+    ("tuyên", "quang"): "tuyên_quang",
+    ("cao", "bằng"): "cao_bằng",
+    ("lai", "châu"): "lai_châu",
+    ("lào", "cai"): "lào_cai",
+    ("thái", "nguyên"): "thái_nguyên",
+    ("điện", "biên"): "điện_biên",
+    ("lạng", "sơn"): "lạng_sơn",
+    ("sơn", "la"): "sơn_la",
+    ("phú", "thọ"): "phú_thọ",
+    ("hưng", "yên"): "hưng_yên",
+    ("thanh", "hóa"): "thanh_hóa",
+    ("nghệ", "an"): "nghệ_an",
+    ("hà", "tĩnh"): "hà_tĩnh",
+    ("quảng", "ngãi"): "quảng_ngãi",
+    ("gia", "lai"): "gia_lai",
+    ("đắk", "lắk"): "đắk_lắk",
+    ("khánh", "hòa"): "khánh_hòa",
+    ("lâm", "đồng"): "lâm_đồng",
+    ("đồng", "nai"): "đồng_nai",
+    ("đồng", "tháp"): "đồng_tháp",
+    ("an", "giang"): "an_giang",
+    ("vĩnh", "long"): "vĩnh_long",
+    ("cà", "mau"): "cà_mau",
+    ("bình", "thuận"): "bình_thuận",
+    ("phú", "yên"): "phú_yên",
+    ("kiên", "giang"): "phú_quốc",
+    ("bà", "rịa"): "vũng_tàu",
 }
 
 _LOCATION_TRIGRAMS: dict[tuple[str, str, str], str] = {
     ("hồ", "chí", "minh"): "hồ_chí_minh",
     ("buôn", "ma", "thuột"): "buôn_ma_thuột",
     ("phan", "rang", "tháp"): "phan_rang",
+    ("tp", "hồ", "chí"): "hồ_chí_minh",
+    ("tp", "hà", "nội"): "hà_nội",
+    ("tp", "hải", "phòng"): "hải_phòng",
+    ("tp", "cần", "thơ"): "cần_thơ",
+    ("bà", "rịa", "vũng"): "vũng_tàu",
 }
 
 LOCATION_KEYWORDS: dict[str, list[str]] = {
@@ -112,6 +177,33 @@ LOCATION_KEYWORDS: dict[str, list[str]] = {
     "hải_phòng": ["hải phòng", "haiphong", "cát bà"],
     "buôn_ma_thuột": ["buôn ma thuột", "đắk lắk", "đắc lắc"],
     "tây_ninh": ["tây ninh", "núi bà đen"],
+    "tuyên_quang": ["tuyên quang", "tuyen quang"],
+    "cao_bằng": ["cao bằng", "cao bang"],
+    "lai_châu": ["lai châu", "lai chau"],
+    "lào_cai": ["lào cai", "lao cai"],
+    "thái_nguyên": ["thái nguyên", "thai nguyen"],
+    "điện_biên": ["điện biên", "dien bien", "mường thanh", "muong thanh"],
+    "lạng_sơn": ["lạng sơn", "lang son"],
+    "sơn_la": ["sơn la", "son la", "mộc châu", "moc chau"],
+    "phú_thọ": ["phú thọ", "phu tho"],
+    "bắc_ninh": ["bắc ninh", "bac ninh"],
+    "quảng_ninh": ["quảng ninh", "quang ninh", "hạ long", "ha long"],
+    "hưng_yên": ["hưng yên", "hung yen"],
+    "thanh_hóa": ["thanh hóa", "thanh hoa", "sầm sơn", "sam son"],
+    "nghệ_an": ["nghệ an", "nghe an", "cửa lò", "cua lo"],
+    "hà_tĩnh": ["hà tĩnh", "ha tinh"],
+    "quảng_ngãi": ["quảng ngãi", "quang ngai", "lý sơn", "ly son"],
+    "gia_lai": ["gia lai", "pleiku"],
+    "đắk_lắk": ["đắk lắk", "dak lak", "buôn ma thuột", "bmt"],
+    "khánh_hòa": ["khánh hòa", "khanh hoa", "nha trang", "cam ranh"],
+    "lâm_đồng": ["lâm đồng", "lam dong", "đà lạt", "bảo lộc"],
+    "đồng_nai": ["đồng nai", "dong nai", "biên hòa", "bien hoa"],
+    "đồng_tháp": ["đồng tháp", "dong thap", "sa đéc", "sa dec"],
+    "an_giang": ["an giang", "châu đốc", "chau doc", "núi cấm"],
+    "vĩnh_long": ["vĩnh long", "vinh long"],
+    "cà_mau": ["cà mau", "ca mau", "đất mũi", "dat mui"],
+    "bình_thuận": ["bình thuận", "binh thuan", "phan thiết", "mũi né"],
+    "phú_yên": ["phú yên", "phu yen", "tuy hòa", "tuy hoa"],
 }
 
 # KEYWORDS MÔ TẢ TÌM KIẾM
@@ -131,6 +223,15 @@ DESCRIPTOR_TOKENS: frozenset[str] = frozenset([
     "wifi", "điều_hòa", "máy_lạnh", "tủ_lạnh", "tivi", "ban_công", "bồn_tắm",
     "gia_đình", "trẻ_em", "cặp_đôi", "lãng_mạn", "honey_moon", "yên_tĩnh",
     "trung_tâm", "phố_đi_bộ", "chợ_đêm", "gần_chợ",
+    "checkin", "check_in", "sống_ảo", "view_đẹp", "chụp_hình",
+    "co_working", "workation", "business", "công_tác", "phòng_họp", "meeting",
+    "glamping", "camping", "farmstay", "eco", "sinh_thái", "xanh",
+    "all_inclusive", "miễn_phí_hủy", "free_cancel", "combo",
+    "gần_ga", "ga_tàu", "bến_xe", "metro", "tàu_điện",
+    "kid_club", "sân_chơi_trẻ_em", "công_viên_nước",
+    "pet_friendly", "thú_cưng", "pet", "đưa_thú_cưng",
+    "bbq", "nướng", "bếp_nấu", "bếp_riêng", "ăn_tối",
+    "ban_công_view_biển", "sunset", "bình_minh", "hoàng_hôn",
 ])
 
 # TASK 5: Query Expansion
@@ -153,6 +254,14 @@ SYNONYM_MAP: dict[str, list[str]] = {
     "gia_đình": ["gia_đình", "trẻ_em", "con_nhỏ", "baby", "kid"],
     "cặp_đôi": ["cặp_đôi", "lãng_mạn", "honey_moon", "tình_nhân"],
     "trung_tâm": ["trung_tâm", "gần_chợ", "phố_đi_bộ", "chợ_đêm"],
+    "công_tác": ["công_tác", "business", "workation", "phòng_họp", "meeting"],
+    "sống_ảo": ["sống_ảo", "checkin", "check_in", "chụp_hình", "vintage"],
+    "sinh_thái": ["sinh_thái", "eco", "xanh", "rừng", "thiên_nhiên"],
+    "pet_friendly": ["pet_friendly", "thú_cưng", "pet", "đưa_thú_cưng"],
+    "gần_ga": ["gần_ga", "ga_tàu", "metro", "tàu_điện"],
+    "bếp_nấu": ["bếp_nấu", "bếp_riêng", "kitchen", "bbq", "nướng"],
+    "kid_club": ["kid_club", "sân_chơi_trẻ_em", "trẻ_em", "gia_đình"],
+    "all_inclusive": ["all_inclusive", "combo", "bao_gồm", "trọn_gói"],
 }
 
 # Category hints used for query-time routing/filtering.
@@ -180,6 +289,27 @@ CATEGORY_TOKEN_HINTS: dict[str, set[str]] = {
     },
     "amenity_breakfast": {
         "ăn_sáng", "buffet", "điểm_tâm"
+    },
+    "airport": {
+        "sân_bay", "airport", "đưa_đón", "xe_đón", "gần_ga", "ga_tàu", "metro"
+    },
+    "spa_gym": {
+        "spa", "massage", "gym", "fitness", "xông_hơi", "jacuzzi"
+    },
+    "photo": {
+        "sống_ảo", "checkin", "check_in", "chụp_hình", "vintage", "view_đẹp"
+    },
+    "quiet": {
+        "yên_tĩnh", "nghỉ_dưỡng", "thư_giãn", "đọc_sách", "riêng_tư"
+    },
+    "pet": {
+        "pet", "pet_friendly", "thú_cưng", "đưa_thú_cưng"
+    },
+    "kitchen": {
+        "bếp_nấu", "bếp_riêng", "bbq", "nướng", "kitchen"
+    },
+    "business": {
+        "công_tác", "business", "workation", "phòng_họp", "meeting", "co_working"
     },
 }
 

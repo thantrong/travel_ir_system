@@ -1,0 +1,37 @@
+{
+  "precision@5": 0.764,
+  "precision@10": 0.714,
+  "recall@10": 0.7276997675527087,
+  "MAP": 0.6830161857024603,
+  "nDCG@10": 0.8257769045351286,
+  "models": {
+    "bm25": {
+      "precision@5": 0.768,
+      "precision@10": 0.724,
+      "recall@10": 0.7208599407128818,
+      "MAP": 0.6769474026336771,
+      "nDCG@10": 0.8138397806046198
+    },
+    "vector": {
+      "precision@5": 0.736,
+      "precision@10": 0.666,
+      "recall@10": 0.6362464430993843,
+      "MAP": 0.5813351075213821,
+      "nDCG@10": 0.7322147976348542
+    },
+    "hybrid": {
+      "precision@5": 0.764,
+      "precision@10": 0.714,
+      "recall@10": 0.7276997675527087,
+      "MAP": 0.6830161857024603,
+      "nDCG@10": 0.8257769045351286
+    }
+  },
+  "annotation_source": "evaluation/annotation_pool.tsv",
+  "threshold_check": {
+    "precision@10>0.6": true,
+    "nDCG@10>0.7": true,
+    "MAP>0.5": true
+  },
+  "conclusion": "deploy_ready"
+}
