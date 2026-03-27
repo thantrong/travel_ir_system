@@ -1,0 +1,389 @@
+# Rule set for tagging hotel reviews.
+# Tags are generated from review_text, hotel_name, and location before indexing.
+
+category_tags:
+  beach:
+    positive:
+      - biển
+      - bãi biển
+      - ven biển
+      - gần biển
+      - view biển
+      - sát biển
+      - bãi tắm
+      - hải sản
+    negative:
+      - xa biển
+      - không gần biển
+      - cách xa biển
+      - chẳng gần biển
+  mountain:
+    positive:
+      - núi
+      - đồi
+      - cao nguyên
+      - săn mây
+      - view núi
+      - view đồi
+      - hướng núi
+      - hướng đồi
+      - thung lũng
+      - rừng thông
+      - đồi thông
+    negative:
+      - không có núi
+      - xa núi
+  center:
+    positive:
+      - trung tâm
+      - ngay trung tâm
+      - gần trung tâm
+      - phố đi bộ
+      - chợ đêm
+      - gần chợ
+      - tiện đi lại
+      - thuận tiện đi lại
+      - dễ di chuyển
+      - gần phố
+      - gần điểm tham quan
+    negative:
+      - xa trung tâm
+      - không gần trung tâm
+      - ngoại ô
+      - hơi xa
+      - cách xa trung tâm
+  budget:
+    positive:
+      - giá rẻ
+      - bình dân
+      - tiết kiệm
+      - giá mềm
+      - giá tốt
+      - hợp lý
+      - tầm trung
+      - đáng tiền
+      - rẻ
+    negative:
+      - đắt
+      - mắc
+      - giá cao
+      - không đáng tiền
+  luxury:
+    positive:
+      - sang trọng
+      - cao cấp
+      - đẳng cấp
+      - xa hoa
+      - 5 sao
+      - 4 sao
+      - resort
+      - villa
+      - boutique
+    negative:
+      - bình dân
+      - giá rẻ
+  family:
+    positive:
+      - gia đình
+      - trẻ em
+      - phòng gia đình
+      - family
+      - kid club
+      - sân chơi trẻ em
+      - đi cùng con nhỏ
+    negative:
+      - chỉ dành cho người lớn
+  quiet:
+    positive:
+      - yên tĩnh
+      - riêng tư
+      - tĩnh lặng
+      - ít ồn
+      - nghỉ dưỡng
+      - thư giãn
+    negative:
+      - ồn ào
+      - náo nhiệt
+      - ầm ĩ
+  pet:
+    positive:
+      - thú cưng
+      - pet
+      - pet friendly
+      - đưa thú cưng
+      - chó
+      - mèo
+    negative:
+      - không nhận thú cưng
+  airport:
+    positive:
+      - sân bay
+      - gần sân bay
+      - đưa đón sân bay
+      - shuttle sân bay
+      - xe đón
+      - airport
+      - ga tàu
+      - gần ga
+      - metro
+    negative:
+      - xa sân bay
+      - không gần sân bay
+  business:
+    positive:
+      - công tác
+      - business
+      - workation
+      - phòng họp
+      - meeting
+      - co working
+      - wifi mạnh
+      - làm việc
+    negative:
+      - không phù hợp công tác
+
+  eco:
+    positive:
+      - sinh thái
+      - eco
+      - xanh
+      - farmstay
+      - glamping
+      - camping
+      - tự nhiên
+      - gần thiên nhiên
+    negative:
+      - bê tông
+      - đô thị
+
+  honeymoon:
+    positive:
+      - lãng mạn
+      - cặp đôi
+      - honeymoon
+      - kỷ niệm
+      - sunset
+      - hoàng hôn
+      - riêng tư
+    negative:
+      - gia đình đông người
+
+
+descriptor_tags:
+  breakfast:
+    positive:
+      - ăn sáng
+      - bữa sáng
+      - buffet sáng
+      - sáng ngon
+      - điểm tâm
+      - ăn sáng ngon
+      - quầy bánh cuốn
+      - phở
+      - bánh mì
+      - xíu mại
+    negative:
+      - không có ăn sáng
+      - bỏ bữa sáng
+  food_quality:
+    positive:
+      - đồ ăn ngon
+      - đồ ăn đa dạng
+      - món ăn ngon
+      - ẩm thực ngon
+      - nhà hàng ngon
+      - buffet ngon
+      - ăn ngon
+      - quầy bánh cuốn
+    negative:
+      - đồ ăn dở
+      - ăn tệ
+  cleanliness:
+    positive:
+      - sạch sẽ
+      - sạch
+      - vệ sinh tốt
+      - gọn gàng
+      - thơm tho
+      - ngăn nắp
+    negative:
+      - bẩn
+      - dơ
+      - xuống cấp
+      - ẩm mốc
+  staff_friendly:
+    positive:
+      - nhân viên thân thiện
+      - phục vụ tốt
+      - nhiệt tình
+      - chu đáo
+      - hiếu khách
+      - hỗ trợ tốt
+      - lễ tân tốt
+    negative:
+      - thái độ kém
+      - lạnh lùng
+      - không thân thiện
+      - thiếu hỗ trợ
+  room_spacious:
+    positive:
+      - phòng rộng
+      - rộng rãi
+      - thoải mái
+      - spacious
+      - phòng lớn
+      - giường rộng
+    negative:
+      - chật
+      - nhỏ
+      - bí
+  pool:
+    positive:
+      - hồ bơi
+      - bể bơi
+      - pool
+      - hồ bơi vô cực
+      - bể bơi vô cực
+    negative:
+      - không có hồ bơi
+  view_beach:
+    positive:
+      - view biển
+      - hướng biển
+      - nhìn ra biển
+      - biển trước mặt
+      - sát biển
+      - ban công view biển
+    negative:
+      - không có view biển
+  view_mountain:
+    positive:
+      - view núi
+      - hướng núi
+      - nhìn ra núi
+      - view đồi
+      - hướng đồi
+    negative:
+      - không có view núi
+  near_center:
+    positive:
+      - gần trung tâm
+      - ngay trung tâm
+      - sát trung tâm
+      - tiện đi bộ
+      - gần chợ đêm
+      - gần phố đi bộ
+    negative:
+      - xa trung tâm
+  near_beach:
+    positive:
+      - gần biển
+      - sát biển
+      - ven biển
+      - đi bộ ra biển
+      - bãi biển gần
+    negative:
+      - xa biển
+  near_attraction:
+    positive:
+      - gần điểm tham quan
+      - gần chợ đêm
+      - gần phố cổ
+      - gần bãi sau
+      - gần hồ xuân hương
+      - gần địa điểm du lịch
+    negative:
+      - xa điểm tham quan
+  good_service:
+    positive:
+      - dịch vụ tốt
+      - phục vụ tốt
+      - hỗ trợ tốt
+      - chuyên nghiệp
+      - tiện lợi
+    negative:
+      - dịch vụ kém
+      - phục vụ tệ
+  convenience:
+    positive:
+      - tiện nghi
+      - tiện lợi
+      - dễ di chuyển
+      - thuận tiện
+      - đầy đủ tiện ích
+    negative:
+      - bất tiện
+      - thiếu tiện nghi
+  quiet_room:
+    positive:
+      - yên tĩnh
+      - ít ồn
+      - cách âm tốt
+      - riêng tư
+    negative:
+      - ồn ào
+      - cách âm kém
+  ambiance:
+    positive:
+      - đẹp
+      - hiện đại
+      - ấm cúng
+      - thoải mái
+      - decor đẹp
+      - sống ảo
+      - chụp hình
+    negative:
+      - cũ
+      - xấu
+      - xuống cấp
+
+hotel_type_tags:
+  resort:
+    positive:
+      - resort
+      - khu nghỉ dưỡng
+      - retreat
+    negative:
+      - homestay
+      - hostel
+  homestay:
+    positive:
+      - homestay
+      - nhà dân
+      - guesthouse
+      - lodge
+    negative:
+      - resort
+      - khách sạn
+  villa:
+    positive:
+      - villa
+      - biệt thự
+    negative:
+      - homestay
+  boutique_hotel:
+    positive:
+      - boutique hotel
+      - boutique
+      - khách sạn boutique
+    negative:
+      - hostel
+  hotel:
+    positive:
+      - khách sạn
+      - hotel
+      - motel
+      - guesthouse
+    negative:
+      - resort
+      - villa
+
+text_sources:
+  - review_text
+  - hotel_name
+  - location
+
+thresholds:
+  positive_score: 1
+  negative_penalty: -1
+  strong_positive_score: 2

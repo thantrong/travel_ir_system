@@ -13,6 +13,7 @@ from nlp.tokenizer import tokenize_vi
 from preprocessing.clean_text import clean_review_text
 from preprocessing.language_filter import is_vietnamese_text
 from preprocessing.remove_spam import is_spam_review
+from preprocessing.review_tagger import tag_record
 
 
 def normalize_id_text(value: str) -> str:
@@ -277,6 +278,7 @@ def process_records(
         transformed = dict(row)
         transformed["clean_text"] = clean
         transformed["tokens"] = tokens
+        transformed = tag_record(transformed)
         output.append(transformed)
     return output
 
