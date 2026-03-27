@@ -8,6 +8,7 @@ PHẦN 10: RANKING PIPELINE
 import pickle
 from pathlib import Path
 from collections import defaultdict
+from functools import lru_cache
 
 import numpy as np
 
@@ -40,13 +41,19 @@ def load_index(path: Path) -> dict:
         return pickle.load(f)
 
 
-def encode_query(query: str, model_name: str) -> np.ndarray:
+@lru_cache(maxsize=2)
+def _load_sentence_model(model_name: str):
     try:
         from sentence_transformers import SentenceTransformer  # type: ignore
     except ImportError:
         raise ImportError("Cài đặt: pip install sentence-transformers")
-    model = SentenceTransformer(model_name)
-    return model.encode([query])[0]
+    return SentenceTransformer(model_name)
+
+
+def encode_query(query: str, model_name: str) -> np.ndarray:
+    model = _load_sentence_model(model_name)
+    vec = model.encode([query])[0]
+    return np.asarray(vec, dtype=np.float32)
 
 
 def _normalize_scores(scores: np.ndarray) -> np.ndarray:
@@ -136,6 +143,7 @@ def _infer_doc_categories(doc: dict) -> set[str]:
     if isinstance(tags, list) and tags:
         return {str(t).strip().lower() for t in tags if str(t).strip()}
 
+    # Fallback cũ cho dữ liệu legacy chưa backfill tag.
     text = " ".join([
         str(doc.get("hotel_name", "")),
         str(doc.get("location", "")),
@@ -209,7 +217,7 @@ def search_hybrid(
 ) -> tuple[list[dict], QueryUnderstandingResult]:
     
     # PHẦN 4: Query Understanding
-    qu: QueryUnderstandingResult = understand_query(query, stopwords_path=stopwords_path)
+    qu: QueryUnderstandingResult = understand_query(query, stopwords_path=None)
 
     bm25_path = index_dir / "bm25_index.pkl"
     vec_path = index_dir / "vector_index.pkl"
@@ -222,9 +230,13 @@ def search_hybrid(
 
     bm25_model = bm25_payload["bm25"]
     bm25_docs = bm25_payload["documents"]
+    bm25_ids = bm25_payload.get("review_ids", [str(d.get("review_id", "")) for d in bm25_docs])
+    bm25_id_to_idx = bm25_payload.get("review_id_to_idx", {})
     
     embeddings = vec_payload["embeddings"]
     vec_docs = vec_payload["documents"]
+    vec_ids = vec_payload.get("review_ids", [str(d.get("_id", d.get("review_id", ""))) for d in vec_docs])
+    vec_id_to_idx = vec_payload.get("review_id_to_idx", {})
     model_name = vec_payload["model_name"]
 
     bm25_mask = _build_candidate_mask(qu, bm25_docs)
@@ -263,7 +275,9 @@ def search_hybrid(
     for i in bm25_top_idx:
         doc = bm25_docs[i]
         if bm25_scores_norm[i] > 0:
-            rid = doc["review_id"]
+            rid = str(doc.get("review_id", doc.get("_id", bm25_ids[i] if i < len(bm25_ids) else ""))).strip()
+            if not rid:
+                continue
             review_scores[rid] = {
                 "doc": doc,
                 "bm25_score": float(bm25_scores_norm[i]),
@@ -274,7 +288,9 @@ def search_hybrid(
     for i in vec_top_idx:
         doc = vec_docs[i]
         if vector_scores_norm[i] > 0:
-            rid = doc["review_id"]
+            rid = str(doc.get("_id", doc.get("review_id", vec_ids[i] if i < len(vec_ids) else ""))).strip()
+            if not rid:
+                continue
             if rid not in review_scores:
                 review_scores[rid] = {
                     "doc": doc,
@@ -325,57 +341,19 @@ def search_hybrid(
             if strict_descriptor_filter and not descriptor_supported:
                 continue
 
-# PHẦN 7:POI Enforcer
-        raw_q_lower = qu.raw_query.lower()
-        
-        # 1. Tìm xem người dùng đang muốn nhóm danh mục nào (center, pool, beach...)
-        target_categories = {} 
-        for cat, hints in _CATEGORY_TEXT_HINTS.items():
-            for hint in hints:
-                if hint in raw_q_lower:
-                    if cat not in target_categories:
-                        target_categories[cat] = []
-                    target_categories[cat].append(hint)
+        # PHẦN 7: POI / category boosting dựa trên tags đã dán sẵn
+        query_categories = {c.lower() for c in qu.detected_categories}
+        doc_categories = set()
+        for rr in top_reviews:
+            doc_categories.update({str(t).lower() for t in rr["doc"].get("category_tags", []) if str(t).strip()})
+        if not doc_categories:
+            doc_categories = _infer_doc_categories(first_doc)
 
-        if target_categories:
-            is_valid_poi = False
-            has_dealbreaker = False
-            
-            for cat, user_hints in target_categories.items():
-                valid_synonyms = _CATEGORY_TEXT_HINTS[cat]
-                
-                # LẬP DANH SÁCH ĐEN (Từ khóa phủ định)
-                negative_patterns = []
-                if cat == "center":
-                    negative_patterns = ["xa trung tâm", "cách xa trung tâm", "xa chợ", "ngoại ô", "cách xa", "hơi xa", "xa thành phố", "bất tiện","xa phố cổ","không gần phố cổ"]
-                elif cat == "beach":
-                    negative_patterns = ["xa biển", "không gần biển", "cách xa biển", "không có bãi biển"]
-                elif cat == "budget":
-                    negative_patterns = ["đắt đỏ", "giá cao", "mắc", "giá chát", "giá cắt cổ"]
-                cat_matched = False
-                
-                # Quét qua top reviews
-                for text in top_review_texts:
-                    text_lower = text.lower()
-                    
-                    if any(neg in text_lower for neg in negative_patterns):
-                        has_dealbreaker = True
-                        break
-                        
-                    # Nếu review khen đúng các từ đồng nghĩa
-                    if any(syn in text_lower for syn in valid_synonyms):
-                        cat_matched = True
-                    
-                if cat_matched:
-                    is_valid_poi = True
-
-            # 2. RA QUYẾT ĐỊNH (PHẠT / THƯỞNG)
-            if has_dealbreaker:
-                hotel_score *= 0.001 
-            elif is_valid_poi:
-                hotel_score *= 2.0
+        if query_categories:
+            if query_categories.intersection(doc_categories):
+                hotel_score *= 1.15
             else:
-                hotel_score *= 0.1 
+                hotel_score *= 0.85
 
         # PHẦN 8: Location Boosting
         loc_matched = False
@@ -383,46 +361,26 @@ def search_hybrid(
             hotel_score *= location_boost_factor
             loc_matched = True
        
-       # PHẦN 9: Phân loại hình lưu trú (Accommodation Type Boosting)
+        # PHẦN 9: Phân loại hình lưu trú (Accommodation Type Boosting)
         raw_q_lower = qu.raw_query.lower()
         hotel_name_lower = str(first_doc.get("hotel_name", "")).lower()
-        
-        # 1. Định nghĩa các nhóm loại hình
         acc_types = {
             "resort": ["resort", "khu nghỉ dưỡng", "retreat"],
             "homestay": ["homestay", "lodge", "cabin", "nhà dân"],
             "villa": ["villa", "biệt thự"],
-            "hotel": ["hotel", "khách sạn", "boutique"]
+            "hotel": ["hotel", "khách sạn", "boutique"],
         }
-        
-        # 2. Nhận diện xem người dùng đang muốn tìm loại hình nào
         target_type = None
         for atype, keywords in acc_types.items():
             if any(k in raw_q_lower for k in keywords):
                 target_type = atype
-                break # Ưu tiên loại hình được nhắc đến đầu tiên
-                
-        # 3. Đối chiếu và Thưởng/Phạt
+                break
         if target_type:
-            # Kiểm tra xem tên nơi lưu trú có chứa từ khóa của loại hình đó không
             is_correct_type = any(k in hotel_name_lower for k in acc_types[target_type])
-            
             if is_correct_type:
-                hotel_score *= 1.5  # THƯỞNG 50% ĐIỂM: Tìm resort ra đúng chữ Resort trong tên
+                hotel_score *= 1.2
             else:
-                # Kiểm tra xem nó có rành rành là một loại hình KHÁC không?
-                # VD: Tìm "Resort" nhưng tên lại là "Núi Homestay" -> Loại
-                is_conflicting_type = False
-                for other_type, other_keywords in acc_types.items():
-                    if other_type != target_type:
-                        if any(k in hotel_name_lower for k in other_keywords):
-                            is_conflicting_type = True
-                            break
-                
-                if is_conflicting_type:
-                    hotel_score *= 0.2  # PHẠT NẶNG (Mất 80% điểm): Sai loại hình hoàn toàn
-                else:
-                    hotel_score *= 0.9
+                hotel_score *= 0.9
 
         results.append({
             "source": first_doc.get("source", ""),
@@ -430,12 +388,13 @@ def search_hybrid(
             "hotel_name": first_doc.get("hotel_name", ""),
             "location": first_doc.get("location", ""),
             "rating": first_doc.get("rating", ""),
-            "review_count": len(r_list),  # số review MATCHED với query
+            "review_count": len(r_list),
             "hybrid_score": float(hotel_score),
-            "vector_score": float(max_v_score), # Truyền điểm max vector cho UI
-            "bm25_score": float(max_b_score),   # Truyền điểm max bm25 cho UI
+            "vector_score": float(max_v_score),
+            "bm25_score": float(max_b_score),
             "location_matched": loc_matched,
             "descriptor_matched": descriptor_supported,
+            "category_matched": bool(query_categories.intersection(doc_categories)) if query_categories else False,
             "top_reviews": top_review_texts[:3],
         })
     # Sort top K Hotel
