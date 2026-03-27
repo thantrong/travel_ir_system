@@ -1,5 +1,22 @@
 from __future__ import annotations
 
+"""Single entrypoint for evaluation of the refactored travel_ir_system.
+
+Canonical inputs:
+- data/evaluation/test_queries.json
+- evaluation/annotation_pool_v3.csv
+- data/index/bm25_index.pkl
+- data/index/vector_index.pkl
+
+Outputs:
+- evaluation/runs/run_bm25.tsv
+- evaluation/runs/run_vector.tsv
+- evaluation/runs/run_hybrid.tsv
+- evaluation/qrels.tsv
+- evaluation_metrics.json
+- evaluation/reliability_report.md
+"""
+
 import csv
 import json
 import math
@@ -47,6 +64,14 @@ class QueryDef:
     relevant_ids: set[str]
 
 
+@dataclass
+class RunRow:
+    query_id: str
+    rank: int
+    hotel_id: str
+    score: float
+
+
 def load_queries(path: Path) -> list[tuple[str, str]]:
     raw = json.loads(path.read_text(encoding="utf-8"))
     out = []
@@ -60,27 +85,26 @@ def load_queries(path: Path) -> list[tuple[str, str]]:
 def load_manual_qrels(path: Path) -> dict[str, set[str]]:
     qrels: dict[str, set[str]] = {}
     with path.open("r", encoding="utf-8", newline="") as f:
-        reader = csv.DictReader(f, delimiter="\t")
+        reader = csv.DictReader(f)
         for row in reader:
             qid = row.get("query_id", "").strip()
             hid = row.get("hotel_id", "").strip()
             rel = row.get("relevance", "").strip()
             if not qid or not hid:
                 continue
-            if qid not in qrels:
-                qrels[qid] = set()
+            qrels.setdefault(qid, set())
             if rel == "1":
                 qrels[qid].add(hid)
     return qrels
 
 
-def p_at_k(retrieved: list[str], relevant: set[str], k: int) -> float:
+def precision_at_k(retrieved: list[str], relevant: set[str], k: int) -> float:
     if k <= 0:
         return 0.0
     return sum(1 for h in retrieved[:k] if h in relevant) / float(k)
 
 
-def r_at_k(retrieved: list[str], relevant: set[str], k: int) -> float:
+def recall_at_k(retrieved: list[str], relevant: set[str], k: int) -> float:
     if not relevant:
         return 0.0
     return sum(1 for h in retrieved[:k] if h in relevant) / float(len(relevant))
@@ -110,9 +134,9 @@ def ndcg_at_k(retrieved: list[str], relevant: set[str], k: int) -> float:
     return dcg / idcg if idcg else 0.0
 
 
-def run_model(queries: list[QueryDef], index_dir: Path, stopwords: Path, vw: float, bw: float) -> dict[str, list[str]]:
-    out: dict[str, list[str]] = {}
-    for q in queries:
+def run_model(query_defs: list[QueryDef], index_dir: Path, stopwords: Path, vw: float, bw: float, loc_boost: float = 1.8) -> dict[str, list[RunRow]]:
+    out: dict[str, list[RunRow]] = {}
+    for q in query_defs:
         results, _ = se.search_hybrid(
             query=q.query,
             index_dir=index_dir,
@@ -120,21 +144,49 @@ def run_model(queries: list[QueryDef], index_dir: Path, stopwords: Path, vw: flo
             top_k=10,
             vector_weight=vw,
             bm25_weight=bw,
-            location_boost_factor=1.8,
+            location_boost_factor=loc_boost,
         )
-        out[q.query_id] = [str(r.get("source_hotel_id", "")).strip() for r in results[:10] if str(r.get("source_hotel_id", "")).strip()]
+        rows: list[RunRow] = []
+        for rank, r in enumerate(results[:10], start=1):
+            hid = str(r.get("source_hotel_id", "")).strip()
+            if not hid:
+                continue
+            rows.append(RunRow(q.query_id, rank, hid, float(r.get("hybrid_score", 0.0))))
+        out[q.query_id] = rows
     return out
 
 
-def eval_model(queries: list[QueryDef], runs: dict[str, list[str]]) -> dict:
+def write_run_file(path: Path, runs: dict[str, list[RunRow]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    lines = []
+    for qid in sorted(runs.keys(), key=lambda x: int(x[1:])):
+        for row in runs[qid]:
+            lines.append(f"{row.query_id}\t{row.rank}\t{row.hotel_id}\t{row.score:.6f}")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_qrels(path: Path, query_defs: list[QueryDef], run_maps: dict[str, dict[str, list[RunRow]]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    rows = []
+    for q in query_defs:
+        candidate_ids = set(q.relevant_ids)
+        for runs in run_maps.values():
+            candidate_ids.update(r.hotel_id for r in runs.get(q.query_id, []))
+        for hid in sorted(candidate_ids):
+            rel = 1 if hid in q.relevant_ids else 0
+            rows.append(f"{q.query_id}\t{hid}\t{rel}")
+    path.write_text("\n".join(rows) + "\n", encoding="utf-8")
+
+
+def eval_runs(query_defs: list[QueryDef], runs: dict[str, list[RunRow]]) -> dict:
     p5s, p10s, r10s, maps, ndcgs = [], [], [], [], []
-    for q in queries:
-        ret = runs.get(q.query_id, [])
-        p5s.append(p_at_k(ret, q.relevant_ids, 5))
-        p10s.append(p_at_k(ret, q.relevant_ids, 10))
-        r10s.append(r_at_k(ret, q.relevant_ids, 10))
-        maps.append(ap_at_k(ret, q.relevant_ids, 10))
-        ndcgs.append(ndcg_at_k(ret, q.relevant_ids, 10))
+    for q in query_defs:
+        retrieved = [r.hotel_id for r in runs.get(q.query_id, [])]
+        p5s.append(precision_at_k(retrieved, q.relevant_ids, 5))
+        p10s.append(precision_at_k(retrieved, q.relevant_ids, 10))
+        r10s.append(recall_at_k(retrieved, q.relevant_ids, 10))
+        maps.append(ap_at_k(retrieved, q.relevant_ids, 10))
+        ndcgs.append(ndcg_at_k(retrieved, q.relevant_ids, 10))
     return {
         "precision@5": mean(p5s) if p5s else 0.0,
         "precision@10": mean(p10s) if p10s else 0.0,
@@ -149,29 +201,37 @@ def main() -> None:
     pool_path = PROJECT_ROOT / "evaluation" / "annotation_pool_v3.csv"
     index_dir = PROJECT_ROOT / "data" / "index"
     stopwords = PROJECT_ROOT / "config" / "stopwords.txt"
+
     report_path = PROJECT_ROOT / "evaluation" / "reliability_report.md"
     metrics_path = PROJECT_ROOT / "evaluation_metrics.json"
+    runs_dir = PROJECT_ROOT / "evaluation" / "runs"
+    qrels_path = PROJECT_ROOT / "evaluation" / "qrels.tsv"
 
     q_list = load_queries(queries_path)
     qrels = load_manual_qrels(pool_path)
-    queries = [QueryDef(query_id=qid, query=query, relevant_ids=qrels.get(qid, set())) for qid, query in q_list]
+    query_defs = [QueryDef(qid, query, qrels.get(qid, set())) for qid, query in q_list]
 
-    bm25_runs = run_model(queries, index_dir, stopwords, vw=0.0, bw=1.0)
-    vector_runs = run_model(queries, index_dir, stopwords, vw=1.0, bw=0.0)
-    hybrid_runs = run_model(queries, index_dir, stopwords, vw=0.6, bw=0.4)
+    runs_bm25 = run_model(query_defs, index_dir, stopwords, vw=0.0, bw=1.0, loc_boost=1.0)
+    runs_vector = run_model(query_defs, index_dir, stopwords, vw=1.0, bw=0.0, loc_boost=1.0)
+    runs_hybrid = run_model(query_defs, index_dir, stopwords, vw=0.6, bw=0.4, loc_boost=1.8)
 
-    bm25_m = eval_model(queries, bm25_runs)
-    vector_m = eval_model(queries, vector_runs)
-    hybrid_m = eval_model(queries, hybrid_runs)
+    write_run_file(runs_dir / "run_bm25.tsv", runs_bm25)
+    write_run_file(runs_dir / "run_vector.tsv", runs_vector)
+    write_run_file(runs_dir / "run_hybrid.tsv", runs_hybrid)
+    write_qrels(qrels_path, query_defs, {"bm25": runs_bm25, "vector": runs_vector, "hybrid": runs_hybrid})
+
+    bm25_m = eval_runs(query_defs, runs_bm25)
+    vector_m = eval_runs(query_defs, runs_vector)
+    hybrid_m = eval_runs(query_defs, runs_hybrid)
 
     payload = {
-        "precision@5": hybrid_m["precision@5"],
-        "precision@10": hybrid_m["precision@10"],
-        "recall@10": hybrid_m["recall@10"],
-        "MAP": hybrid_m["MAP"],
-        "nDCG@10": hybrid_m["nDCG@10"],
-        "models": {"bm25": bm25_m, "vector": vector_m, "hybrid": hybrid_m},
-        "annotation_source": "evaluation/annotation_pool_v3.csv",
+        "annotation_source": str(pool_path.relative_to(PROJECT_ROOT)).replace("\\", "/"),
+        "query_source": str(queries_path.relative_to(PROJECT_ROOT)).replace("\\", "/"),
+        "models": {
+            "bm25": bm25_m,
+            "vector": vector_m,
+            "hybrid": hybrid_m,
+        },
         "threshold_check": {
             "precision@10>0.6": hybrid_m["precision@10"] > 0.6,
             "nDCG@10>0.7": hybrid_m["nDCG@10"] > 0.7,
@@ -181,31 +241,46 @@ def main() -> None:
             hybrid_m["precision@10"] > 0.6 and hybrid_m["nDCG@10"] > 0.7 and hybrid_m["MAP"] > 0.5
         ) else "not_deploy_ready",
     }
+    payload.update({
+        "precision@5": hybrid_m["precision@5"],
+        "precision@10": hybrid_m["precision@10"],
+        "recall@10": hybrid_m["recall@10"],
+        "MAP": hybrid_m["MAP"],
+        "nDCG@10": hybrid_m["nDCG@10"],
+    })
+
     metrics_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
     report_lines = [
         "# IR Reliability Report",
         "",
-        "## 1. Nguồn nhãn đánh giá",
-        "- Báo cáo này dùng nhãn thủ công từ `evaluation/annotation_pool_V3.tsv` (cột `relevance`).",
+        "## Canonical inputs",
+        f"- Query set: `{queries_path.relative_to(PROJECT_ROOT).as_posix()}`",
+        f"- Annotation pool: `{pool_path.relative_to(PROJECT_ROOT).as_posix()}`",
         "",
-        "## 2. Kết quả tổng quan theo model",
+        "## Overall results",
         f"- **bm25**: P@5={bm25_m['precision@5']:.3f}, P@10={bm25_m['precision@10']:.3f}, R@10={bm25_m['recall@10']:.3f}, MAP={bm25_m['MAP']:.3f}, nDCG@10={bm25_m['nDCG@10']:.3f}",
         f"- **vector**: P@5={vector_m['precision@5']:.3f}, P@10={vector_m['precision@10']:.3f}, R@10={vector_m['recall@10']:.3f}, MAP={vector_m['MAP']:.3f}, nDCG@10={vector_m['nDCG@10']:.3f}",
         f"- **hybrid**: P@5={hybrid_m['precision@5']:.3f}, P@10={hybrid_m['precision@10']:.3f}, R@10={hybrid_m['recall@10']:.3f}, MAP={hybrid_m['MAP']:.3f}, nDCG@10={hybrid_m['nDCG@10']:.3f}",
         "",
-        "## 3. Đánh giá ngưỡng tin cậy (Hybrid)",
+        "## Verdict",
         f"- Precision@10 > 0.6: {'Đạt' if payload['threshold_check']['precision@10>0.6'] else 'Không đạt'} ({hybrid_m['precision@10']:.3f})",
         f"- nDCG@10 > 0.7: {'Đạt' if payload['threshold_check']['nDCG@10>0.7'] else 'Không đạt'} ({hybrid_m['nDCG@10']:.3f})",
         f"- MAP > 0.5: {'Đạt' if payload['threshold_check']['MAP>0.5'] else 'Không đạt'} ({hybrid_m['MAP']:.3f})",
-        f"- Kết luận: **{'Có thể deploy có kiểm soát' if payload['conclusion']=='deploy_ready' else 'Chưa nên deploy production'}**",
+        f"- Conclusion: **{'Có thể deploy có kiểm soát' if payload['conclusion']=='deploy_ready' else 'Chưa nên deploy production'}**",
         "",
+        "## Output files",
+        f"- `{qrels_path.relative_to(PROJECT_ROOT).as_posix()}`",
+        f"- `{(runs_dir / 'run_bm25.tsv').relative_to(PROJECT_ROOT).as_posix()}`",
+        f"- `{(runs_dir / 'run_vector.tsv').relative_to(PROJECT_ROOT).as_posix()}`",
+        f"- `{(runs_dir / 'run_hybrid.tsv').relative_to(PROJECT_ROOT).as_posix()}`",
     ]
     report_path.write_text("\n".join(report_lines), encoding="utf-8")
 
-    print("Saved:")
-    print(f"- {metrics_path}")
-    print(f"- {report_path}")
+    print(f"Saved metrics to {metrics_path}")
+    print(f"Saved report to {report_path}")
+    print(f"Saved qrels to {qrels_path}")
+    print(f"Saved runs to {runs_dir}")
 
 
 if __name__ == "__main__":

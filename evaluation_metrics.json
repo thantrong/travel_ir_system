@@ -1,37 +1,38 @@
 {
-  "precision@5": 0.764,
-  "precision@10": 0.714,
-  "recall@10": 0.7276997675527087,
-  "MAP": 0.6830161857024603,
-  "nDCG@10": 0.8257769045351286,
+  "annotation_source": "evaluation/annotation_pool_v3.csv",
+  "query_source": "data/evaluation/test_queries.json",
   "models": {
     "bm25": {
-      "precision@5": 0.768,
-      "precision@10": 0.724,
-      "recall@10": 0.7208599407128818,
-      "MAP": 0.6769474026336771,
-      "nDCG@10": 0.8138397806046198
+      "precision@5": 0.0,
+      "precision@10": 0.0,
+      "recall@10": 0.0,
+      "MAP": 0.0,
+      "nDCG@10": 0.0
     },
     "vector": {
-      "precision@5": 0.736,
-      "precision@10": 0.666,
-      "recall@10": 0.6362464430993843,
-      "MAP": 0.5813351075213821,
-      "nDCG@10": 0.7322147976348542
+      "precision@5": 0.0,
+      "precision@10": 0.0,
+      "recall@10": 0.0,
+      "MAP": 0.0,
+      "nDCG@10": 0.0
     },
     "hybrid": {
-      "precision@5": 0.764,
-      "precision@10": 0.714,
-      "recall@10": 0.7276997675527087,
-      "MAP": 0.6830161857024603,
-      "nDCG@10": 0.8257769045351286
+      "precision@5": 0.0,
+      "precision@10": 0.0,
+      "recall@10": 0.0,
+      "MAP": 0.0,
+      "nDCG@10": 0.0
     }
   },
-  "annotation_source": "evaluation/annotation_pool.tsv",
   "threshold_check": {
-    "precision@10>0.6": true,
-    "nDCG@10>0.7": true,
-    "MAP>0.5": true
+    "precision@10>0.6": false,
+    "nDCG@10>0.7": false,
+    "MAP>0.5": false
   },
-  "conclusion": "deploy_ready"
+  "conclusion": "not_deploy_ready",
+  "precision@5": 0.0,
+  "precision@10": 0.0,
+  "recall@10": 0.0,
+  "MAP": 0.0,
+  "nDCG@10": 0.0
 }
