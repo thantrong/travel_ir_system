@@ -24,7 +24,7 @@ def fetch_reviews_for_indexing() -> list[dict]:
 
     place_map = {}
     for doc in places_col.find():
-        sid = doc.get("source_hotel_id", "")
+        sid = str(doc.get("source_hotel_id", "")).strip()
         if sid:
             place_map[sid] = {
                 "hotel_name": doc.get("name", ""),
@@ -37,23 +37,25 @@ def fetch_reviews_for_indexing() -> list[dict]:
         sid = str(row.get("source_hotel_id", "")).strip()
         if sid not in place_map:
             continue
-            
+
         rtxt = str(row.get("clean_text", "")).strip()
         if not rtxt:
             continue
-            
+
         docs.append({
-            "review_id": row.get("review_id", ""),
+            "_id": str(row.get("_id", row.get("review_id", ""))).strip(),
             "source": row.get("source", ""),
             "source_hotel_id": sid,
             "hotel_name": place_map[sid]["hotel_name"],
             "location": place_map[sid]["location"],
-            "rating": place_map[sid].get("rating", row.get("review_rating", "")),
             "review_rating": row.get("review_rating", ""),
             "review_text": row.get("review_text", ""),
             "clean_text": rtxt,
+            "category_tags": list(row.get("category_tags", []) or []),
+            "descriptor_tags": list(row.get("descriptor_tags", []) or []),
+            "hotel_type_tags": list(row.get("hotel_type_tags", []) or []),
         })
-        
+
     return docs
 
 
@@ -95,7 +97,7 @@ def build_vector_index(
         texts.append(full_text)
 
         documents.append({
-            "review_id": r["review_id"],
+            "_id": r["_id"],
             "source_hotel_id": r["source_hotel_id"],
             "hotel_name": r["hotel_name"],
             "location": r["location"],
@@ -111,7 +113,7 @@ def build_vector_index(
     print(f"Đang chạy Sentence-BERT ({model_name}) cho {len(texts)} review documents...")
     embeddings = model.encode(texts, batch_size=64, show_progress_bar=len(texts) > 50)
 
-    review_ids = [doc.get("review_id", "") for doc in documents]
+    review_ids = [doc.get("_id", "") for doc in documents]
     review_id_to_idx = {rid: idx for idx, rid in enumerate(review_ids) if rid}
 
     return {
