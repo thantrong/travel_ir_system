@@ -1,78 +1,53 @@
-"""
-Review Summarization
-PHẦN 8: REVIEW SUMMARIZATION
-Extractive Summarization using TF-IDF / TextRank.
-"""
+from __future__ import annotations
 
+from collections import Counter
 import re
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
+from typing import Iterable
 
 
-def split_sentences(text: str) -> list[str]:
-    """Tách đoạn văn thành các câu dựa trên dấu chấm, hỏi, than ôi."""
-    if not text:
+_SENT_SPLIT_RE = re.compile(r"(?<=[.!?])\s+")
+
+
+def summarize_reviews_tfidf(reviews: Iterable[str], top_n: int = 3) -> list[str]:
+    """Lightweight fallback extractive summarizer.
+
+    The original project expects this symbol when importing the search engine.
+    For the current refactor, we keep a minimal dependency-free version so the
+    Streamlit app and retrieval pipeline can import cleanly even if the original
+    summarizer implementation is absent.
+    """
+    texts = [str(r).strip() for r in reviews if str(r).strip()]
+    if not texts:
         return []
-    # Thay thế nhiều khoảng trắng thành 1 khoảng trắng
-    text = re.sub(r'\s+', ' ', text).strip()
-    # Tách câu đơn giản bằng regex
-    sentences = re.split(r'(?<=[.!?])\s+', text)
-    return [s.strip() for s in sentences if len(s.strip()) > 10]
 
+    candidates: list[str] = []
+    for text in texts:
+        parts = [p.strip() for p in _SENT_SPLIT_RE.split(text) if p.strip()]
+        candidates.extend(parts)
 
-def summarize_reviews_tfidf(reviews: list[str], top_n_sentences: int = 2) -> str:
-    """
-    Extractive Summarization bằng cách tính độ quan trọng của câu sử dụng TF-IDF.
-    Ý tưởng bao gồm:
-    1. Chuyển toàn bộ reviews thành tập hợp các câu.
-    2. Vector hóa các câu bằng TF-IDF.
-    3. Graph-based ranking (TextRank) hoặc tính điểm trung bình cosine similarity với các câu khác.
-    Ở đây dùng phương pháp TextRank đơn giản hóa: 
-    Điểm của 1 câu = Tổng độ tương đồng (Cosine Similarity) với tất cả các câu khác.
-    """
-    if not reviews:
-        return ""
+    if not candidates:
+        return texts[:top_n]
 
-    all_sentences = []
-    for r in reviews:
-        all_sentences.extend(split_sentences(r))
+    freq = Counter()
+    for sent in candidates:
+        for tok in re.findall(r"[a-zA-ZÀ-ỹđ_]+", sent.lower()):
+            if len(tok) >= 3:
+                freq[tok] += 1
 
-    if not all_sentences:
-        return ""
+    scored = []
+    for sent in candidates:
+        score = 0
+        for tok in re.findall(r"[a-zA-ZÀ-ỹđ_]+", sent.lower()):
+            score += freq.get(tok, 0)
+        scored.append((score, sent))
 
-    # Nếu số lượng câu ít hơn cấu hình, trả về toàn bộ
-    if len(all_sentences) <= top_n_sentences:
-        return " ".join(all_sentences)
-
-    # 1. Xây dựng ma trận TF-IDF
-    vectorizer = TfidfVectorizer(stop_words=None)
-    try:
-        tfidf_matrix = vectorizer.fit_transform(all_sentences)
-    except ValueError:
-        # Trong trường hợp vocabulary empty (toàn stop words hoặc không hợp lệ)
-        return " ".join(all_sentences[:top_n_sentences])
-
-    # 2. Xây dựng ma trận Cosine Similarity
-    similarity_matrix = cosine_similarity(tfidf_matrix)
-
-    # 3. Tính điểm cho mỗi câu (tổng độ tương đồng với các câu khác)
-    # Đây là 1 dạng đơn giản của PageRank / TextRank
-    scores = np.zeros(len(all_sentences))
-    for i in range(len(all_sentences)):
-        scores[i] = similarity_matrix[i].sum() - similarity_matrix[i, i] # Trừ đi điểm với chính nó
-
-    # 4. Sắp xếp và lấy top câu
-    ranked_sentences = sorted(((scores[i], s) for i, s in enumerate(all_sentences)), reverse=True)
-    
-    # Sắp xếp lại top N câu theo thứ tự xuất hiện ban đầu để văn bản mạch lạc hơn
-    top_indices = []
-    for i in range(min(top_n_sentences, len(ranked_sentences))):
-        top_s = ranked_sentences[i][1]
-        top_indices.append(all_sentences.index(top_s))
-        
-    top_indices.sort()
-    
-    summary = " ".join([all_sentences[i] for i in top_indices])
-    return summary
-
+    scored.sort(key=lambda x: x[0], reverse=True)
+    result = []
+    seen = set()
+    for _, sent in scored:
+        if sent not in seen:
+            seen.add(sent)
+            result.append(sent)
+        if len(result) >= top_n:
+            break
+    return result
