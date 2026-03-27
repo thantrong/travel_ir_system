@@ -146,7 +146,7 @@ def eval_model(queries: list[QueryDef], runs: dict[str, list[str]]) -> dict:
 
 def main() -> None:
     queries_path = PROJECT_ROOT / "data" / "evaluation" / "test_queries.json"
-    pool_path = PROJECT_ROOT / "evaluation" / "annotation_pool.tsv"
+    pool_path = PROJECT_ROOT / "evaluation" / "annotation_pool_v3.csv"
     index_dir = PROJECT_ROOT / "data" / "index"
     stopwords = PROJECT_ROOT / "config" / "stopwords.txt"
     report_path = PROJECT_ROOT / "evaluation" / "reliability_report.md"
@@ -171,7 +171,7 @@ def main() -> None:
         "MAP": hybrid_m["MAP"],
         "nDCG@10": hybrid_m["nDCG@10"],
         "models": {"bm25": bm25_m, "vector": vector_m, "hybrid": hybrid_m},
-        "annotation_source": "evaluation/annotation_pool.tsv",
+        "annotation_source": "evaluation/annotation_pool_v3.csv",
         "threshold_check": {
             "precision@10>0.6": hybrid_m["precision@10"] > 0.6,
             "nDCG@10>0.7": hybrid_m["nDCG@10"] > 0.7,
@@ -187,7 +187,7 @@ def main() -> None:
         "# IR Reliability Report",
         "",
         "## 1. Nguồn nhãn đánh giá",
-        "- Báo cáo này dùng nhãn thủ công từ `evaluation/annotation_pool.tsv` (cột `relevance`).",
+        "- Báo cáo này dùng nhãn thủ công từ `evaluation/annotation_pool_V3.tsv` (cột `relevance`).",
         "",
         "## 2. Kết quả tổng quan theo model",
         f"- **bm25**: P@5={bm25_m['precision@5']:.3f}, P@10={bm25_m['precision@10']:.3f}, R@10={bm25_m['recall@10']:.3f}, MAP={bm25_m['MAP']:.3f}, nDCG@10={bm25_m['nDCG@10']:.3f}",
