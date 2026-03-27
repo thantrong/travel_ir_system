@@ -68,7 +68,7 @@ def fetch_reviews_for_indexing() -> list[dict]:
             continue
             
         docs.append({
-            "review_id": row.get("review_id", ""),
+            "review_id": str(row.get("_id", row.get("review_id", ""))).strip(),
             "source": row.get("source", ""),
             "source_hotel_id": sid,
             "hotel_name": place_map[sid]["hotel_name"],
