@@ -58,7 +58,7 @@ def backfill(limit: int = 0, dry_run: bool = False) -> tuple[int, int]:
             updated += 1
             continue
 
-        reviews_col.update_one({"_id": review_id}, {"$set": tag_doc})
+        reviews_col.update_one({"_id": review_id}, {"$set": tag_doc, "$unset": {"review_id": ""}})
         updated += 1
 
     return scanned, updated
