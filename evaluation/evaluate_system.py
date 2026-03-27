@@ -4,7 +4,7 @@ from __future__ import annotations
 
 Canonical inputs:
 - data/evaluation/test_queries.json
-- evaluation/annotation_pool_v3.csv
+- evaluation/annotation_pool.csv
 - data/index/bm25_index.pkl
 - data/index/vector_index.pkl
 
@@ -84,12 +84,12 @@ def load_queries(path: Path) -> list[tuple[str, str]]:
 
 def load_manual_qrels(path: Path) -> dict[str, set[str]]:
     qrels: dict[str, set[str]] = {}
-    with path.open("r", encoding="utf-8", newline="") as f:
+    with path.open("r", encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            qid = row.get("query_id", "").strip()
-            hid = row.get("hotel_id", "").strip()
-            rel = row.get("relevance", "").strip()
+            qid = str(row.get("query_id", "")).strip()
+            hid = str(row.get("hotel_id", "")).strip()
+            rel = str(row.get("relevance", "")).strip()
             if not qid or not hid:
                 continue
             qrels.setdefault(qid, set())
@@ -198,7 +198,7 @@ def eval_runs(query_defs: list[QueryDef], runs: dict[str, list[RunRow]]) -> dict
 
 def main() -> None:
     queries_path = PROJECT_ROOT / "data" / "evaluation" / "test_queries.json"
-    pool_path = PROJECT_ROOT / "evaluation" / "annotation_pool_v3.csv"
+    pool_path = PROJECT_ROOT / "evaluation" / "annotation_pool.csv"
     index_dir = PROJECT_ROOT / "data" / "index"
     stopwords = PROJECT_ROOT / "config" / "stopwords.txt"
 

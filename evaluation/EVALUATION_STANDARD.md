@@ -2,7 +2,7 @@
 
 ## Canonical files
 - Query set: `data/evaluation/test_queries.json`
-- Annotation pool: `evaluation/annotation_pool_v3.csv` / `.json` / `.xlsx`
+- Annotation pool: `evaluation/annotation_pool.csv` / `.json` / `.xlsx`
 - Qrels: `evaluation/qrels.tsv`
 - Run files:
   - `evaluation/runs/run_bm25.tsv`
@@ -29,6 +29,10 @@ Each annotation row should contain:
 - `query_location`
 - `query_categories`
 - `query_descriptors`
+- `evidence_review_1`
+- `evidence_review_2`
+- `evidence_review_3`
+- `evidence_reviews`
 - model-specific rank/score columns when available
 
 ## Relevance policy
