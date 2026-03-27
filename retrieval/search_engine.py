@@ -217,7 +217,7 @@ def search_hybrid(
 ) -> tuple[list[dict], QueryUnderstandingResult]:
     
     # PHẦN 4: Query Understanding
-    qu: QueryUnderstandingResult = understand_query(query, stopwords_path=None)
+    qu: QueryUnderstandingResult = understand_query(query, stopwords_path=stopwords_path)
 
     bm25_path = index_dir / "bm25_index.pkl"
     vec_path = index_dir / "vector_index.pkl"

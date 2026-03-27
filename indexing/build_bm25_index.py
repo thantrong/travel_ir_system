@@ -110,13 +110,17 @@ def build_index_payload(reviews: list[dict]) -> dict:
         
         # Schema Document Review-level (PHẦN 2)
         documents.append({
+            "_id": r["review_id"],
             "review_id": r["review_id"],
             "source_hotel_id": r["source_hotel_id"],
             "hotel_name": r["hotel_name"],
             "location": r["location"],
             "review_text": r["review_text"],
             "review_rating": r["review_rating"],
-            "source": r["source"]
+            "source": r["source"],
+            "category_tags": list(r.get("category_tags", []) or []),
+            "descriptor_tags": list(r.get("descriptor_tags", []) or []),
+            "hotel_type_tags": list(r.get("hotel_type_tags", []) or []),
         })
 
     bm25 = BM25Okapi(tokenized_corpus) if tokenized_corpus else None
