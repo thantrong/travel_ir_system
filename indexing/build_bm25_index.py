@@ -24,6 +24,19 @@ def _tokenize_text(text: str) -> list[str]:
     return [tok for tok in re.split(r'\W+', text.lower()) if tok]
 
 
+def _normalize_tag_token(tag: str) -> list[str]:
+    value = str(tag or "").strip().lower().replace(" ", "_")
+    return [value] if value else []
+
+
+def _extend_tags(doc_tokens: list[str], tags: list[str], weight: int = 1) -> None:
+    for tag in tags or []:
+        token = str(tag or "").strip().lower().replace(" ", "_")
+        if not token:
+            continue
+        doc_tokens.extend([token] * weight)
+
+
 def fetch_reviews_for_indexing() -> list[dict]:
     """Kéo dữ liệu review và append thông tin hotel."""
     db = get_database()
@@ -64,6 +77,9 @@ def fetch_reviews_for_indexing() -> list[dict]:
             "review_rating": row.get("review_rating", ""),
             "review_text": row.get("review_text", ""),
             "tokens": valid_tokens,
+            "category_tags": list(row.get("category_tags", []) or []),
+            "descriptor_tags": list(row.get("descriptor_tags", []) or []),
+            "hotel_type_tags": list(row.get("hotel_type_tags", []) or []),
         })
         
     return docs
@@ -85,6 +101,11 @@ def build_index_payload(reviews: list[dict]) -> dict:
         
         doc_tokens.extend(r["tokens"])
 
+        # Tags mới được nhúng trực tiếp vào corpus để tăng khả năng khớp intent.
+        _extend_tags(doc_tokens, r.get("category_tags", []), weight=2)
+        _extend_tags(doc_tokens, r.get("descriptor_tags", []), weight=2)
+        _extend_tags(doc_tokens, r.get("hotel_type_tags", []), weight=1)
+
         tokenized_corpus.append(doc_tokens)
         
         # Schema Document Review-level (PHẦN 2)
@@ -100,9 +121,14 @@ def build_index_payload(reviews: list[dict]) -> dict:
 
     bm25 = BM25Okapi(tokenized_corpus) if tokenized_corpus else None
 
+    review_ids = [doc.get("review_id", "") for doc in documents]
+    review_id_to_idx = {rid: idx for idx, rid in enumerate(review_ids) if rid}
+
     return {
         "bm25": bm25,
         "documents": documents,
+        "review_ids": review_ids,
+        "review_id_to_idx": review_id_to_idx,
         "corpus_size": len(documents),
     }
 

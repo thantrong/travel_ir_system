@@ -77,12 +77,23 @@ def build_vector_index(
             parts.append(f"Hotel: {r['hotel_name']}")
         if r["location"]:
             parts.append(f"Location: {r['location']}")
-            
+
+        category_tags = list(r.get("category_tags", []) or [])
+        descriptor_tags = list(r.get("descriptor_tags", []) or [])
+        hotel_type_tags = list(r.get("hotel_type_tags", []) or [])
+
+        if category_tags:
+            parts.append("Category tags: " + ", ".join(category_tags))
+        if descriptor_tags:
+            parts.append("Descriptor tags: " + ", ".join(descriptor_tags))
+        if hotel_type_tags:
+            parts.append("Hotel type tags: " + ", ".join(hotel_type_tags))
+
         parts.append(f"Review: {r['clean_text']}")
-        
+
         full_text = ". ".join(parts)
         texts.append(full_text)
-        
+
         documents.append({
             "review_id": r["review_id"],
             "source_hotel_id": r["source_hotel_id"],
@@ -90,16 +101,24 @@ def build_vector_index(
             "location": r["location"],
             "review_text": r["review_text"],
             "review_rating": r["review_rating"],
-            "source": r["source"]
+            "source": r["source"],
+            "category_tags": category_tags,
+            "descriptor_tags": descriptor_tags,
+            "hotel_type_tags": hotel_type_tags,
         })
 
     model = SentenceTransformer(model_name)
     print(f"Đang chạy Sentence-BERT ({model_name}) cho {len(texts)} review documents...")
     embeddings = model.encode(texts, batch_size=64, show_progress_bar=len(texts) > 50)
 
+    review_ids = [doc.get("review_id", "") for doc in documents]
+    review_id_to_idx = {rid: idx for idx, rid in enumerate(review_ids) if rid}
+
     return {
         "embeddings": np.array(embeddings, dtype=np.float32),
         "documents": documents,
+        "review_ids": review_ids,
+        "review_id_to_idx": review_id_to_idx,
         "model_name": model_name,
         "corpus_size": len(documents),
     }
