@@ -1,152 +1,52 @@
 [
-  {
-    "query": "khách sạn giá rẻ ở đà lạt"
-  },
-  {
-    "query": "homestay bình dân tại sapa"
-  },
-  {
-    "query": "resort 5 sao sang trọng ở phú quốc"
-  },
-  {
-    "query": "chỗ ở tiết kiệm gần trung tâm hà nội"
-  },
-  {
-    "query": "khách sạn cao cấp view đẹp nha trang"
-  },
-  {
-    "query": "phòng dorm cho sinh viên ở đà nẵng"
-  },
-  {
-    "query": "nhà nghỉ giá mềm ở vũng tàu"
-  },
-  {
-    "query": "khách sạn 4 sao giá tốt ở cần thơ"
-  },
-  {
-    "query": "resort xa hoa ở hội an"
-  },
-  {
-    "query": "khách sạn 3 sao sạch sẽ giá rẻ ở huế"
-  },
-  {
-    "query": "khách sạn có hồ bơi ngoài trời ở đà nẵng"
-  },
-  {
-    "query": "resort có bãi biển riêng tại nha trang"
-  },
-  {
-    "query": "homestay có bếp nấu ăn ở đà lạt"
-  },
-  {
-    "query": "khách sạn có bồn tắm massage ở hà nội"
-  },
-  {
-    "query": "chỗ nghỉ có chỗ đậu xe ô tô miễn phí ở vũng tàu"
-  },
-  {
-    "query": "khách sạn có phòng gym và spa ở phú quốc"
-  },
-  {
-    "query": "khách sạn cho phép mang theo thú cưng ở đà lạt"
-  },
-  {
-    "query": "nhà nghỉ có wifi mạnh ở sài gòn"
-  },
-  {
-    "query": "resort có sân golf ở đà nẵng"
-  },
-  {
-    "query": "khách sạn có ăn sáng buffet ở hạ long"
-  },
-  {
-    "query": "khách sạn view biển trực diện phú quốc"
-  },
-  {
-    "query": "homestay view đồi núi săn mây sapa"
-  },
-  {
-    "query": "khách sạn gần chợ đêm đà lạt"
-  },
-  {
-    "query": "khách sạn ngay trung tâm quận 1 hồ chí minh"
-  },
-  {
-    "query": "resort nằm ven sông ở hội an"
-  },
-  {
-    "query": "khách sạn gần sân bay tân sơn nhất"
-  },
-  {
-    "query": "chỗ nghỉ yên tĩnh xa trung tâm đà lạt"
-  },
-  {
-    "query": "nhà nghỉ gần bãi sau vũng tàu"
-  },
-  {
-    "query": "khách sạn view hồ xuân hương đà lạt"
-  },
-  {
-    "query": "homestay trong hẻm yên tĩnh ở hà nội"
-  },
-  {
-    "query": "resort thích hợp cho gia đình có trẻ em ở phú quốc"
-  },
-  {
-    "query": "homestay lãng mạn cho cặp đôi ở đà lạt"
-  },
-  {
-    "query": "khách sạn rộng rãi cho nhóm bạn ở vũng tàu"
-  },
-  {
-    "query": "chỗ nghỉ lý tưởng cho tuần trăng mật ở nha trang"
-  },
-  {
-    "query": "khách sạn yên tĩnh cho người lớn tuổi ở huế"
-  },
-  {
-    "query": "resort có khu vui chơi trẻ em ở đà nẵng"
-  },
-  {
-    "query": "homestay phù hợp đi trốn cuối tuần gần sài gòn"
-  },
-  {
-    "query": "khách sạn cho người đi công tác ở hà nội"
-  },
-  {
-    "query": "chỗ ở an toàn cho nữ du lịch một mình ở hội an"
-  },
-  {
-    "query": "khách sạn không gian thân thiện với môi trường ở phú quốc"
-  },
-  {
-    "query": "tôi muốn tìm một khách sạn 4 sao gần biển có hồ bơi vô cực ở đà nẵng"
-  },
-  {
-    "query": "cần tìm homestay gỗ trên đồi có view ngắm bình minh ở đà lạt giá khoảng 500k"
-  },
-  {
-    "query": "resort nào ở nha trang có phục vụ ăn uống tại phòng và bãi biển riêng tư"
-  },
-  {
-    "query": "khách sạn ở trung tâm hà nội đi bộ ra hồ gươm được và có ăn sáng"
-  },
-  {
-    "query": "chỗ nghỉ phong cách vintage yên tĩnh để đọc sách ở huế"
-  },
-  {
-    "query": "cần tìm nhà nghỉ sạch sẽ an ninh tốt gần ga sài gòn"
-  },
-  {
-    "query": "khách sạn đẹp để sống ảo có nhiều góc chụp hình ở sapa"
-  },
-  {
-    "query": "resort sinh thái nằm giữa rừng rậm ở phú quốc"
-  },
-  {
-    "query": "khách sạn có phòng thiết kế hiện đại sang trọng ở đà nẵng"
-  },
-  {
-    "query": "tìm khách sạn cho đại gia đình 10 người có bếp nướng bbq ở vũng tàu"
-  }
+  {"query": "tìm chỗ ở tiết kiệm để ở vài đêm tại đà lạt"},
+  {"query": "mình cần một homestay nhẹ tiền ở sapa"},
+  {"query": "muốn ở một resort thật sang ở phú quốc"},
+  {"query": "có chỗ nào gần trung tâm hà nội mà giá không quá cao không"},
+  {"query": "cần một khách sạn cao cấp có view đẹp ở nha trang"},
+  {"query": "tìm phòng dorm phù hợp cho sinh viên ở đà nẵng"},
+  {"query": "cho mình một nhà nghỉ giá mềm ở vũng tàu"},
+  {"query": "có khách sạn 4 sao nào giá ổn ở cần thơ không"},
+  {"query": "muốn đặt một resort thật đẳng cấp ở hội an"},
+  {"query": "tìm khách sạn 3 sao sạch sẽ mà rẻ ở huế"},
+  {"query": "có khách sạn nào ở đà nẵng có hồ bơi ngoài trời không"},
+  {"query": "muốn tìm resort có bãi biển riêng ở nha trang"},
+  {"query": "tôi cần homestay có bếp để tự nấu ăn ở đà lạt"},
+  {"query": "tìm khách sạn ở hà nội có bồn tắm massage"},
+  {"query": "chỗ nghỉ nào ở vũng tàu có chỗ đậu ô tô miễn phí"},
+  {"query": "tôi muốn một khách sạn ở phú quốc có gym và spa"},
+  {"query": "có khách sạn nào ở đà lạt cho mang thú cưng theo không"},
+  {"query": "tìm một nhà nghỉ wifi mạnh ở sài gòn"},
+  {"query": "muốn ở resort có sân golf tại đà nẵng"},
+  {"query": "có khách sạn nào ở hạ long có buffet sáng không"},
+  {"query": "tìm chỗ ở nhìn thẳng ra biển ở phú quốc"},
+  {"query": "mình muốn homestay trên đồi ở sapa để săn mây"},
+  {"query": "cần khách sạn gần chợ đêm đà lạt"},
+  {"query": "tìm khách sạn ngay trung tâm quận 1 ở hồ chí minh"},
+  {"query": "muốn ở resort ven sông tại hội an"},
+  {"query": "tìm khách sạn gần sân bay tân sơn nhất"},
+  {"query": "mình thích chỗ nghỉ yên tĩnh, xa trung tâm đà lạt"},
+  {"query": "có nhà nghỉ nào gần bãi sau vũng tàu không"},
+  {"query": "tìm khách sạn có view hồ xuân hương ở đà lạt"},
+  {"query": "muốn một homestay trong hẻm nhưng yên tĩnh ở hà nội"},
+  {"query": "cần resort phù hợp cho gia đình có trẻ nhỏ ở phú quốc"},
+  {"query": "tìm homestay lãng mạn cho hai người ở đà lạt"},
+  {"query": "có khách sạn nào rộng rãi cho nhóm bạn ở vũng tàu không"},
+  {"query": "mình cần chỗ nghỉ phù hợp cho tuần trăng mật ở nha trang"},
+  {"query": "tìm khách sạn yên tĩnh cho người lớn tuổi ở huế"},
+  {"query": "có resort nào có khu vui chơi cho trẻ em ở đà nẵng"},
+  {"query": "muốn tìm homestay gần sài gòn để đi trốn cuối tuần"},
+  {"query": "cần khách sạn cho chuyến công tác ở hà nội"},
+  {"query": "tôi đang đi một mình, cần chỗ ở an toàn ở hội an"},
+  {"query": "tìm khách sạn thân thiện với môi trường ở phú quốc"},
+  {"query": "mình muốn khách sạn 4 sao sát biển có hồ bơi vô cực ở đà nẵng"},
+  {"query": "cần homestay gỗ trên đồi, ngắm bình minh ở đà lạt, khoảng 500k"},
+  {"query": "resort ở nha trang có ăn tại phòng và bãi biển riêng tư không"},
+  {"query": "tìm khách sạn ở trung tâm hà nội, đi bộ ra hồ gươm được, lại có ăn sáng"},
+  {"query": "mình cần một chỗ nghỉ kiểu vintage, yên tĩnh để đọc sách ở huế"},
+  {"query": "cần nhà nghỉ sạch sẽ, an ninh tốt, gần ga sài gòn"},
+  {"query": "tìm khách sạn đẹp, nhiều góc chụp hình ở sapa"},
+  {"query": "muốn ở resort sinh thái giữa rừng ở phú quốc"},
+  {"query": "cần khách sạn thiết kế hiện đại và sang trọng ở đà nẵng"},
+  {"query": "tìm chỗ cho đại gia đình 10 người, có bếp nướng bbq ở vũng tàu"}
 ]
