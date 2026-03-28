@@ -14,11 +14,18 @@ def load_place_metadata(records: list[dict]) -> int:
         if not source_hotel_id:
             continue
 
-        place_types = row.get("place_type") or row.get("hotel_types") or ["hotel"]
+        place_types = row.get("place_types") or row.get("types") or ["hotel"]
         if isinstance(place_types, str):
             place_types = [place_types]
         if not isinstance(place_types, list):
             place_types = ["hotel"]
+        normalized_types = []
+        for t in place_types:
+            vt = str(t).strip().lower()
+            if vt and vt not in normalized_types:
+                normalized_types.append(vt)
+        if not normalized_types:
+            normalized_types = ["hotel"]
 
         place_ops.append(
             UpdateOne(
@@ -26,14 +33,9 @@ def load_place_metadata(records: list[dict]) -> int:
                 {
                     "$set": {
                         "_id": source_hotel_id,
-                        "name": row.get("hotel_name", row.get("place_name", "")),
-                        "type": place_types[0] if place_types else "hotel",
-                        "types": place_types,
-                        "type_source": row.get("place_type_source", "fallback"),
+                        "types": normalized_types,
                         "location": row.get("location", ""),
                         "rating": row.get("rating", ""),
-                        "source": str(row.get("source", "")).strip().lower(),
-                        "source_hotel_id": source_hotel_id,
                     }
                 },
                 upsert=True,
@@ -63,6 +65,9 @@ def load_reviews(records: list[dict]) -> tuple[int, int]:
         review_doc.pop("place_name", None)
         review_doc.pop("location", None)
         review_doc.pop("rating", None)
+        review_doc.pop("place_types", None)
+        review_doc.pop("place_type_source", None)
+        review_doc.pop("types", None)
 
         review_ops.append(
             UpdateOne(

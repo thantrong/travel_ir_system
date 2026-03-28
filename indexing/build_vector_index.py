@@ -24,11 +24,12 @@ def fetch_reviews_for_indexing() -> list[dict]:
 
     place_map = {}
     for doc in places_col.find():
-        sid = str(doc.get("source_hotel_id", "")).strip()
+        sid = str(doc.get("_id", doc.get("source_hotel_id", ""))).strip()
         if sid:
             place_map[sid] = {
-                "hotel_name": doc.get("name", ""),
+                "types": list(doc.get("types", []) or []),
                 "location": doc.get("location", ""),
+                "rating": doc.get("rating", ""),
             }
 
     docs = []
@@ -46,8 +47,9 @@ def fetch_reviews_for_indexing() -> list[dict]:
             "_id": str(row.get("_id", row.get("review_id", ""))).strip(),
             "source": row.get("source", ""),
             "source_hotel_id": sid,
-            "hotel_name": place_map[sid]["hotel_name"],
+            "types": list(place_map[sid].get("types", []) or []),
             "location": place_map[sid]["location"],
+            "rating": place_map[sid].get("rating", row.get("review_rating", "")),
             "review_rating": row.get("review_rating", ""),
             "review_text": row.get("review_text", ""),
             "clean_text": rtxt,
@@ -74,8 +76,8 @@ def build_vector_index(
     
     for r in reviews:
         parts = []
-        if r["hotel_name"]:
-            parts.append(f"Hotel: {r['hotel_name']}")
+        if r.get("types"):
+            parts.append("Types: " + ", ".join(list(r.get("types", []) or [])))
         if r["location"]:
             parts.append(f"Location: {r['location']}")
 

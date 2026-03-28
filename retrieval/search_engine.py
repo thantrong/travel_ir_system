@@ -417,7 +417,7 @@ def search_hybrid(
         results.append({
             "source": first_doc.get("source", ""),
             "source_hotel_id": hid,
-            "hotel_name": first_doc.get("hotel_name", ""),
+            "hotel_name": first_doc.get("hotel_name", first_doc.get("source_hotel_id", "")),
             "location": first_doc.get("location", ""),
             "rating": first_doc.get("rating", ""),
             "review_count": len(r_list),

@@ -13,24 +13,32 @@ def load_reviews(records: list[dict]) -> tuple[int, int]:
     review_ops = []
 
     for row in records:
-        source = str(row.get("source", "")).strip().lower()
         source_hotel_id = str(row.get("source_hotel_id", "")).strip()
         review_id = str(row.get("review_id", "")).strip()
 
-        if source and source_hotel_id:
-            place_pk = f"{source}_{source_hotel_id}"
+        if source_hotel_id:
+            place_types = row.get("place_types") or row.get("types") or ["hotel"]
+            if isinstance(place_types, str):
+                place_types = [place_types]
+            if not isinstance(place_types, list):
+                place_types = ["hotel"]
+            normalized_types = []
+            for t in place_types:
+                vt = str(t).strip().lower()
+                if vt and vt not in normalized_types:
+                    normalized_types.append(vt)
+            if not normalized_types:
+                normalized_types = ["hotel"]
+
             place_ops.append(
                 UpdateOne(
-                    {"_id": place_pk},
+                    {"_id": source_hotel_id},
                     {
                         "$set": {
-                            "_id": place_pk,
-                            "name": row.get("hotel_name", row.get("place_name", "")),
-                            "type": "hotel",
+                            "_id": source_hotel_id,
+                            "types": normalized_types,
                             "location": row.get("location", ""),
                             "rating": row.get("rating", ""),
-                            "source": source,
-                            "source_hotel_id": source_hotel_id,
                         }
                     },
                     upsert=True,
@@ -49,6 +57,9 @@ def load_reviews(records: list[dict]) -> tuple[int, int]:
         review_doc.pop("place_name", None)
         review_doc.pop("location", None)
         review_doc.pop("rating", None)
+        review_doc.pop("place_types", None)
+        review_doc.pop("place_type_source", None)
+        review_doc.pop("types", None)
 
         review_ops.append(
             UpdateOne(

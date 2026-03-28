@@ -45,11 +45,12 @@ def fetch_reviews_for_indexing() -> list[dict]:
 
     place_map = {}
     for doc in places_col.find():
-        sid = doc.get("source_hotel_id", "")
+        sid = doc.get("_id", doc.get("source_hotel_id", ""))
         if sid:
-            place_map[sid] = {
-                "hotel_name": doc.get("name", ""),
+            place_map[str(sid)] = {
+                "types": list(doc.get("types", []) or []),
                 "location": doc.get("location", ""),
+                "rating": doc.get("rating", ""),
             }
 
     docs = []
@@ -71,7 +72,7 @@ def fetch_reviews_for_indexing() -> list[dict]:
             "review_id": str(row.get("_id", row.get("review_id", ""))).strip(),
             "source": row.get("source", ""),
             "source_hotel_id": sid,
-            "hotel_name": place_map[sid]["hotel_name"],
+            "types": list(place_map[sid].get("types", []) or []),
             "location": place_map[sid]["location"],
             "rating": place_map[sid].get("rating", row.get("review_rating", "")),
             "review_rating": row.get("review_rating", ""),
@@ -91,9 +92,8 @@ def build_index_payload(reviews: list[dict]) -> dict:
     for r in reviews:
         doc_tokens = []
         
-        # PHẦN 3: Field Weighting (hotel_name: 3, location: 2, text: 1)
-        hname_tokens = _tokenize_text(r["hotel_name"])
-        doc_tokens.extend(hname_tokens * 3)
+        # PHẦN 3: Field Weighting (types: 2, location: 2, text: 1)
+        _extend_tags(doc_tokens, r.get("types", []), weight=2)
         
         loc_tokens = _tokenize_text(r["location"])
         doc_tokens.extend(loc_tokens * 2)
@@ -111,7 +111,7 @@ def build_index_payload(reviews: list[dict]) -> dict:
             "_id": r["review_id"],
             "review_id": r["review_id"],
             "source_hotel_id": r["source_hotel_id"],
-            "hotel_name": r["hotel_name"],
+            "types": list(r.get("types", []) or []),
             "location": r["location"],
             "review_text": r["review_text"],
             "review_rating": r["review_rating"],
