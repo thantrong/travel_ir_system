@@ -12,7 +12,7 @@ from database.mongo_connection import get_database
 from preprocessing.review_tagger import tag_review
 
 
-FIELDS_TO_UPDATE = ["category_tags", "descriptor_tags", "hotel_type_tags"]
+FIELDS_TO_UPDATE = ["category_tags", "descriptor_tags"]
 
 
 def _build_tag_doc(review: dict) -> dict:
@@ -24,7 +24,6 @@ def _build_tag_doc(review: dict) -> dict:
     return {
         "category_tags": res.category_tags,
         "descriptor_tags": res.descriptor_tags,
-        "hotel_type_tags": res.hotel_type_tags,
     }
 
 
@@ -36,7 +35,6 @@ def backfill(limit: int = 0, dry_run: bool = False) -> tuple[int, int]:
         "$or": [
             {"category_tags": {"$exists": False}},
             {"descriptor_tags": {"$exists": False}},
-            {"hotel_type_tags": {"$exists": False}},
         ]
     }
     cursor = reviews_col.find(query)

@@ -43,7 +43,6 @@ def build_samples(payload: dict, limit: int = 5) -> list[dict]:
                 "tokens": doc.get("tokens", []),
                 "category_tags": doc.get("category_tags", []),
                 "descriptor_tags": doc.get("descriptor_tags", []),
-                "hotel_type_tags": doc.get("hotel_type_tags", []),
             }
         )
     return samples

@@ -53,7 +53,6 @@ def fetch_reviews_for_indexing() -> list[dict]:
             "clean_text": rtxt,
             "category_tags": list(row.get("category_tags", []) or []),
             "descriptor_tags": list(row.get("descriptor_tags", []) or []),
-            "hotel_type_tags": list(row.get("hotel_type_tags", []) or []),
         })
 
     return docs
@@ -82,14 +81,10 @@ def build_vector_index(
 
         category_tags = list(r.get("category_tags", []) or [])
         descriptor_tags = list(r.get("descriptor_tags", []) or [])
-        hotel_type_tags = list(r.get("hotel_type_tags", []) or [])
-
         if category_tags:
             parts.append("Category tags: " + ", ".join(category_tags))
         if descriptor_tags:
             parts.append("Descriptor tags: " + ", ".join(descriptor_tags))
-        if hotel_type_tags:
-            parts.append("Hotel type tags: " + ", ".join(hotel_type_tags))
 
         parts.append(f"Review: {r['clean_text']}")
 
@@ -106,7 +101,6 @@ def build_vector_index(
             "source": r["source"],
             "category_tags": category_tags,
             "descriptor_tags": descriptor_tags,
-            "hotel_type_tags": hotel_type_tags,
         })
 
     model = SentenceTransformer(model_name)

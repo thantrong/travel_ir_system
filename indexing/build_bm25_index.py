@@ -79,7 +79,6 @@ def fetch_reviews_for_indexing() -> list[dict]:
             "tokens": valid_tokens,
             "category_tags": list(row.get("category_tags", []) or []),
             "descriptor_tags": list(row.get("descriptor_tags", []) or []),
-            "hotel_type_tags": list(row.get("hotel_type_tags", []) or []),
         })
         
     return docs
@@ -104,7 +103,6 @@ def build_index_payload(reviews: list[dict]) -> dict:
         # Tags mới được nhúng trực tiếp vào corpus để tăng khả năng khớp intent.
         _extend_tags(doc_tokens, r.get("category_tags", []), weight=2)
         _extend_tags(doc_tokens, r.get("descriptor_tags", []), weight=2)
-        _extend_tags(doc_tokens, r.get("hotel_type_tags", []), weight=1)
 
         tokenized_corpus.append(doc_tokens)
         
@@ -120,7 +118,6 @@ def build_index_payload(reviews: list[dict]) -> dict:
             "source": r["source"],
             "category_tags": list(r.get("category_tags", []) or []),
             "descriptor_tags": list(r.get("descriptor_tags", []) or []),
-            "hotel_type_tags": list(r.get("hotel_type_tags", []) or []),
         })
 
     bm25 = BM25Okapi(tokenized_corpus) if tokenized_corpus else None

@@ -19,7 +19,6 @@ RULE_FILE = PROJECT_ROOT / "config" / "review_tag_rules.yaml"
 class TagResult:
     category_tags: list[str] = field(default_factory=list)
     descriptor_tags: list[str] = field(default_factory=list)
-    hotel_type_tags: list[str] = field(default_factory=list)
     matched_phrases: dict[str, list[str]] = field(default_factory=dict)
 
 
@@ -93,20 +92,15 @@ def tag_review(review_text: str, hotel_name: str = "", location: str = "") -> Ta
 
     category_rules = payload.get("category_tags", {})
     descriptor_rules = payload.get("descriptor_tags", {})
-    hotel_type_rules = payload.get("hotel_type_tags", {})
-
     category_tags, category_matches = _apply_tag_group(text, category_rules)
     descriptor_tags, descriptor_matches = _apply_tag_group(text, descriptor_rules)
-    hotel_type_tags, hotel_type_matches = _apply_tag_group(text, hotel_type_rules)
 
     return TagResult(
         category_tags=category_tags,
         descriptor_tags=descriptor_tags,
-        hotel_type_tags=hotel_type_tags,
         matched_phrases={
             "category_tags": category_matches,
             "descriptor_tags": descriptor_matches,
-            "hotel_type_tags": hotel_type_matches,
         },
     )
 
@@ -120,6 +114,5 @@ def tag_record(record: dict) -> dict:
     tagged = dict(record)
     tagged["category_tags"] = res.category_tags
     tagged["descriptor_tags"] = res.descriptor_tags
-    tagged["hotel_type_tags"] = res.hotel_type_tags
     tagged["matched_phrases"] = res.matched_phrases
     return tagged
