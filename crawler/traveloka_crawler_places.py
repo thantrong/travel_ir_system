@@ -54,8 +54,8 @@ CITY_TASK_TIMEOUT_SECONDS = max(60, int(cfg.get("city_task_timeout_seconds", 600
 CITIES_FILE = cfg.get("cities_file", "config/cities.yaml")
 PROXY_CFG = cfg.get("proxy", {}) if isinstance(cfg.get("proxy", {}), dict) else {}
 FAST_CRAWL = bool(cfg.get("fast_crawl", False))
-FAST_MIN_DELAY_SECONDS = max(0.0, float(cfg.get("fast_min_delay_seconds", 0.05)))
-FAST_MAX_DELAY_SECONDS = max(FAST_MIN_DELAY_SECONDS, float(cfg.get("fast_max_delay_seconds", 0.25)))
+FAST_MIN_DELAY_SECONDS = max(0.0, float(cfg.get("fast_min_delay_seconds", 1)))
+FAST_MAX_DELAY_SECONDS = max(FAST_MIN_DELAY_SECONDS, float(cfg.get("fast_max_delay_seconds", 2.5)))
 SKIP_IDLE_SECONDS = max(0.0, float(cfg.get("skip_idle_seconds", 20.0)))
 CITIES = []
 
@@ -243,7 +243,7 @@ async def human_scroll(page, times=3):
     for _ in range(times):
         await page.mouse.wheel(0, random.randint(300, 700))
         if FAST_CRAWL:
-            await asyncio.sleep(random.uniform(0.05, 0.15))
+            await asyncio.sleep(random.uniform(FAST_MIN_DELAY_SECONDS, FAST_MAX_DELAY_SECONDS))
         else:
             await asyncio.sleep(random.uniform(0.5, 1.2))
 
@@ -1538,6 +1538,9 @@ def canonicalize_and_deduplicate_reviews(reviews):
                 normalized["location"] = canonical_location[source_hotel_id]
             if source_hotel_id in canonical_hotel_name:
                 normalized["hotel_name"] = canonical_hotel_name[source_hotel_id]
+        normalized.pop("hotel_name", None)
+        normalized.pop("location", None)
+        normalized.pop("rating", None)
         dedup_map[review_id] = normalized
     return list(dedup_map.values())
 

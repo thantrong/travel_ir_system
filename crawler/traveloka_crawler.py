@@ -1651,6 +1651,9 @@ def canonicalize_and_deduplicate_reviews(reviews):
                 normalized["location"] = canonical_location[source_hotel_id]
             if source_hotel_id in canonical_hotel_name:
                 normalized["hotel_name"] = canonical_hotel_name[source_hotel_id]
+        normalized.pop("hotel_name", None)
+        normalized.pop("location", None)
+        normalized.pop("rating", None)
         dedup_map[review_id] = normalized
     return list(dedup_map.values())
 
