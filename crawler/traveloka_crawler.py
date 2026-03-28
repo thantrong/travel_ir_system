@@ -510,6 +510,114 @@ def normalize_location_to_city(location_raw, city_name):
         return city
     return normalize_text_spaces(location_raw or "")
 
+
+def extract_page_tag_from_soup(soup):
+    """Lấy tag từ JSON-LD @type trước, rồi fallback title/badge ngắn."""
+    def _map_type(raw):
+        value = normalize_text_spaces(str(raw or "")).lower()
+        if not value:
+            return ""
+        value = value.replace("schema.org/", "").replace("place", "")
+        if value == "hotel":
+            return "hotel"
+        if value == "homestay":
+            return "homestay"
+        if value == "resort":
+            return "resort"
+        if value == "villa":
+            return "villa"
+        if value == "hostel":
+            return "hostel"
+        if value == "guesthouse":
+            return "guesthouse"
+        if value in {"boutiquehotel", "boutique_hotel", "boutique hotel"}:
+            return "boutique_hotel"
+        if value in {"aparthotel", "apartmenthotel", "apartment hotel"}:
+            return "aparthotel"
+        return ""
+
+    # 1) JSON-LD @type
+    for script in soup.select("script[type='application/ld+json']"):
+        raw = script.string or script.get_text() or ""
+        raw = raw.strip()
+        if not raw:
+            continue
+        try:
+            payload = json.loads(raw)
+        except Exception:
+            continue
+
+        nodes = payload if isinstance(payload, list) else [payload]
+        for node in nodes:
+            if isinstance(node, dict):
+                tag = _map_type(node.get("@type"))
+                if tag:
+                    return [tag], "jsonld"
+                if isinstance(node.get("@graph"), list):
+                    for sub in node.get("@graph", []):
+                        if isinstance(sub, dict):
+                            tag = _map_type(sub.get("@type"))
+                            if tag:
+                                return [tag], "jsonld"
+
+    # 2) Fallback title / short visible text
+    title = normalize_text_spaces(soup.title.get_text(" ", strip=True) if soup.title else "")
+    short_text = normalize_text_spaces(" ".join(
+        (el.get_text(" ", strip=True) for el in soup.select("h1, h2, [data-testid*='badge'], [data-testid*='tag']"))
+    ))
+    haystack = f"{title} {short_text}".lower()
+
+    if "homestay" in haystack or "nhà nghỉ homestay" in haystack:
+        return ["homestay"], "fallback"
+    if "resort" in haystack or "khu nghỉ dưỡng" in haystack:
+        return ["resort"], "fallback"
+    if "villa" in haystack or "biệt thự" in haystack:
+        return ["villa"], "fallback"
+    if "hostel" in haystack:
+        return ["hostel"], "fallback"
+    if "guesthouse" in haystack or "nhà khách" in haystack:
+        return ["guesthouse"], "fallback"
+    if "boutique hotel" in haystack or "boutique" in haystack:
+        return ["boutique_hotel"], "fallback"
+    if "aparthotel" in haystack or "apartment hotel" in haystack:
+        return ["aparthotel"], "fallback"
+    return ["hotel"], "fallback"
+
+
+def extract_name_type_tags(hotel_name):
+    """Chỉ bổ sung type nếu tên có nhắc rõ loại hình khác."""
+    name = normalize_text_spaces(hotel_name or "").lower()
+    tags = []
+    if "homestay" in name:
+        tags.append("homestay")
+    if "resort" in name:
+        tags.append("resort")
+    if "villa" in name:
+        tags.append("villa")
+    if "hostel" in name:
+        tags.append("hostel")
+    if "guesthouse" in name:
+        tags.append("guesthouse")
+    if "boutique hotel" in name or "boutique" in name:
+        tags.append("boutique_hotel")
+    if "aparthotel" in name or "apartment hotel" in name:
+        tags.append("aparthotel")
+    return tags
+
+
+def extract_place_metadata_from_soup(soup, hotel_name=""):
+    """Lấy tag từ JSON-LD/@type trước; chỉ cộng thêm tag từ tên nếu trang không đã có tag rõ."""
+    base_types, source = extract_page_tag_from_soup(soup)
+    # Chỉ bổ sung từ tên nếu base là hotel mặc định hoặc không rõ.
+    if base_types == ["hotel"]:
+        name_types = extract_name_type_tags(hotel_name)
+        final_types = []
+        for tag in base_types + name_types:
+            if tag not in final_types:
+                final_types.append(tag)
+        return final_types or ["hotel"], source
+    return base_types, source
+
 def build_review_id(source_hotel_id, source_review_id, review_text, review_rating, review_timestamp):
     """Sinh review_id chuẩn: traveloka_<source_hotel_id>_<source_review_id>."""
     if source_review_id:
@@ -1025,6 +1133,8 @@ def parse_reviews_from_api_payload(
     hotel_name,
     location,
     overall_rating,
+    place_types,
+    place_type_source,
     seen_review_ids,
 ):
     """Parse response JSON từ getReviews API thành schema crawler."""
@@ -1082,6 +1192,8 @@ def parse_reviews_from_api_payload(
             "source_hotel_id": source_hotel_id,
             "hotel_name": hotel_name,
             "location": location,
+            "place_types": place_types,
+            "place_type_source": place_type_source,
             "rating": overall_rating,
             "review_text": review_text,
             "review_date": review_date,
@@ -1099,6 +1211,8 @@ async def fetch_reviews_via_api(
     hotel_name,
     location,
     overall_rating,
+    place_types,
+    place_type_source,
     seed_response=None,
     seed_headers=None,
     detail_url="",
@@ -1209,6 +1323,8 @@ async def fetch_reviews_via_api(
             hotel_name,
             location,
             overall_rating,
+            place_types,
+            place_type_source,
             seen_review_ids,
         )
         reviews.extend(parsed)
@@ -1255,6 +1371,8 @@ async def fetch_reviews_via_api(
             hotel_name,
             location,
             overall_rating,
+            place_types,
+            place_type_source,
             seen_review_ids,
         )
         reviews.extend(parsed)
@@ -1354,12 +1472,16 @@ async def scrape_reviews_from_detail(page, hotel_name, city_name, city_code, det
         except Exception as e:
             logger.warning(f"[Detail] Could not build dynamic UGC headers: {e}")
 
+    place_types, place_type_source = extract_place_metadata_from_soup(soup, hotel_name_extracted)
+
     api_reviews = await fetch_reviews_via_api(
         context,
         source_hotel_id,
         hotel_name_extracted,
         location,
         overall_rating,
+        place_types,
+        place_type_source,
         seed_response=seed_response,
         seed_headers=ugc_seed_headers if ugc_seed_headers else None,
         detail_url=detail_url,
