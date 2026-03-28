@@ -512,27 +512,76 @@ def normalize_location_to_city(location_raw, city_name):
 
 
 def extract_page_tag_from_soup(soup):
-    """Lấy tag mặc định từ page, ưu tiên title/badge ngắn thay vì quét body."""
-    title = normalize_text_spaces(soup.title.get_text(" ", strip=True) if soup.title else "")
-    text = normalize_text_spaces(soup.get_text(" ", strip=True))
-    haystack = f"{title} {text}".lower()
+    """Lấy tag từ JSON-LD @type trước, rồi mới fallback title/badge ngắn."""
+    def _map_type(raw):
+        value = normalize_text_spaces(str(raw or "")).lower()
+        if not value:
+            return ""
+        value = value.replace("schema.org/", "").replace("place", "")
+        if value == "hotel":
+            return "hotel"
+        if value == "homestay":
+            return "homestay"
+        if value == "resort":
+            return "resort"
+        if value == "villa":
+            return "villa"
+        if value == "hostel":
+            return "hostel"
+        if value == "guesthouse":
+            return "guesthouse"
+        if value in {"boutiquehotel", "boutique_hotel", "boutique hotel"}:
+            return "boutique_hotel"
+        if value in {"aparthotel", "apartmenthotel", "apartment hotel"}:
+            return "aparthotel"
+        return ""
 
-    # Ưu tiên tag rõ ràng, mặc định là hotel nếu không thấy gì hơn.
+    # 1) JSON-LD @type
+    for script in soup.select("script[type='application/ld+json']"):
+        raw = script.string or script.get_text() or ""
+        raw = raw.strip()
+        if not raw:
+            continue
+        try:
+            payload = json.loads(raw)
+        except Exception:
+            continue
+
+        nodes = payload if isinstance(payload, list) else [payload]
+        for node in nodes:
+            if isinstance(node, dict):
+                tag = _map_type(node.get("@type"))
+                if tag:
+                    return [tag], "jsonld"
+                if isinstance(node.get("@graph"), list):
+                    for sub in node.get("@graph", []):
+                        if isinstance(sub, dict):
+                            tag = _map_type(sub.get("@type"))
+                            if tag:
+                                return [tag], "jsonld"
+
+    # 2) Fallback title / short visible text
+    title = normalize_text_spaces(soup.title.get_text(" ", strip=True) if soup.title else "")
+    short_text = normalize_text_spaces(" ".join(
+        (el.get_text(" ", strip=True) for el in soup.select("h1, h2, [data-testid*='badge'], [data-testid*='tag']"))
+    ))
+    haystack = f"{title} {short_text}".lower()
+
     if "homestay" in haystack or "nhà nghỉ homestay" in haystack:
-        return ["homestay"], "official"
+        return ["homestay"], "fallback"
     if "resort" in haystack or "khu nghỉ dưỡng" in haystack:
-        return ["resort"], "official"
+        return ["resort"], "fallback"
     if "villa" in haystack or "biệt thự" in haystack:
-        return ["villa"], "official"
+        return ["villa"], "fallback"
     if "hostel" in haystack:
-        return ["hostel"], "official"
+        return ["hostel"], "fallback"
     if "guesthouse" in haystack or "nhà khách" in haystack:
-        return ["guesthouse"], "official"
+        return ["guesthouse"], "fallback"
     if "boutique hotel" in haystack or "boutique" in haystack:
-        return ["boutique_hotel"], "official"
+        return ["boutique_hotel"], "fallback"
     if "aparthotel" in haystack or "apartment hotel" in haystack:
-        return ["aparthotel"], "official"
-    return ["hotel"], "official"
+        return ["aparthotel"], "fallback"
+    return ["hotel"], "fallback"
 
 
 def extract_name_type_tags(hotel_name):
@@ -557,16 +606,17 @@ def extract_name_type_tags(hotel_name):
 
 
 def extract_place_metadata_from_soup(soup, hotel_name=""):
-    """Lấy tag mặc định từ page rồi bổ sung tag từ tên nếu có."""
+    """Lấy tag từ JSON-LD/@type trước; chỉ cộng thêm tag từ tên nếu trang không đã có tag rõ."""
     base_types, source = extract_page_tag_from_soup(soup)
-    name_types = extract_name_type_tags(hotel_name)
-    final_types = []
-    for tag in base_types + name_types:
-        if tag not in final_types:
-            final_types.append(tag)
-    if not final_types:
-        final_types = ["hotel"]
-    return final_types, source
+    # Chỉ bổ sung từ tên nếu base là hotel mặc định hoặc không rõ.
+    if base_types == ["hotel"]:
+        name_types = extract_name_type_tags(hotel_name)
+        final_types = []
+        for tag in base_types + name_types:
+            if tag not in final_types:
+                final_types.append(tag)
+        return final_types or ["hotel"], source
+    return base_types, source
 
 def build_review_id(source_hotel_id, source_review_id, review_text, review_rating, review_timestamp):
     """Sinh review_id chuẩn: traveloka_<source_hotel_id>_<source_review_id>."""
