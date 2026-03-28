@@ -157,6 +157,34 @@ def _infer_doc_categories(doc: dict) -> set[str]:
     return inferred
 
 
+def _infer_doc_accommodation_types(doc: dict) -> set[str]:
+    """Infer loại hình lưu trú từ field đã crawl/gán nhãn, fallback theo tên."""
+    candidate_fields = [
+        doc.get("place_types"),
+        doc.get("types"),
+        doc.get("accommodation_types"),
+        doc.get("hotel_types"),
+    ]
+    out: set[str] = set()
+    for value in candidate_fields:
+        if isinstance(value, list):
+            out.update(str(v).strip().lower() for v in value if str(v).strip())
+        elif isinstance(value, str) and value.strip():
+            out.add(value.strip().lower())
+
+    if out:
+        return out
+
+    text = " ".join([
+        str(doc.get("hotel_name", "")),
+        str(doc.get("review_text", "")),
+    ]).lower()
+    for t in ("resort", "homestay", "villa", "hostel", "guesthouse", "aparthotel", "boutique", "hotel"):
+        if t in text:
+            out.add(t if t != "boutique" else "boutique_hotel")
+    return out
+
+
 def _build_candidate_mask(qu: QueryUnderstandingResult, docs: list[dict]) -> np.ndarray:
     if not docs:
         return np.array([], dtype=bool)
@@ -363,12 +391,15 @@ def search_hybrid(
        
         # PHẦN 9: Phân loại hình lưu trú (Accommodation Type Boosting)
         raw_q_lower = qu.raw_query.lower()
-        hotel_name_lower = str(first_doc.get("hotel_name", "")).lower()
         acc_types = {
             "resort": ["resort", "khu nghỉ dưỡng", "retreat"],
             "homestay": ["homestay", "lodge", "cabin", "nhà dân"],
             "villa": ["villa", "biệt thự"],
-            "hotel": ["hotel", "khách sạn", "boutique"],
+            "hostel": ["hostel"],
+            "guesthouse": ["guesthouse", "nhà khách"],
+            "aparthotel": ["aparthotel", "apartment hotel"],
+            "boutique_hotel": ["boutique", "boutique hotel"],
+            "hotel": ["hotel", "khách sạn"],
         }
         target_type = None
         for atype, keywords in acc_types.items():
@@ -376,7 +407,8 @@ def search_hybrid(
                 target_type = atype
                 break
         if target_type:
-            is_correct_type = any(k in hotel_name_lower for k in acc_types[target_type])
+            doc_types = _infer_doc_accommodation_types(first_doc)
+            is_correct_type = target_type in doc_types
             if is_correct_type:
                 hotel_score *= 1.2
             else:
