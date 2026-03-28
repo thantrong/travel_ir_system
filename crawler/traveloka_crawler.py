@@ -999,10 +999,12 @@ async def crawl_hotels_in_city(context, city, claimed_hotel_ids=None, claimed_ho
                     if SKIP_IDLE_SECONDS > 0:
                         await asyncio.sleep(SKIP_IDLE_SECONDS)
                     return all_reviews
-            tasks = [
-                asyncio.create_task(scrape_hotel_target(idx + 1, selected_targets[idx], sem))
-                for idx in range(len(selected_targets))
-            ]
+            logger.info(f"[Parallel] Preparing to spawn {len(selected_targets)} tasks (semaphore={MAX_CONCURRENT_HOTELS})")
+            tasks = []
+            for idx in range(len(selected_targets)):
+                task = asyncio.create_task(scrape_hotel_target(idx + 1, selected_targets[idx], sem))
+                tasks.append(task)
+                logger.debug(f"[Parallel] Spawned task {idx+1} for {selected_targets[idx].get('hotel_name','')}")
             checkpoint_file = RAW_DIR / "traveloka_checkpoint.jsonl"
             for done in asyncio.as_completed(tasks):
                 result = await done
