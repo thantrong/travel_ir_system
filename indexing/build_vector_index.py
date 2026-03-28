@@ -30,6 +30,7 @@ def fetch_reviews_for_indexing() -> list[dict]:
                 "types": list(doc.get("types", []) or []),
                 "location": doc.get("location", ""),
                 "rating": doc.get("rating", ""),
+                "hotel_name": doc.get("name", doc.get("hotel_name", "")),
             }
 
     docs = []
@@ -47,6 +48,7 @@ def fetch_reviews_for_indexing() -> list[dict]:
             "_id": str(row.get("_id", row.get("review_id", ""))).strip(),
             "source": row.get("source", ""),
             "source_hotel_id": sid,
+            "hotel_name": place_map[sid].get("hotel_name", ""),
             "types": list(place_map[sid].get("types", []) or []),
             "location": place_map[sid]["location"],
             "rating": place_map[sid].get("rating", row.get("review_rating", "")),
