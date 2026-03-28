@@ -511,34 +511,62 @@ def normalize_location_to_city(location_raw, city_name):
     return normalize_text_spaces(location_raw or "")
 
 
-def extract_place_types_from_text(text):
-    text = normalize_text_spaces(text or "").lower()
-    rules = [
-        ("homestay", ["homestay", "nhà nghỉ homestay"]),
-        ("resort", ["resort", "khu nghỉ dưỡng"]),
-        ("villa", ["villa", "biệt thự"]),
-        ("hostel", ["hostel"]),
-        ("guesthouse", ["guesthouse", "nhà khách"]),
-        ("boutique_hotel", ["boutique hotel", "boutique"]),
-        ("aparthotel", ["aparthotel", "apartment hotel"]),
-        ("hotel", ["hotel", "khách sạn"]),
-    ]
-    found = []
-    for label, tokens in rules:
-        if any(tok in text for tok in tokens):
-            found.append(label)
-    return found
+def extract_page_tag_from_soup(soup):
+    """Lấy tag mặc định từ page, ưu tiên title/badge ngắn thay vì quét body."""
+    title = normalize_text_spaces(soup.title.get_text(" ", strip=True) if soup.title else "")
+    text = normalize_text_spaces(soup.get_text(" ", strip=True))
+    haystack = f"{title} {text}".lower()
+
+    # Ưu tiên tag rõ ràng, mặc định là hotel nếu không thấy gì hơn.
+    if "homestay" in haystack or "nhà nghỉ homestay" in haystack:
+        return ["homestay"], "official"
+    if "resort" in haystack or "khu nghỉ dưỡng" in haystack:
+        return ["resort"], "official"
+    if "villa" in haystack or "biệt thự" in haystack:
+        return ["villa"], "official"
+    if "hostel" in haystack:
+        return ["hostel"], "official"
+    if "guesthouse" in haystack or "nhà khách" in haystack:
+        return ["guesthouse"], "official"
+    if "boutique hotel" in haystack or "boutique" in haystack:
+        return ["boutique_hotel"], "official"
+    if "aparthotel" in haystack or "apartment hotel" in haystack:
+        return ["aparthotel"], "official"
+    return ["hotel"], "official"
+
+
+def extract_name_type_tags(hotel_name):
+    """Chỉ bổ sung type nếu tên có nhắc rõ loại hình khác."""
+    name = normalize_text_spaces(hotel_name or "").lower()
+    tags = []
+    if "homestay" in name:
+        tags.append("homestay")
+    if "resort" in name:
+        tags.append("resort")
+    if "villa" in name:
+        tags.append("villa")
+    if "hostel" in name:
+        tags.append("hostel")
+    if "guesthouse" in name:
+        tags.append("guesthouse")
+    if "boutique hotel" in name or "boutique" in name:
+        tags.append("boutique_hotel")
+    if "aparthotel" in name or "apartment hotel" in name:
+        tags.append("aparthotel")
+    return tags
 
 
 def extract_place_metadata_from_soup(soup, hotel_name=""):
-    """Suy ra metadata loại hình từ detail page, fallback theo tên."""
-    title = soup.title.get_text(" ", strip=True) if soup.title else ""
-    body_text = soup.get_text(" ", strip=True)
-    combined = " ".join([title, body_text, hotel_name])
-    types = extract_place_types_from_text(combined)
-    if not types:
-        types = ["hotel"]
-    return types, "official" if types else "fallback"
+    """Lấy tag mặc định từ page rồi bổ sung tag từ tên nếu có."""
+    base_types, source = extract_page_tag_from_soup(soup)
+    name_types = extract_name_type_tags(hotel_name)
+    final_types = []
+    for tag in base_types + name_types:
+        if tag not in final_types:
+            final_types.append(tag)
+    if not final_types:
+        final_types = ["hotel"]
+    return final_types, source
 
 def build_review_id(source_hotel_id, source_review_id, review_text, review_rating, review_timestamp):
     """Sinh review_id chuẩn: traveloka_<source_hotel_id>_<source_review_id>."""
