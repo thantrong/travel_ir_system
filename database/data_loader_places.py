@@ -10,12 +10,10 @@ def load_place_metadata(records: list[dict]) -> int:
     place_ops = []
 
     for row in records:
-        source = str(row.get("source", "")).strip().lower()
         source_hotel_id = str(row.get("source_hotel_id", "")).strip()
-        if not source or not source_hotel_id:
+        if not source_hotel_id:
             continue
 
-        place_pk = f"{source}_{source_hotel_id}"
         place_types = row.get("place_type") or row.get("hotel_types") or ["hotel"]
         if isinstance(place_types, str):
             place_types = [place_types]
@@ -24,17 +22,17 @@ def load_place_metadata(records: list[dict]) -> int:
 
         place_ops.append(
             UpdateOne(
-                {"_id": place_pk},
+                {"_id": source_hotel_id},
                 {
                     "$set": {
-                        "_id": place_pk,
+                        "_id": source_hotel_id,
                         "name": row.get("hotel_name", row.get("place_name", "")),
                         "type": place_types[0] if place_types else "hotel",
                         "types": place_types,
                         "type_source": row.get("place_type_source", "fallback"),
                         "location": row.get("location", ""),
                         "rating": row.get("rating", ""),
-                        "source": source,
+                        "source": str(row.get("source", "")).strip().lower(),
                         "source_hotel_id": source_hotel_id,
                     }
                 },
