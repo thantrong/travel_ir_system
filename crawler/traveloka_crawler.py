@@ -3,6 +3,7 @@ Traveloka Hotel Review Crawler v3
 Fix: Hotel cards không có <a> tag → phải click vào div card để navigate.
 Fix: URL encoding cho tên thành phố tiếng Việt.
 """
+import argparse
 import asyncio
 import hashlib
 import json
@@ -11,6 +12,7 @@ import random
 import logging
 import re
 import urllib.parse
+from collections import deque
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
 from bs4 import BeautifulSoup
@@ -80,7 +82,6 @@ NON_ESSENTIAL_SAME_ORIGIN_API_PATTERNS = (
     "/api/v1/tvlk/events",
     "/api/v1/metrics",
     "/api/sen/i",
-    "/api/private/hotel-search-seo-view",
     "/api/private/hotel/detail/seoview",
     "/api/private/hotel/breadcrumb",
 )
@@ -96,6 +97,10 @@ ESSENTIAL_REVIEW_API_PATTERNS = (
 
 RAW_DIR = Path(__file__).resolve().parent.parent / config.get("data", {}).get("raw_dir", "data/raw")
 RAW_DIR.mkdir(parents=True, exist_ok=True)
+
+# Discovery: lưu lại danh sách hotel theo từng city để có thể kiểm tra/truy vấn lại.
+DISCOVERY_DIR = RAW_DIR / "discovery"
+DISCOVERY_DIR.mkdir(parents=True, exist_ok=True)
 
 # Thư mục lưu Chrome profile (cookie, cache)
 CHROME_PROFILE_DIR = Path(__file__).resolve().parent.parent / "chrome_profile"
@@ -193,6 +198,33 @@ def build_proxy_pool():
 
 CITIES = load_city_configs()
 
+
+def city_discovery_path(city):
+    """Build JSONL path cho discovery file của một city."""
+    code = str(city.get("code", "")).strip().lower() or "city"
+    geo_id = str(city.get("geo_id", "")).strip()
+    safe_code = re.sub(r"[^a-z0-9_-]+", "_", code)
+    safe_geo = re.sub(r"[^a-z0-9_-]+", "_", geo_id.lower())
+    return DISCOVERY_DIR / f"{safe_code}_{safe_geo}.jsonl"
+
+
+def save_city_discovery_targets(city, targets):
+    """Ghi danh sách hotel targets cho city vào JSONL để kiểm tra lại sau."""
+    if not isinstance(targets, list) or not targets:
+        return 0
+    path = city_discovery_path(city)
+    written = 0
+    with path.open("w", encoding="utf-8") as f:
+        for item in targets:
+            if not isinstance(item, dict):
+                continue
+            try:
+                f.write(json.dumps(item, ensure_ascii=False) + "\n")
+                written += 1
+            except Exception:
+                continue
+    return written
+
 # ============================================================
 # UTILS
 # ============================================================
@@ -264,6 +296,108 @@ def make_absolute_traveloka_url(raw_url):
     return ""
 
 
+def is_hotel_detail_candidate(detail_url):
+    if not detail_url:
+        return False
+    low = str(detail_url).lower()
+    return "traveloka.com" in low and ("/hotel/" in low or "hotel." in low)
+
+
+def build_detail_url_from_hotel_seo_url(hotel_seo_url):
+    """Build full hotel detail URL from searchList field hotelSeoUrl."""
+    value = str(hotel_seo_url or "").strip()
+    if not value:
+        return ""
+    if value.startswith("http://") or value.startswith("https://"):
+        return value
+    value = value.lstrip("/")
+    return f"https://www.traveloka.com/{value}"
+
+
+def extract_hotel_targets_from_html(html_text):
+    """Fallback: parse hotel detail URLs từ HTML/script (spec=...HOTEL.<id>...)."""
+    if not html_text:
+        return []
+    text = str(html_text).replace("\\u0026", "&").replace("\\/", "/")
+    targets = []
+    seen = set()
+    for m in re.finditer(r"spec=([^\"'<>]*HOTEL\.\d+[^\"'<>]*)", text, re.I):
+        spec = urllib.parse.unquote(m.group(1).strip().lstrip("="))
+        if not spec or spec in seen:
+            continue
+        seen.add(spec)
+        detail_url = f"https://www.traveloka.com/vi-vn/hotel/detail?spec={spec}"
+        sid = extract_source_hotel_id(detail_url)
+        if not sid or not is_hotel_detail_candidate(detail_url):
+            continue
+        name_m = re.search(r"HOTEL\.\d+\.(.+?)\.(?:\d+)(?:[&?]|$)", detail_url, re.I)
+        name = urllib.parse.unquote(name_m.group(1)).replace(".", " ").strip() if name_m else "Unknown Hotel"
+        targets.append({"hotel_name": name, "detail_url": detail_url, "source_hotel_id": sid})
+    return targets
+
+
+def extract_hotel_targets_from_payload(payload):
+    """Extract hotel targets from confirmed searchList field `hotelSeoUrl`."""
+    if not isinstance(payload, (dict, list)):
+        return []
+
+    targets = []
+    seen = set()
+
+    def try_add_from_hotel_seo(hotel_seo_url, hotel_name=""):
+        url = build_detail_url_from_hotel_seo_url(hotel_seo_url)
+        if not is_hotel_detail_candidate(url):
+            return
+        # Guard against region/list pages accidentally appearing in payload.
+        if "/hotel/vietnam/region/" in url.lower():
+            return
+        source_id = extract_source_hotel_id(url)
+        dedup_key = source_id or url
+        if not dedup_key or dedup_key in seen:
+            return
+        seen.add(dedup_key)
+        name = normalize_text_spaces(hotel_name) if hotel_name else ""
+        if not name:
+            slug = url.rstrip("/").split("/")[-1]
+            slug = re.sub(r"-\d{5,}$", "", slug)
+            name = slug.replace("-", " ").strip().title()
+        targets.append(
+            {
+                "hotel_name": name or "Unknown Hotel",
+                "detail_url": url,
+                "source_hotel_id": source_id,
+            }
+        )
+
+    def walk(node):
+        if isinstance(node, dict):
+            name = ""
+            for key in (
+                "hotelName",
+                "name",
+                "displayName",
+                "title",
+                "accommodationName",
+            ):
+                value = node.get(key)
+                if isinstance(value, str) and value.strip():
+                    name = value
+                    break
+
+            hotel_seo_url = node.get("hotelSeoUrl")
+            if isinstance(hotel_seo_url, str) and hotel_seo_url.strip():
+                try_add_from_hotel_seo(hotel_seo_url, name)
+
+            for value in node.values():
+                walk(value)
+        elif isinstance(node, list):
+            for item in node:
+                walk(item)
+
+    walk(payload)
+    return targets
+
+
 def normalize_name_key(text):
     """Normalize hotel name for fuzzy compare in fallback click flow."""
     value = str(text or "").strip().lower()
@@ -290,7 +424,7 @@ async def collect_hotel_targets(search_page, hotel_names, max_hotels_for_city):
             href = await anchor.get_attribute("href")
             detail_url = make_absolute_traveloka_url(href or "")
             source_id = extract_source_hotel_id(detail_url)
-            if not detail_url or "/hotel/detail" not in detail_url:
+            if not is_hotel_detail_candidate(detail_url):
                 continue
             if detail_url in seen_urls or (source_id and source_id in seen_source_ids):
                 continue
@@ -301,9 +435,9 @@ async def collect_hotel_targets(search_page, hotel_names, max_hotels_for_city):
         except Exception:
             continue
 
-    # Cách 2: quét trực tiếp tất cả anchor chứa /hotel/detail (DOM mới của Traveloka).
+    # Cách 2: quét trực tiếp tất cả anchor có dấu hiệu hotel.
     if len(targets) < max(3, min(max_hotels_for_city, 5)):
-        anchors = search_page.locator("a[href*='/hotel/detail']")
+        anchors = search_page.locator("a[href*='/hotel/'], a[href*='HOTEL.']")
         anchor_count = await anchors.count()
         for idx in range(anchor_count):
             try:
@@ -311,7 +445,7 @@ async def collect_hotel_targets(search_page, hotel_names, max_hotels_for_city):
                 href = await anchor.get_attribute("href")
                 detail_url = make_absolute_traveloka_url(href or "")
                 source_id = extract_source_hotel_id(detail_url)
-                if not detail_url or "/hotel/detail" not in detail_url:
+                if not is_hotel_detail_candidate(detail_url):
                     continue
                 if detail_url in seen_urls or (source_id and source_id in seen_source_ids):
                     continue
@@ -360,7 +494,24 @@ def extract_source_hotel_id(detail_url):
     """Lấy hotel_id gốc từ URL Traveloka."""
     if not detail_url:
         return ""
+    try:
+        parsed = urllib.parse.urlparse(str(detail_url))
+        query = urllib.parse.parse_qs(parsed.query)
+        for key in ("hotelId", "hotel_id", "hotelid", "objectId", "object_id"):
+            values = query.get(key, [])
+            if not values:
+                continue
+            candidate = str(values[0]).strip()
+            m = re.search(r"(\d{5,})", candidate)
+            if m:
+                return m.group(1)
+    except Exception:
+        pass
+
     match = re.search(r"HOTEL\.(\d{5,})", detail_url)
+    if match:
+        return match.group(1)
+    match = re.search(r"-(\d{5,})(?:/|\?|$)", detail_url)
     if match:
         return match.group(1)
     match = re.search(r"-(\d{5,})(?:\?|$)", detail_url)
@@ -536,7 +687,6 @@ def extract_page_tag_from_soup(soup):
             return "aparthotel"
         return ""
 
-    # 1) JSON-LD @type
     for script in soup.select("script[type='application/ld+json']"):
         raw = script.string or script.get_text() or ""
         raw = raw.strip()
@@ -560,7 +710,6 @@ def extract_page_tag_from_soup(soup):
                             if tag:
                                 return [tag], "jsonld"
 
-    # 2) Fallback title / short visible text
     title = normalize_text_spaces(soup.title.get_text(" ", strip=True) if soup.title else "")
     short_text = normalize_text_spaces(" ".join(
         (el.get_text(" ", strip=True) for el in soup.select("h1, h2, [data-testid*='badge'], [data-testid*='tag']"))
@@ -606,9 +755,8 @@ def extract_name_type_tags(hotel_name):
 
 
 def extract_place_metadata_from_soup(soup, hotel_name=""):
-    """Lấy tag từ JSON-LD/@type trước; chỉ cộng thêm tag từ tên nếu trang không đã có tag rõ."""
+    """Lấy tag từ JSON-LD/@type trước; chỉ cộng thêm tag từ tên nếu trang mặc định là hotel."""
     base_types, source = extract_page_tag_from_soup(soup)
-    # Chỉ bổ sung từ tên nếu base là hotel mặc định hoặc không rõ.
     if base_types == ["hotel"]:
         name_types = extract_name_type_tags(hotel_name)
         final_types = []
@@ -739,7 +887,7 @@ async def build_dynamic_ugc_headers(page, detail_url):
 # ============================================================
 
 async def crawl_hotels_in_city(context, city, claimed_hotel_ids=None, claimed_hotel_lock=None):
-    """Load search page, click từng hotel card, scrape reviews từ tab mới."""
+    """API-first list discovery, then crawl reviews on hotel detail pages."""
     geo_id = city["geo_id"]
     city_name = city["name"]
     city_code = city.get("code", city_name[:2].upper())
@@ -751,6 +899,13 @@ async def crawl_hotels_in_city(context, city, claimed_hotel_ids=None, claimed_ho
     url = build_search_url(geo_id, city_name)
 
     search_page = await context.new_page()
+    # JS stealth: override navigator.webdriver
+    await search_page.add_init_script("""
+        Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+        Object.defineProperty(navigator, 'plugins', { get: () => [1,2,3,4,5] });
+        Object.defineProperty(navigator, 'languages', { get: () => ['vi-VN', 'vi', 'en-US', 'en'] });
+        window.chrome = { runtime: {} };
+    """)
     all_reviews = []
     hotels_scraped = 0
 
@@ -758,172 +913,173 @@ async def crawl_hotels_in_city(context, city, claimed_hotel_ids=None, claimed_ho
         if HAS_STEALTH:
             await stealth_async(search_page)
         logger.info(f"[Search] Loading: {url}")
-        await search_page.goto(url, timeout=TIMEOUT, wait_until="domcontentloaded")
-        await random_page_delay(5, 10)
-        await human_scroll(search_page, times=4)
 
-        for retry in range(3):
-            h3_count_check = await search_page.locator("h3").count()
-            if h3_count_check > 2:
-                break
-            logger.info(f"[Search] Retry {retry+1}: Only {h3_count_check} h3 found. Waiting + scrolling more...")
-            try:
-                body_text = await search_page.locator("body").inner_text()
-                if "Tìm kiếm lại" in body_text:
-                    retry_btn = search_page.get_by_text("Tìm kiếm lại", exact=True)
-                    if await retry_btn.count() > 0:
-                        await retry_btn.first.click(timeout=5000)
-                        logger.info("[Search] Clicked 'Tìm kiếm lại' to refresh results")
-                        await random_page_delay(5, 10)
-            except Exception as e:
-                logger.debug(f"[Search] Could not click retry button: {e}")
-            await random_delay(5, 8)
-            await human_scroll(search_page, times=5)
-
-        async def extract_hotel_names_from_page() -> list[str]:
-            names = []
-            seen = set()
-            h3_elements = search_page.locator("h3")
-            h3_count = await h3_elements.count()
-            for i in range(h3_count):
-                try:
-                    text = await h3_elements.nth(i).text_content()
-                    if not text or len(text.strip()) <= 3:
-                        continue
-                    cleaned = text.strip()
-                    skip_texts = [
-                        city_name, "khách sạn", "xem bộ sưu tập", "tìm kiếm",
-                        "xếp theo", "lọc", "hiển thị", "top ",
-                    ]
-                    if any(skip.lower() in cleaned.lower() for skip in skip_texts):
-                        continue
-                    key = cleaned.lower()
-                    if key in seen:
-                        continue
-                    seen.add(key)
-                    names.append(cleaned)
-                except Exception:
-                    continue
-            return names
-
-        async def extract_targets_from_page() -> list[dict]:
-            """Collect visible /hotel/detail anchors from current lazy-loading window."""
-            results = []
-            anchors = search_page.locator("a[href*='/hotel/detail']")
-            anchor_count = await anchors.count()
-            for idx in range(anchor_count):
-                try:
-                    anchor = anchors.nth(idx)
-                    href = await anchor.get_attribute("href")
-                    detail_url = make_absolute_traveloka_url(href or "")
-                    source_id = extract_source_hotel_id(detail_url)
-                    if not detail_url or "/hotel/detail" not in detail_url:
-                        continue
-                    raw_text = (await anchor.inner_text() or "").strip()
-                    first_line = raw_text.splitlines()[0].strip() if raw_text else ""
-                    hotel_name = first_line
-                    if not hotel_name:
-                        url_name_match = re.search(r"HOTEL\.\d+\.(.+?)\.(?:\d+)(?:[&?]|$)", detail_url)
-                        url_name = urllib.parse.unquote(url_name_match.group(1)) if url_name_match else "Unknown Hotel"
-                        hotel_name = url_name.replace(".", " ")
-                    results.append(
-                        {"hotel_name": hotel_name, "detail_url": detail_url, "source_hotel_id": source_id}
-                    )
-                except Exception:
-                    continue
-            return results
-
-        hotel_names_acc = {}
         hotel_targets_acc = {}
-        stale_rounds = 0
-        # Lazy-loading kiểu virtualization cần tích lũy qua nhiều vòng, không dùng snapshot cuối.
-        max_scroll_rounds = max(8, min(city_max_hotels // 4 + 10, 32))
-        for round_idx in range(max_scroll_rounds):
-            current_names = await extract_hotel_names_from_page()
-            current_targets = await extract_targets_from_page()
+        discovery_order = []
 
-            for name in current_names:
-                key = str(name).strip().lower()
-                if key and key not in hotel_names_acc:
-                    hotel_names_acc[key] = name
-
-            for target in current_targets:
+        def merge_targets(items):
+            for target in items:
+                if not isinstance(target, dict):
+                    continue
                 source_hotel_id = str(target.get("source_hotel_id", "")).strip()
                 detail_url = str(target.get("detail_url", "")).strip()
-                dedup_key = source_hotel_id or detail_url
-                if not dedup_key:
+                key = source_hotel_id or detail_url
+                if not key:
                     continue
-                if dedup_key not in hotel_targets_acc:
-                    hotel_targets_acc[dedup_key] = target
+                if key in hotel_targets_acc:
+                    continue
+                hotel_targets_acc[key] = {
+                    "hotel_name": str(target.get("hotel_name", "")).strip() or "Unknown Hotel",
+                    "detail_url": detail_url,
+                    "source_hotel_id": source_hotel_id,
+                }
+                discovery_order.append(key)
 
-            current_total_names = len(hotel_names_acc)
+        async def _handle_search_response(resp):
+            try:
+                if resp.status != 200:
+                    return
+                raw_url = str(resp.url or "")
+                low = raw_url.lower()
+                if "traveloka.com" not in low or "/api/" not in low:
+                    return
+
+                # Ignore UGC review APIs on search page; we only want hotel list/discovery payloads.
+                if "/api/v2/ugc/review/consumption/v2/" in low:
+                    return
+
+                req = resp.request
+                ctype = str((resp.headers or {}).get("content-type", "")).lower()
+                payload = None
+                if "json" in ctype:
+                    try:
+                        payload = await resp.json()
+                    except Exception:
+                        payload = None
+                if payload is None:
+                    try:
+                        text = await resp.text()
+                        payload = json.loads(text)
+                    except Exception:
+                        payload = None
+
+                if payload is None:
+                    return
+
+                extracted = extract_hotel_targets_from_payload(payload)
+                if not extracted:
+                    return
+
+                before = len(hotel_targets_acc)
+                merge_targets(extracted)
+                added = len(hotel_targets_acc) - before
+                if added > 0:
+                    logger.info(
+                        f"[SearchAPI] +{added} targets from {req.method} {low.split('?', 1)[0]} "
+                        f"(total={len(hotel_targets_acc)})"
+                    )
+                else:
+                    logger.info(
+                        f"[SearchAPI] 0 new targets from {req.method} {low.split('?', 1)[0]} "
+                        f"(extracted={len(extracted)}, total={len(hotel_targets_acc)})"
+                    )
+            except Exception:
+                return
+
+        def _on_response(resp):
+            asyncio.create_task(_handle_search_response(resp))
+
+        search_page.on("response", _on_response)
+
+        await search_page.goto(url, timeout=TIMEOUT, wait_until="domcontentloaded")
+        await random_page_delay(5, 10)  # +2s để API load trước khi scroll
+        stale_rounds = 0
+        prev_count = 0
+        # Thành phố có nhiều khách sạn cần scroll sâu hơn.
+        # Tăng số round tối đa và chỉ dừng khi thật sự không tăng thêm target.
+        max_scroll_rounds = max(16, min(city_max_hotels // 2 + 24, 72))
+        for round_idx in range(max_scroll_rounds):
             current_total_targets = len(hotel_targets_acc)
             logger.info(
                 f"[Search] Round {round_idx + 1}/{max_scroll_rounds}: "
-                f"visible_names={len(current_names)}, visible_targets={len(current_targets)}, "
-                f"acc_names={current_total_names}, acc_targets={current_total_targets}"
+                f"api_targets={current_total_targets}, bfs_queue_size={len(discovery_order)}"
             )
 
-            if round_idx == 0:
-                prev_score = -1
-            score = current_total_names + current_total_targets
-            if score > prev_score:
+            if current_total_targets > prev_count:
                 stale_rounds = 0
+                prev_count = current_total_targets
             else:
                 stale_rounds += 1
-            prev_score = score
-
-            if current_total_targets >= city_max_hotels or stale_rounds >= 4:
+            # Nếu đã đủ số hotel cấu hình thì dừng.
+            if current_total_targets >= city_max_hotels:
                 break
-            await human_scroll(search_page, times=3)
-            await random_delay(0.4, 0.9)
+            # Cho phép "stale" lâu hơn trước khi bỏ cuộc, để các city dài vẫn có thời gian load thêm.
+            if stale_rounds >= 10:
+                logger.info(
+                    f"[Search] Stopped discovery due to stale_rounds={stale_rounds} "
+                    f"with api_targets={current_total_targets}"
+                )
+                break
 
-        target_hotels = list(hotel_names_acc.values())
+            # Thành phố càng lớn thì mỗi round scroll càng sâu hơn.
+            if city_max_hotels >= 150:
+                scroll_times = 7
+            elif city_max_hotels >= 80:
+                scroll_times = 5
+            else:
+                scroll_times = 3
+
+            await human_scroll(search_page, times=scroll_times)
+            await asyncio.sleep(2)
+            await random_delay(0.4, 0.8)
+
         hotel_targets = list(hotel_targets_acc.values())
 
-        if len(hotel_targets) < max(3, min(city_max_hotels, 8)):
-            # Fallback cũ: cố gom thêm từ h3->anchor nếu lazy list trả về quá ít.
-            fallback_targets = await collect_hotel_targets(search_page, target_hotels, city_max_hotels)
-            for target in fallback_targets:
-                source_hotel_id = str(target.get("source_hotel_id", "")).strip()
-                detail_url = str(target.get("detail_url", "")).strip()
-                dedup_key = source_hotel_id or detail_url
-                if dedup_key and dedup_key not in hotel_targets_acc:
-                    hotel_targets_acc[dedup_key] = target
-            hotel_targets = list(hotel_targets_acc.values())
+        # Nếu có quá nhiều target hơn config, cắt bớt để queue gọn, nhưng vẫn ưu tiên thứ tự xuất hiện.
+        if len(hotel_targets) > city_max_hotels:
+            logger.info(
+                f"[Search] Truncating hotel targets from {len(hotel_targets)} to city_max_hotels={city_max_hotels}"
+            )
+            hotel_targets = hotel_targets[:city_max_hotels]
 
-        logger.info(f"[Search] Final accumulated hotel names: {len(target_hotels)}")
         logger.info(f"[Search] Final accumulated detail targets: {len(hotel_targets)}")
-        logger.info(f"[Search] Sample hotel names: {target_hotels[:10]}")
-        fallback_click_flow = False
+        logger.info(f"[Search] Sample hotel targets: {hotel_targets[:5]}")
+
+        # Lưu discovery file để có thể kiểm tra/truy vấn lại danh sách khách sạn của city.
+        saved = save_city_discovery_targets(city, hotel_targets)
+        if saved:
+            logger.info(f"[Discovery] Saved {saved} hotel targets for city {city_name}")
+
         if not hotel_targets:
-            if target_hotels:
-                logger.warning(
-                    "[Search] Found hotel names but no detail URLs yet. Retrying short lazy-load scan..."
-                )
-                for _ in range(3):
-                    await human_scroll(search_page, times=2)
-                    await search_page.wait_for_timeout(350)
-                    retry_targets = await extract_targets_from_page()
-                    for target in retry_targets:
-                        source_hotel_id = str(target.get("source_hotel_id", "")).strip()
-                        detail_url = str(target.get("detail_url", "")).strip()
-                        dedup_key = source_hotel_id or detail_url
-                        if dedup_key and dedup_key not in hotel_targets_acc:
-                            hotel_targets_acc[dedup_key] = target
-                    if hotel_targets_acc:
-                        break
-                hotel_targets = list(hotel_targets_acc.values())
-                if not hotel_targets:
-                    logger.warning(
-                        "[Search] Still no detail URLs. Switching to click fallback to avoid skipping city."
-                    )
-                    fallback_click_flow = True
+            logger.warning("[Search] No API hotel targets found, trying HTML fallback once.")
+            try:
+                html = await search_page.content()
+                html_targets = extract_hotel_targets_from_html(html)
+            except Exception as e:
+                logger.warning(f"[Search] HTML fallback extraction failed: {e}")
+                html_targets = []
+
+            if html_targets:
+                logger.info(f"[Search] HTML fallback produced {len(html_targets)} targets")
+                hotel_targets = html_targets[:city_max_hotels]
+                saved_html = save_city_discovery_targets(city, hotel_targets)
+                if saved_html:
+                    logger.info(f"[Discovery] Saved {saved_html} fallback hotel targets for city {city_name}")
             else:
-                logger.warning("[Search] No hotel targets found. Skip city.")
+                logger.warning("[Search] HTML fallback also found 0 targets. Skip city.")
                 if SKIP_IDLE_SECONDS > 0:
                     await asyncio.sleep(SKIP_IDLE_SECONDS)
                 return all_reviews
+
+        # BFS temporary queue in order of first appearance while scrolling.
+        # Khi đã truncate hotel_targets, cần reconstruct queue tương ứng.
+        allowed_keys = {t.get("source_hotel_id") or t.get("detail_url") for t in hotel_targets}
+        bfs_queue = deque(
+            hotel_targets_acc[key]
+            for key in discovery_order
+            if key in hotel_targets_acc and key in allowed_keys
+        )
+        logger.info(f"[BFS] Queue initialized with {len(bfs_queue)} hotels")
 
         async def claim_source_hotel_id(source_hotel_id):
             """Claim hotel ID globally to avoid duplicated crawl across cities/workers."""
@@ -940,184 +1096,104 @@ async def crawl_hotels_in_city(context, city, claimed_hotel_ids=None, claimed_ho
             claimed_hotel_ids.add(source_hotel_id)
             return True
 
-        async def scrape_hotel_target(idx, target, sem):
+        async def scrape_hotel_target(idx, target):
             hotel_name = target["hotel_name"]
             detail_url = target["detail_url"]
-            async with sem:
-                detail_page = None
-                try:
-                    detail_page = await context.new_page()
-                    if HAS_STEALTH:
-                        await stealth_async(detail_page)
-                    logger.info(f"\n--- [Parallel Attempt {idx}] Opening: {hotel_name} ---")
-                    await detail_page.goto(detail_url, timeout=TIMEOUT, wait_until="domcontentloaded")
-                    await random_page_delay(5, 10)
-                    reviews = await asyncio.wait_for(
-                        scrape_reviews_from_detail(
-                            detail_page, hotel_name, city_name, city_code, detail_url, city_max_reviews
-                        ),
-                        timeout=DETAIL_TASK_TIMEOUT_SECONDS,
-                    )
-                    return {"hotel_name": hotel_name, "reviews": reviews, "error": ""}
-                except asyncio.TimeoutError:
-                    return {
-                        "hotel_name": hotel_name,
-                        "reviews": [],
-                        "error": f"detail_timeout_{DETAIL_TASK_TIMEOUT_SECONDS}s",
-                    }
-                except Exception as e:
-                    return {"hotel_name": hotel_name, "reviews": [], "error": str(e)}
-                finally:
-                    if detail_page:
-                        try:
-                            await detail_page.close()
-                        except Exception:
-                            pass
+            detail_page = None
+            try:
+                detail_page = await context.new_page()
+                if HAS_STEALTH:
+                    await stealth_async(detail_page)
+                logger.info(f"\n--- [BFS Attempt {idx}] Opening: {hotel_name} ---")
+                reviews = await asyncio.wait_for(
+                    scrape_reviews_from_detail(
+                        detail_page, hotel_name, city_name, city_code, detail_url, city_max_reviews
+                    ),
+                    timeout=DETAIL_TASK_TIMEOUT_SECONDS,
+                )
+                return {"hotel_name": hotel_name, "reviews": reviews, "error": "", "target": target}
+            except asyncio.TimeoutError:
+                return {
+                    "hotel_name": hotel_name,
+                    "reviews": [],
+                    "error": f"detail_timeout_{DETAIL_TASK_TIMEOUT_SECONDS}s",
+                    "target": target,
+                }
+            except Exception as e:
+                return {"hotel_name": hotel_name, "reviews": [], "error": str(e), "target": target}
+            finally:
+                if detail_page:
+                    try:
+                        await detail_page.close()
+                    except Exception:
+                        pass
 
-        if hotel_targets:
-            # Quét dư vừa phải để bù hotel lỗi, tránh mở quá nhiều target gây nặng tab.
-            max_parallel_targets = min(len(hotel_targets), city_max_hotels + max(4, city_max_hotels // 4))
-            sem = asyncio.Semaphore(MAX_CONCURRENT_HOTELS)
-            selected_targets = []
-            for target in hotel_targets[:max_parallel_targets]:
+        if not bfs_queue:
+            logger.warning("[Search] BFS queue empty after discovery. Skip city.")
+            if SKIP_IDLE_SECONDS > 0:
+                await asyncio.sleep(SKIP_IDLE_SECONDS)
+            return all_reviews
+
+        # Số worker lấy từ config (max_concurrent_hotels), giới hạn bởi số hotel thực tế.
+        worker_count = max(1, min(MAX_CONCURRENT_HOTELS, city_max_hotels, len(bfs_queue)))
+        logger.info(f"[BFS] Starting with worker_count={worker_count}, queue_size={len(bfs_queue)}")
+        queue_lock = asyncio.Lock()
+        progress_lock = asyncio.Lock()
+        attempt_counter = {"value": 0}
+        checkpoint_file = RAW_DIR / "traveloka_checkpoint.jsonl"
+
+        async def bfs_worker(worker_id):
+            nonlocal hotels_scraped
+            while True:
+                async with queue_lock:
+                    if hotels_scraped >= city_max_hotels:
+                        return
+                    if not bfs_queue:
+                        return
+                    target = bfs_queue.popleft()
+                    attempt_counter["value"] += 1
+                    attempt_no = attempt_counter["value"]
+
                 source_hotel_id = str(target.get("source_hotel_id", "")).strip()
                 can_crawl = await claim_source_hotel_id(source_hotel_id)
                 if not can_crawl:
                     logger.info(
-                        f"[Skip] Duplicate source_hotel_id already claimed: {source_hotel_id} ({target.get('hotel_name', '')})"
+                        f"[Worker-{worker_id}] Skip duplicate source_hotel_id={source_hotel_id} ({target.get('hotel_name', '')})"
                     )
                     continue
-                selected_targets.append(target)
-            if not selected_targets:
-                if target_hotels:
-                    logger.warning(
-                        "[Search] All URL targets already claimed. Switching to click fallback by hotel name."
-                    )
-                    fallback_click_flow = True
-                else:
-                    logger.warning("[Search] All targets were crawled before. Skip city.")
-                    if SKIP_IDLE_SECONDS > 0:
-                        await asyncio.sleep(SKIP_IDLE_SECONDS)
-                    return all_reviews
-            logger.info(f"[Parallel] Preparing to spawn {len(selected_targets)} tasks (semaphore={MAX_CONCURRENT_HOTELS})")
-            tasks = []
-            for idx in range(len(selected_targets)):
-                task = asyncio.create_task(scrape_hotel_target(idx + 1, selected_targets[idx], sem))
-                tasks.append(task)
-                logger.debug(f"[Parallel] Spawned task {idx+1} for {selected_targets[idx].get('hotel_name','')}")
-            checkpoint_file = RAW_DIR / "traveloka_checkpoint.jsonl"
-            for done in asyncio.as_completed(tasks):
-                result = await done
+
+                result = await scrape_hotel_target(attempt_no, target)
                 if result["error"]:
-                    logger.error(f"[Error] Failed for {result['hotel_name']}: {result['error']}")
+                    logger.error(
+                        f"[Worker-{worker_id}] Failed for {result['hotel_name']}: {result['error']}"
+                    )
                     continue
+
                 reviews = result["reviews"]
                 if not reviews:
-                    logger.info(f"[Skip] No Vietnamese reviews for {result['hotel_name']}, skipping...")
+                    logger.info(f"[Worker-{worker_id}] No Vietnamese reviews for {result['hotel_name']}, skipping...")
                     continue
-                if hotels_scraped >= city_max_hotels:
-                    continue
-                all_reviews.extend(reviews)
-                hotels_scraped += 1
-                with open(checkpoint_file, "a", encoding="utf-8") as f:
-                    for r in reviews:
-                        f.write(json.dumps(r, ensure_ascii=False) + "\n")
-                logger.info(f"[Progress] Hotels: {hotels_scraped}, Total reviews: {len(all_reviews)}")
-                if COOLDOWN_EVERY_HOTELS and COOLDOWN_SECONDS and hotels_scraped % COOLDOWN_EVERY_HOTELS == 0:
-                    logger.info(f"[Cooldown] Sleep {COOLDOWN_SECONDS}s to reduce temperature")
-                    await asyncio.sleep(COOLDOWN_SECONDS)
-                if hotels_scraped >= city_max_hotels:
-                    for task in tasks:
-                        if not task.done():
-                            task.cancel()
-                    await asyncio.gather(*tasks, return_exceptions=True)
-                    break
-        if fallback_click_flow and target_hotels and hotels_scraped < city_max_hotels:
-            logger.info("[Fallback] Start click-by-name flow for remaining hotels.")
-            checkpoint_file = RAW_DIR / "traveloka_checkpoint.jsonl"
-            attempted = 0
-            for hotel_name in target_hotels:
-                if hotels_scraped >= city_max_hotels:
-                    break
-                attempted += 1
-                detail_page = None
-                try:
-                    logger.info(f"\n--- [Fallback Attempt {attempted}] Clicking: {hotel_name} ---")
-                    matched_h3 = None
-                    wanted = normalize_name_key(hotel_name)
-                    for _ in range(3):
-                        h3_nodes = search_page.locator("h3")
-                        h3_count = await h3_nodes.count()
-                        best_idx = -1
-                        best_score = -1
-                        for idx in range(h3_count):
-                            try:
-                                txt = (await h3_nodes.nth(idx).text_content() or "").strip()
-                                if not txt:
-                                    continue
-                                got = normalize_name_key(txt)
-                                score = 0
-                                if got == wanted:
-                                    score = 3
-                                elif wanted and got and (wanted in got or got in wanted):
-                                    score = 2
-                                elif wanted and got:
-                                    overlap = set(wanted.split()) & set(got.split())
-                                    if overlap:
-                                        score = 1
-                                if score > best_score:
-                                    best_score = score
-                                    best_idx = idx
-                            except Exception:
-                                continue
-                        if best_idx >= 0 and best_score >= 1:
-                            matched_h3 = h3_nodes.nth(best_idx)
-                            break
-                        await human_scroll(search_page, times=1)
-                        await search_page.wait_for_timeout(250)
 
-                    if not matched_h3:
-                        logger.warning(f"[Fallback-Skip] Cannot find clickable h3 for: {hotel_name}")
-                        continue
-
-                    async with context.expect_page(timeout=8000) as new_page_info:
-                        await matched_h3.click(timeout=4000)
-                    detail_page = await new_page_info.value
-                    await detail_page.wait_for_load_state("domcontentloaded")
-                    await random_delay(0.05, 0.2)
-                    detail_url = detail_page.url
-                    source_hotel_id = extract_source_hotel_id(detail_url)
-                    if not source_hotel_id:
-                        logger.info(f"[Fallback-Skip] Missing source_hotel_id for {hotel_name}")
-                        continue
-                    can_crawl = await claim_source_hotel_id(source_hotel_id)
-                    if not can_crawl:
-                        logger.info(
-                            f"[Fallback-Skip] Duplicate source_hotel_id already claimed: {source_hotel_id}"
-                        )
-                        continue
-                    reviews = await asyncio.wait_for(
-                        scrape_reviews_from_detail(
-                            detail_page, hotel_name, city_name, city_code, detail_url, city_max_reviews
-                        ),
-                        timeout=DETAIL_TASK_TIMEOUT_SECONDS,
-                    )
-                    if not reviews:
-                        continue
+                async with progress_lock:
+                    if hotels_scraped >= city_max_hotels:
+                        return
                     all_reviews.extend(reviews)
                     hotels_scraped += 1
                     with open(checkpoint_file, "a", encoding="utf-8") as f:
                         for r in reviews:
                             f.write(json.dumps(r, ensure_ascii=False) + "\n")
-                    logger.info(f"[Fallback-Progress] Hotels: {hotels_scraped}, Total reviews: {len(all_reviews)}")
-                except Exception as e:
-                    logger.error(f"[Fallback-Error] Failed for {hotel_name}: {e}")
-                finally:
-                    if detail_page:
-                        try:
-                            await detail_page.close()
-                        except Exception:
-                            pass
+
+                    logger.info(
+                        f"[Progress] Worker-{worker_id} Hotels: {hotels_scraped}, "
+                        f"Total reviews: {len(all_reviews)}, BFS remaining: {len(bfs_queue)}"
+                    )
+
+                    if COOLDOWN_EVERY_HOTELS and COOLDOWN_SECONDS and hotels_scraped % COOLDOWN_EVERY_HOTELS == 0:
+                        logger.info(f"[Cooldown] Sleep {COOLDOWN_SECONDS}s to reduce temperature")
+                        await asyncio.sleep(COOLDOWN_SECONDS)
+
+        workers = [asyncio.create_task(bfs_worker(i + 1)) for i in range(worker_count)]
+        await asyncio.gather(*workers, return_exceptions=True)
         return all_reviews
     finally:
         try:
@@ -1434,34 +1510,30 @@ async def scrape_reviews_from_detail(page, hotel_name, city_name, city_code, det
                 return
             captured_review_responses.append(response)
 
+    # Bắt listener trước navigation lần đầu để tránh miss getReviews sớm.
     context.on("response", on_response)
-    await human_scroll(page, times=2)
+    try:
+        await page.goto(detail_url, timeout=TIMEOUT, wait_until="domcontentloaded")
+        await random_page_delay(2, 4)
+        await asyncio.sleep(7)
+    except Exception as e:
+        logger.warning(f"[Detail] Initial load failed: {e}")
+    finally:
+        context.remove_listener("response", on_response)
 
     html = await page.content()
     soup = BeautifulSoup(html, "html.parser")
-
     h1 = soup.select_one("h1")
     hotel_name_extracted = h1.get_text(strip=True) if h1 else hotel_name
     overall_rating = ""
     rating_match = re.search(r'(\d+[\.,]\d+)\s*/\s*10', soup.get_text())
     if rating_match:
         overall_rating = normalize_score_to_5(rating_match.group(1))
-
     location_raw = extract_location_from_soup(soup, city_name, city_name)
     location = normalize_location_to_city(location_raw, city_name)
-
+    place_types, place_type_source = extract_place_metadata_from_soup(soup, hotel_name_extracted)
     logger.info(f"[Detail] Source hotel ID: {source_hotel_id or 'N/A'}")
-    logger.info(f"[Detail] Name: {hotel_name_extracted} | Rating: {overall_rating}/5 | Location: {location}")
-
-    try:
-        await page.get_by_text("Đánh giá", exact=True).first.click()
-        await random_delay(2, 4)
-        await human_scroll(page, times=2)
-        await asyncio.sleep(1.5)
-    except Exception as e:
-        logger.warning(f"[Detail] Could not capture getReviews request after clicking tab: {e}")
-    finally:
-        context.remove_listener("response", on_response)
+    logger.info(f"[Detail] Name: {hotel_name_extracted} | Rating: {overall_rating}/5 | Location: {location} | Types: {place_types} ({place_type_source})")
 
     if captured_review_responses:
         logger.info(f"[Detail] Captured {len(captured_review_responses)} getReviews response(s)")
@@ -1473,8 +1545,6 @@ async def scrape_reviews_from_detail(page, hotel_name, city_name, city_code, det
             logger.info("[Detail] Built dynamic UGC headers from session")
         except Exception as e:
             logger.warning(f"[Detail] Could not build dynamic UGC headers: {e}")
-
-    place_types, place_type_source = extract_place_metadata_from_soup(soup, hotel_name_extracted)
 
     api_reviews = await fetch_reviews_via_api(
         context,
@@ -1489,6 +1559,46 @@ async def scrape_reviews_from_detail(page, hotel_name, city_name, city_code, det
         detail_url=detail_url,
         max_reviews=max_reviews,
     )
+
+    # Only reload once if first try did not return reviews.
+    if not api_reviews:
+        logger.info("[Detail] No API reviews after first pass, reloading once for recapture")
+        captured_review_responses.clear()
+        context.on("response", on_response)
+        try:
+            await page.reload(wait_until="domcontentloaded", timeout=TIMEOUT)
+            await asyncio.sleep(2.5)
+            await asyncio.sleep(6)
+        except Exception as e:
+            logger.warning(f"[Detail] Reload failed: {e}")
+        finally:
+            context.remove_listener("response", on_response)
+
+        if captured_review_responses:
+            logger.info(f"[Detail] Captured {len(captured_review_responses)} getReviews response(s) after reload")
+            seed_response = captured_review_responses[0]
+        else:
+            seed_response = None
+
+        if not ugc_seed_headers:
+            try:
+                ugc_seed_headers = await build_dynamic_ugc_headers(page, detail_url)
+                logger.info("[Detail] Built dynamic UGC headers from session after reload")
+            except Exception as e:
+                logger.warning(f"[Detail] Could not build dynamic UGC headers after reload: {e}")
+
+        api_reviews = await fetch_reviews_via_api(
+            context,
+            source_hotel_id,
+            hotel_name_extracted,
+            location,
+            overall_rating,
+            seed_response=seed_response,
+            seed_headers=ugc_seed_headers if ugc_seed_headers else None,
+            detail_url=detail_url,
+            max_reviews=max_reviews,
+        )
+
     if api_reviews:
         logger.info(f"[Detail] Extracted {len(api_reviews)} reviews via API for {hotel_name_extracted}")
         return api_reviews
@@ -1548,47 +1658,69 @@ def canonicalize_and_deduplicate_reviews(reviews):
 # MAIN
 # ============================================================
 
-async def run_crawler():
-    if not CITIES:
-        logger.error("No cities in config!")
+async def run_crawler(append_mode=False, cities_filter=None):
+    cities_to_crawl = cities_filter if cities_filter is not None else CITIES
+    if not cities_to_crawl:
+        logger.error("No cities to crawl!")
         return
 
     logger.info("=" * 60)
     logger.info("STARTING TRAVELOKA CRAWLER v3")
-    logger.info(f"Cities: {[c['name'] for c in CITIES]}")
+    logger.info(f"Cities: {[c['name'] for c in cities_to_crawl]}")
     logger.info(f"Max hotels/city: {MAX_HOTELS}, Max reviews/hotel: {MAX_REVIEWS}")
     logger.info(f"Max concurrent hotels: {MAX_CONCURRENT_HOTELS}")
     logger.info(f"Max concurrent cities: {MAX_CONCURRENT_CITIES}")
     logger.info("=" * 60)
 
-    # Clear old checkpoint
     checkpoint = RAW_DIR / "traveloka_checkpoint.jsonl"
-    if checkpoint.exists():
+    if not append_mode and checkpoint.exists():
         checkpoint.unlink()
 
     proxy_pool = build_proxy_pool()
     async with async_playwright() as p:
         all_reviews = []
+        if append_mode:
+            final_file = RAW_DIR / "traveloka_raw_final.json"
+            if final_file.exists():
+                try:
+                    data = json.loads(final_file.read_text(encoding="utf-8"))
+                    if isinstance(data, list):
+                        all_reviews = data
+                        logger.info(f"[Append] Loaded {len(all_reviews)} existing reviews from {final_file}")
+                except Exception as e:
+                    logger.warning(f"[Append] Could not load existing final: {e}")
         for attempt_idx, proxy in enumerate(proxy_pool, start=1):
             proxy_label = "direct_ip" if not proxy else proxy.get("server", "unknown_proxy")
             logger.info(f"[Proxy] Attempt {attempt_idx}/{len(proxy_pool)} using: {proxy_label}")
 
             launch_kwargs = {
-                "user_data_dir": str(CHROME_PROFILE_DIR),
                 "headless": HEADLESS,
-                "viewport": {"width": 1920, "height": 1080},
-                "locale": "vi-VN",
-                "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
                 "args": [
                     "--disable-blink-features=AutomationControlled",
                     "--no-sandbox",
+                    "--disable-infobars",
+                    "--disable-dev-shm-usage",
+                    "--disable-extensions",
+                    "--lang=vi-VN",
                 ],
                 "ignore_default_args": ["--enable-automation"],
             }
             if proxy:
                 launch_kwargs["proxy"] = proxy
 
-            context = await p.chromium.launch_persistent_context(**launch_kwargs)
+            cr_browser = await p.chromium.launch(**launch_kwargs)
+            context = await cr_browser.new_context(
+                viewport={"width": 1920, "height": 1080},
+                locale="vi-VN",
+                user_agent=random.choice([
+                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+                ]),
+                extra_http_headers={
+                    "accept-language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
+                },
+            )
             try:
                 # Apply stealth plugin nếu có
                 if HAS_STEALTH:
@@ -1597,6 +1729,16 @@ async def run_crawler():
                     logger.info("[Stealth] playwright-stealth applied")
 
                 await optimize_context_for_mac(context)
+                # Nạp cookie Traveloka (tvl, tvs, tvo) nếu có file config
+                _cookies_path = Path(__file__).resolve().parent.parent / "config" / "cookies_traveloka.json"
+                if _cookies_path.exists():
+                    try:
+                        _extra = json.loads(_cookies_path.read_text(encoding="utf-8"))
+                        if isinstance(_extra, list) and _extra:
+                            await context.add_cookies(_extra)
+                            logger.info(f"[Cookies] Loaded {len(_extra)} Traveloka cookies from config")
+                    except Exception as e:
+                        logger.warning(f"[Cookies] Failed to load cookies_traveloka.json: {e}")
                 logger.info(f"[Perf] Blocking resource types: {sorted(BLOCK_RESOURCE_TYPES)}")
                 claimed_hotel_ids = set()
                 claimed_hotel_lock = asyncio.Lock()
@@ -1619,19 +1761,20 @@ async def run_crawler():
 
                 city_error_count = 0
                 logger.info("[CrawlMode] Sequential city mode enabled (no region workers).")
-                for city in CITIES:
+                for city in cities_to_crawl:
                     records = await crawl_city_safe(city)
                     if not records:
                         city_error_count += 1
                     all_reviews.extend(records)
 
                 # Nếu dùng proxy mà fail toàn bộ city, thử proxy kế tiếp.
-                if proxy and city_error_count == len(CITIES):
+                if proxy and city_error_count == len(cities_to_crawl):
                     logger.warning(f"[Proxy] All cities failed with proxy {proxy_label}, trying next proxy...")
                     continue
                 break
             finally:
                 await context.close()
+                await cr_browser.close()
 
         all_reviews = canonicalize_and_deduplicate_reviews(all_reviews)
 
@@ -1646,5 +1789,30 @@ async def run_crawler():
         logger.info(f"Saved to: {final_file}")
         logger.info(f"{'='*60}")
 
+def parse_args():
+    ap = argparse.ArgumentParser(description="Traveloka hotel review crawler")
+    ap.add_argument(
+        "--cities",
+        type=str,
+        default="",
+        help="Chỉ crawl các thành phố (theo code, cách nhau bởi dấu phẩy), VD: --cities HN,DN,NT",
+    )
+    ap.add_argument(
+        "--append",
+        action="store_true",
+        help="Chế độ bổ sung: không xóa checkpoint/final, merge với dữ liệu hiện có",
+    )
+    return ap.parse_args()
+
+
 if __name__ == "__main__":
-    asyncio.run(run_crawler())
+    args = parse_args()
+    cities_filter = None
+    if args.cities:
+        codes = [c.strip().upper() for c in args.cities.split(",") if c.strip()]
+        cities_filter = [c for c in CITIES if c.get("code", "").upper() in codes]
+        if not cities_filter:
+            logger.warning(f"No cities matched codes: {codes}")
+        else:
+            logger.info(f"[CLI] Cities filter: {[c['name'] for c in cities_filter]}")
+    asyncio.run(run_crawler(append_mode=args.append, cities_filter=cities_filter))
