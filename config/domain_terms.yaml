@@ -1,0 +1,117 @@
+
+accommodation_types:
+  - khách sạn
+  - resort
+  - homestay
+  - nhà nghỉ
+  - villa
+  - căn hộ
+  - boutique hotel
+  - hostel
+  - guesthouse
+  - motel
+  - aparthotel
+  - bungalow
+
+amenities:
+  - hồ bơi
+  - hồ bơi ngoài trời
+  - hồ bơi trong nhà
+  - hồ bơi vô cực
+  - buffet sáng
+  - ăn sáng
+  - bãi đậu xe
+  - chỗ đậu xe
+  - bãi biển riêng
+  - spa
+  - gym
+  - phòng gym
+  - wifi
+  - điều hòa
+  - bồn tắm
+  - bồn tắm massage
+  - phòng gia đình
+  - phòng family
+  - view biển
+  - view núi
+  - view đồi
+  - ban công
+  - sân vườn
+  - máy lạnh
+  - lễ tân 24/7
+  - thuê xe máy
+  - thuê xe đạp
+  - shuttle
+  - đưa đón sân bay
+
+location_patterns:
+  - gần trung tâm
+  - ngay trung tâm
+  - sát biển
+  - ven biển
+  - ven sông
+  - gần chợ đêm
+  - gần sân bay
+  - gần ga
+  - gần bến tàu
+  - trong hẻm yên tĩnh
+  - xa trung tâm
+  - gần hồ 
+
+price_patterns:
+  - giá rẻ
+  - bình dân
+  - giá mềm
+  - tiết kiệm
+  - giá tốt
+  - cao cấp
+  - sang trọng
+  - xa hoa
+
+experience_terms:
+  - sạch sẽ
+  - thân thiện
+  - nhiệt tình
+  - tiện nghi
+  - thoải mái
+  - yên tĩnh
+  - ồn ào
+  - cách âm
+  - mới
+  - xuống cấp
+  - rộng rãi
+  - chật
+  - đẹp
+  - tiện lợi
+  - dễ di chuyển
+  - đáng tiền
+  - không đáng tiền
+  - ấm cúng
+  - chuyên nghiệp
+
+service_terms:
+  - nhân viên
+  - lễ tân
+  - buồng phòng
+  - phục vụ
+  - an ninh
+  - dọn phòng
+  - check-in
+  - check-out
+  - giữ hành lý
+  - hỗ trợ hành lý
+
+food_terms:
+  - bữa sáng
+  - ăn sáng ngon
+  - buffet
+  - cà phê
+  - nhà hàng
+  - món ăn
+  - xíu mại
+  - phở
+  - bánh mì
+
+notes:
+  - Đây là lexicon mở rộng thủ công cho miền khách sạn/du lịch.
+  - Có thể tiếp tục bổ sung từ dữ liệu thực tế và phản hồi người dùng.

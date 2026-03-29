@@ -44,7 +44,6 @@ def main():
         print("Review:", sample["review_text"])
         print("Category tags:", res.category_tags)
         print("Descriptor tags:", res.descriptor_tags)
-        print("Hotel type tags:", res.hotel_type_tags)
         print("Matched phrases:", res.matched_phrases)
 
 

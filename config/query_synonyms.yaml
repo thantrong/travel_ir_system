@@ -1,0 +1,126 @@
+# Synonym/alias cho truy vấn tiếng Việt trong bài toán tìm khách sạn
+# Dùng để mở rộng truy vấn và chuẩn hóa ý định người dùng.
+
+synonyms:
+  giá rẻ:
+    - bình dân
+    - giá mềm
+    - tiết kiệm
+    - giá tốt
+  cao cấp:
+    - sang trọng
+    - xa hoa
+    - upscale
+  sạch sẽ:
+    - sạch
+    - gọn gàng
+    - vệ sinh tốt
+  thân thiện:
+    - nhiệt tình
+    - dễ thương
+    - chu đáo
+    - hiếu khách
+  yên tĩnh:
+    - ít ồn
+    - tĩnh lặng
+    - riêng tư
+  view đẹp:
+    - view biển
+    - view núi
+    - view đồi
+    - cảnh đẹp
+    - góc nhìn đẹp
+  gần trung tâm:
+    - ngay trung tâm
+    - sát trung tâm
+    - gần phố
+    - thuận tiện đi lại
+  gần sân bay:
+    - sát sân bay
+    - tiện ra sân bay
+  hồ bơi:
+    - swimming pool
+    - pool
+    - bể bơi
+  bãi đậu xe:
+    - chỗ đậu xe
+    - parking
+    - đỗ xe
+  buffet sáng:
+    - ăn sáng buffet
+    - bữa sáng buffet
+    - đồ ăn sáng buffet
+  gia đình:
+    - family
+    - cho trẻ em
+    - đi cùng con nhỏ
+  cặp đôi:
+    - honeymoon
+    - lãng mạn
+    - dành cho 2 người
+    - cặp đôi
+    - đôi tình nhân
+  công tác:
+    - business
+    - đi làm việc
+    - công tác
+    - đi công tác
+  
+
+location_aliases:
+  tp hồ chí minh:
+    - sài gòn
+    - hcm
+    - hồ chí minh
+  thành phố đà nẵng:
+    - đà nẵng
+    - dn
+  thành phố huế:
+    - huế
+  hà nội:
+    - hn
+  phú quốc:
+    - pq
+  vũng tàu:
+    - vt
+  nha trang:
+    - nt
+  hội an:
+    - hoian
+    - hôi an
+  lâm đồng:
+    - đà lạt
+    - dalat
+    - đàlạt
+  lào cai:
+    - sapa
+    - sa pa
+  quảng ninh:
+    - hạ long
+    - halong
+    - hạlong
+  bình thuận:
+    - mũi né
+    - mui ne
+    - phan thiết
+  bình dương:
+    - bình dương
+    - bd
+  bình phước: 
+    - bình phước
+  đồng nai:
+    - đồng nai
+    - dn
+  đồng tháp:
+    - đồng tháp
+  an giang:
+    - an giang
+  cần thơ:
+    - cần thơ
+  kiên giang:      
+    - kiên giang
+  quảng nam:
+    - quảng nam
+  quảng ngãi:
+    - quảng ngãi
+

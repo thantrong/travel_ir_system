@@ -1,16 +1,19 @@
 # System configuration
+from os import getenv
+from dotenv import load_dotenv
+
+load_dotenv()
+
 app:
   name: "travel_ir_system"
   debug: false
 
 database:
-  mongodb_uri: "mongodb+srv://thanvinhtrongsv:Trong1532000@dbtest.vsj0kew.mongodb.net/?appName=DBTest" # Set private URI locally, do not commit credentials
+  mongodb_uri: "${MONGODB_URI}" # Set private URI locally, do not commit credentials
   db_name: "travel_ir"
   collections:
     places: "places"
     reviews: "reviews"
-    queries: "queries"
-    evaluation_metrics: "evaluation_metrics"
 
 crawler:
   traveloka:
@@ -18,20 +21,14 @@ crawler:
     delay: 3
     headless: false # headless dễ bị Traveloka chặn, ưu tiên ổn định
     timeout: 60000
-    max_concurrent_cities: 2 # chạy tuần tự từng city để giảm bị chặn
-    max_concurrent_hotels: 2 # ưu tiên ổn định (gần v1), có thể tăng 3 sau
+    max_concurrent_cities: 1 # chạy tuần tự từng city để giảm bị chặn
+    max_concurrent_hotels: 6 # ưu tiên ổn định, có thể tăng 3 sau
     block_resource_types: ["image", "media", "font"] # giảm nhiệt/cpu/network
     cooldown_every_hotels: 6
     cooldown_seconds: 20
-    fast_crawl: false
-    fast_min_delay_seconds: 0.2
-    fast_max_delay_seconds: 0.8
     skip_idle_seconds: 20
     detail_task_timeout_seconds: 45 # timeout cứng cho mỗi tab hotel detail, tránh treo tab
-    city_task_timeout_seconds: 300 # timeout mỗi city, quá lâu sẽ bỏ để không treo worker
-    use_region_workers: false # đã tắt worker, ưu tiên crawl tuần tự ổn định
-    max_hotels_per_city: 1 # giới hạn đang chạy (tăng lên 100 khi crawl full)
-    max_reviews_per_hotel: 5 # giới hạn đang chạy (tăng lên 100 khi crawl full)
+    city_task_timeout_seconds: 1000 # timeout mỗi city, quá lâu sẽ bỏ để không treo worker
 
 
 data:

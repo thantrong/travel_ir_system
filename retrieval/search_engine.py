@@ -238,8 +238,7 @@ def search_hybrid(
     top_k: int = 10,
     vector_weight: float = 0.6,
     bm25_weight: float = 0.4,
-    location_boost_factor: float = 1.8,
-    descriptor_mismatch_penalty: float = 0.65,
+    location_boost_factor: float = 2,
     strict_descriptor_filter: bool = True,
     review_pool_size: int = 1500,
 ) -> tuple[list[dict], QueryUnderstandingResult]:
@@ -431,4 +430,12 @@ def search_hybrid(
         })
     # Sort top K Hotel
     results.sort(key=lambda x: x["hybrid_score"], reverse=True)
+
+    # Chữa cháy nhanh: nếu query có location rõ ràng thì chỉ giữ các kết quả đúng vị trí
+    # trong top-K cuối cùng để tránh boost kéo lạc tỉnh / lạc vùng.
+    if qu.detected_location:
+        matched_results = [r for r in results if r.get("location_matched", False)]
+        if matched_results:
+            results = matched_results
+
     return results[:top_k], qu

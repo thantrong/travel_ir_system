@@ -105,13 +105,23 @@ def load_queries(path: Path) -> list[dict]:
 
 
 def load_manual_qrels(path: Path) -> dict[str, dict[str, int]]:
+    """Load annotation pool CSV into a qrels dictionary.
+
+    Accepts multiple column name variants to be robust:
+    - query id column may be 'query_id' or 'Q'
+    - relevance column may be 'relevance' or 'binary_relevance'
+    - hotel id column may be 'hotel_id' or 'docid'
+    """
     qrels: dict[str, dict[str, int]] = {}
     with path.open("r", encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            qid = str(row.get("query_id", "")).strip()
-            hid = str(row.get("hotel_id", "")).strip()
-            rel_raw = str(row.get("relevance", "")).strip()
+            # accept 'Q' or 'query_id'
+            qid = str(row.get("query_id", row.get("Q", ""))).strip()
+            # accept 'hotel_id' or 'docid'
+            hid = str(row.get("Hotel_id", row.get("docid", ""))).strip()
+            # accept 'binary_relevance' first, then 'relevance'
+            rel_raw = str(row.get("Binary_relevance", row.get("Relevance", ""))).strip()
             if not qid or not hid:
                 continue
             try:
@@ -193,15 +203,24 @@ def write_run_file(path: Path, runs: dict[str, list[RunRow]]) -> None:
 
 
 def write_qrels(path: Path, query_defs: list[QueryDef], run_maps: dict[str, dict[str, list[RunRow]]]) -> None:
+    """Write qrels in standard TREC-like TSV: <query_id> 0 <docid> <relevance>.
+
+    Important: keep ALL positive labels from the annotation pool. Do not filter by
+    candidate ids from the runs; otherwise positives can be dropped and the qrels
+    will undercount relevance.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     rows = []
     for q in query_defs:
-        candidate_ids = set(q.relevance_grades)
+        # Use the full relevance map from the annotation pool.
+        # If a doc has no label, it is treated as 0.
+        all_ids = set(q.relevance_grades.keys())
+        # also include any ids present in runs so unlabeled retrieved docs still appear as 0
         for runs in run_maps.values():
-            candidate_ids.update(r.hotel_id for r in runs.get(q.query_id, []))
-        for hid in sorted(candidate_ids):
+            all_ids.update(r.hotel_id for r in runs.get(q.query_id, []))
+        for hid in sorted(all_ids):
             rel = int(q.relevance_grades.get(hid, 0))
-            rows.append(f"{q.query_id}\t{hid}\t{rel}")
+            rows.append(f"{q.query_id}\t0\t{hid}\t{rel}")
     path.write_text("\n".join(rows) + "\n", encoding="utf-8")
 
 

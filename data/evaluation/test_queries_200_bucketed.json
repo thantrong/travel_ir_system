@@ -1,1602 +1,1602 @@
 [
   {
     "query_id": "Q001",
+    "query": "khách sạn 5 sao",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "khách sạn 4 sao đà nẵng"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q002",
+    "query": "resort biển",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "homestay đà nẵng giá rẻ"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q003",
+    "query": "homestay giá rẻ",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "resort đà nẵng có bể bơi"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q004",
+    "query": "villa hồ bơi",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "villa đà nẵng"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q005",
+    "query": "khách sạn tình yêu",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "hostel đà nẵng"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q006",
+    "query": "motel bình dân",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "nhà nghỉ đà nẵng gần biển"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q007",
+    "query": "resort đà nẵng",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "khách sạn đà nẵng gần sân bay"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q008",
+    "query": "homestay sapa",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "khách sạn đà nẵng trung tâm"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q009",
+    "query": "khách sạn hà nội",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "homestay đà nẵng view đẹp"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q010",
+    "query": "bungalow phú quốc",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "resort đà nẵng sát biển"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q011",
+    "query": "khách sạn spa",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "khách sạn 4 sao sapa"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q012",
+    "query": "resort gia đình",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "homestay sapa giá rẻ"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q013",
+    "query": "phòng đôi",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "resort sapa có bể bơi"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q014",
+    "query": "phòng giường đơn",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "villa sapa"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q015",
+    "query": "khách sạn chó mèo",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "hostel sapa"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q016",
+    "query": "resort trọn gói",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "nhà nghỉ sapa gần biển"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q017",
+    "query": "homestay đà lạt",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "khách sạn sapa gần sân bay"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q018",
+    "query": "khách sạn hồ chí minh",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "khách sạn sapa trung tâm"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q019",
+    "query": "villa gần biển",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "homestay sapa view đẹp"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q020",
+    "query": "khách sạn trung tâm",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "resort sapa sát biển"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q021",
+    "query": "khách sạn hội nghị",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "khách sạn 4 sao phú quốc"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q022",
+    "query": "resort sân golf",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "homestay phú quốc giá rẻ"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q023",
+    "query": "homestay thiên nhiên",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "resort phú quốc có bể bơi"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q024",
+    "query": "khách sạn buffet",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "villa phú quốc"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q025",
+    "query": "nhà nghỉ sạch sẽ",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "hostel phú quốc"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q026",
+    "query": "khách sạn sang trọng",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "nhà nghỉ phú quốc gần biển"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q027",
+    "query": "resort yên tĩnh",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "khách sạn phú quốc gần sân bay"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q028",
+    "query": "homestay mộc châu",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "khách sạn phú quốc trung tâm"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q029",
+    "query": "khách sạn nha trang",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "homestay phú quốc view đẹp"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q030",
+    "query": "phòng gia đình",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "resort phú quốc sát biển"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q031",
+    "query": "khách sạn bồn tắm",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "khách sạn 4 sao nha trang"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q032",
+    "query": "resort sinh thái",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "homestay nha trang giá rẻ"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q033",
+    "query": "homestay view núi",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "resort nha trang có bể bơi"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q034",
+    "query": "khách sạn vũng tàu",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "villa nha trang"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q035",
+    "query": "khách sạn công tác",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "hostel nha trang"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q036",
+    "query": "khu nghỉ dưỡng",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "nhà nghỉ nha trang gần biển"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q037",
+    "query": "khách sạn sân bay",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "khách sạn nha trang gần sân bay"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q038",
+    "query": "homestay săn mây",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "khách sạn nha trang trung tâm"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q039",
+    "query": "khách sạn cách âm",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "homestay nha trang view đẹp"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q040",
+    "query": "phòng ban công",
     "bucket_id": "bucket_1_short",
     "bucket_name": "short_1_2_attributes",
-    "bucket_description": "Truy vấn ngắn, thường chỉ 1-2 thuộc tính, ví dụ loại chỗ ở + địa điểm hoặc thêm 1 tiêu chí cơ bản.",
-    "bucket_order": 1,
-    "query": "resort nha trang sát biển"
+    "bucket_description": "Short queries with 1?2 attributes.",
+    "bucket_order": 1
   },
   {
     "query_id": "Q041",
+    "query": "Tôi muốn tìm một resort yên tĩnh ở Phú Quốc cho gia đình có trẻ nhỏ, ưu tiên có bãi biển riêng và câu lạc bộ trẻ em.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tôi muốn tìm một chỗ nghỉ thoải mái, yên tĩnh, có bữa sáng và wifi mạnh cho chuyến công tác ở hà nội"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q042",
+    "query": "Cần thuê một villa 3 phòng ngủ ở Đà Lạt, có bếp nấu ăn và sân vườn rộng để tổ chức tiệc BBQ vào cuối tuần.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Cần homestay lãng mạn cho hai người để trốn cuối tuần, gần điểm ngắm bình minh ở hà nội, không quá xa trung tâm"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q043",
+    "query": "Tìm khách sạn 4 sao ở trung tâm Hà Nội, thuận tiện đi lại, phòng có ban công và phục vụ bữa sáng buffet đa dạng.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Nhóm 6 người cần thuê villa hoặc biệt thự có bếp nấu ăn và khu BBQ ở hà nội, ngân sách vừa phải"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q044",
+    "query": "Cặp đôi muốn đi tuần trăng mật ở Nha Trang, cần tìm resort lãng mạn, có hồ bơi riêng trong phòng và dịch vụ spa massage.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tìm resort gia đình ở hà nội có khu vui chơi trẻ em và hồ bơi cho trẻ em"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q045",
+    "query": "Khách sạn ở Hồ Chí Minh phù hợp cho chuyến công tác, yêu cầu có bàn làm việc lớn, wifi tốc độ cao và phòng họp.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Muốn khách sạn ngay trung tâm hà nội, tiện đi bộ đến nhà hàng, an toàn cho đi một mình"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q046",
+    "query": "Nhóm bạn sinh viên cần tìm homestay giá rẻ ở Vũng Tàu, gần biển, có thể đi bộ ra chợ hải sản và cho phép mang theo thú cưng.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Cần khách sạn ở hà nội có phòng họp nhỏ cho 8 người, wifi mạnh, gần trung tâm triển lãm"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q047",
+    "query": "Gia đình 3 thế hệ cần tìm khu nghỉ dưỡng ở Đà Nẵng, có lối đi cho xe lăn và khu vui chơi nước an toàn cho trẻ em.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tôi cần chỗ ở gần sân bay hà nội, có shuttle và có chính sách nhận phòng sớm"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q048",
+    "query": "Tìm một nơi lưu trú sinh thái ở Ninh Bình, hòa mình vào thiên nhiên, có dịch vụ cho thuê xe đạp và không ồn ào.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tìm place phù hợp để nghỉ dưỡng, có spa, hồ bơi vô cực, view biển ở hà nội"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q049",
+    "query": "Cần phòng khách sạn ở Hải Phòng có view nhìn ra toàn thành phố, thiết kế hiện đại, bồn tắm nằm và quầy bar trên sân thượng.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Muốn homestay có không gian vintage, yên tĩnh, để đọc sách ở hà nội, giá phải chăng"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q050",
+    "query": "Tìm homestay ở Sapa phong cách người dân tộc bản địa, có phục vụ các món ăn đặc sản và view nhìn thẳng xuống ruộng bậc thang.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Cần khách sạn cho tuần trăng mật, phòng có ban công view biển, phục vụ ăn sáng riêng cho cặp đôi ở hà nội"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q051",
+    "query": "Đang tìm một resort 5 sao ở Quy Nhơn có dịch vụ đưa đón sân bay miễn phí, phòng tập gym hiện đại và bãi biển riêng tư.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tôi muốn tìm một chỗ nghỉ thoải mái, yên tĩnh, có bữa sáng và wifi mạnh cho chuyến công tác ở đà lạt"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q052",
+    "query": "Gia đình cần thuê căn hộ dịch vụ hoặc khách sạn có bếp ở Cần Thơ để tiện nấu ăn cho em bé trong chuyến du lịch dài ngày.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Cần homestay lãng mạn cho hai người để trốn cuối tuần, gần điểm ngắm bình minh ở đà lạt, không quá xa trung tâm"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q053",
+    "query": "Tìm khách sạn ở Huế mang kiến trúc cung đình cổ kính, không gian yên bình, có dịch vụ ngâm chân thảo dược.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Nhóm 6 người cần thuê villa hoặc biệt thự có bếp nấu ăn và khu BBQ ở đà lạt, ngân sách vừa phải"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q054",
+    "query": "Cần một khách sạn sang trọng ở Hội An có xe điện đưa đón vào khu phố cổ, hồ bơi ngoài trời và nhà hàng món Âu.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tìm resort gia đình ở đà lạt có khu vui chơi trẻ em và hồ bơi cho trẻ em"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q055",
+    "query": "Tìm chỗ nghỉ dưỡng ở Lâm Đồng xa trung tâm, không có tiếng ồn xe cộ, khí hậu mát mẻ và có vườn trồng rau sạch.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Muốn khách sạn ngay trung tâm đà lạt, tiện đi bộ đến nhà hàng, an toàn cho đi một mình"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q056",
+    "query": "Chuyến đi phượt bằng xe máy cần tìm nhà nghỉ hoặc homestay ở Hà Giang có chỗ đậu xe an toàn và chủ nhà thân thiện.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Cần khách sạn ở đà lạt có phòng họp nhỏ cho 8 người, wifi mạnh, gần trung tâm triển lãm"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q057",
+    "query": "Tìm resort ở Phan Thiết có trung tâm lướt ván diều, nhà hàng hải sản tươi sống và ban công hướng thẳng ra biển.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tôi cần chỗ ở gần sân bay đà lạt, có shuttle và có chính sách nhận phòng sớm"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q058",
+    "query": "Khách sạn ở Quảng Bình gần các khu bảo tồn thiên nhiên, hỗ trợ đặt tour đi hang động và có dịch vụ giặt là giao trong ngày.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tìm place phù hợp để nghỉ dưỡng, có spa, hồ bơi vô cực, view biển ở đà lạt"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q059",
+    "query": "Cần tìm phòng nghỉ qua đêm ở Bắc Ninh sạch sẽ, giá cả phải chăng, tiện đường đi ra các khu công nghiệp.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Muốn homestay có không gian vintage, yên tĩnh, để đọc sách ở đà lạt, giá phải chăng"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q060",
+    "query": "Nhóm gia đình cần tìm villa nguyên căn ở Bà Rịa - Vũng Tàu, có hồ bơi vô cực, dàn karaoke âm thanh tốt.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Cần khách sạn cho tuần trăng mật, phòng có ban công view biển, phục vụ ăn sáng riêng cho cặp đôi ở đà lạt"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q061",
+    "query": "Khách sạn nào ở Hạ Long có dịch vụ đặt tàu tham quan vịnh, bữa sáng miễn phí và phòng phù hợp cho 4 người lớn.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tôi muốn tìm một chỗ nghỉ thoải mái, yên tĩnh, có bữa sáng và wifi mạnh cho chuyến công tác ở huế"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q062",
+    "query": "Tìm kiếm một resort trên núi ở Tam Đảo có bể bơi nước nóng trong nhà và dịch vụ ăn uống phục vụ tận phòng.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Cần homestay lãng mạn cho hai người để trốn cuối tuần, gần điểm ngắm bình minh ở huế, không quá xa trung tâm"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q063",
+    "query": "Tôi cần một nơi yên tĩnh tuyệt đối để viết lách ở Quảng Nam, yêu cầu cửa sổ lớn đón nắng và mạng internet ổn định.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Nhóm 6 người cần thuê villa hoặc biệt thự có bếp nấu ăn và khu BBQ ở huế, ngân sách vừa phải"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q064",
+    "query": "Có khách sạn nào ở Hải Dương cho phép check-in sớm vào lúc 6 giờ sáng mà không tính thêm phí không?",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tìm resort gia đình ở huế có khu vui chơi trẻ em và hồ bơi cho trẻ em"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q065",
+    "query": "Tìm một khu nghỉ dưỡng kết hợp chữa lành ở Hòa Bình, có các lớp học yoga buổi sáng và thực đơn đồ ăn chay.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Muốn khách sạn ngay trung tâm huế, tiện đi bộ đến nhà hàng, an toàn cho đi một mình"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q066",
+    "query": "Cần thuê nguyên một khu homestay ở Cao Bằng cho đoàn khách 20 người, có khu vực sinh hoạt chung và chỗ đốt lửa trại.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Cần khách sạn ở huế có phòng họp nhỏ cho 8 người, wifi mạnh, gần trung tâm triển lãm"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q067",
+    "query": "Khách sạn cao cấp ở Thanh Hóa có sảnh đón khách rộng rãi, phù hợp để tổ chức hội thảo và có bãi đỗ xe cho xe khách 45 chỗ.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tôi cần chỗ ở gần sân bay huế, có shuttle và có chính sách nhận phòng sớm"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q068",
+    "query": "Tôi muốn trải nghiệm ngủ lều glamping cao cấp ở Đắk Lắk, có nệm êm, quạt mát và nhà vệ sinh sạch sẽ khép kín.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tìm place phù hợp để nghỉ dưỡng, có spa, hồ bơi vô cực, view biển ở huế"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q069",
+    "query": "Tìm khách sạn boutique ở Đà Nẵng có thiết kế độc lạ để chụp ảnh check-in, gần các quán cà phê đẹp và có hồ bơi trên mái.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Muốn homestay có không gian vintage, yên tĩnh, để đọc sách ở huế, giá phải chăng"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q070",
+    "query": "Chuyến đi công tác dài ngày cần tìm khách sạn ở Bình Dương có dịch vụ dọn phòng hàng ngày, giặt ủi và có phòng gym nhỏ.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Cần khách sạn cho tuần trăng mật, phòng có ban công view biển, phục vụ ăn sáng riêng cho cặp đôi ở huế"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q071",
+    "query": "Cần tìm một căn bungalow ở Măng Đen (Kon Tum) nằm giữa rừng thông, có lò sưởi bên trong và ban công ngắm sương mù.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tôi muốn tìm một chỗ nghỉ thoải mái, yên tĩnh, có bữa sáng và wifi mạnh cho chuyến công tác ở quảng bình"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q072",
+    "query": "Resort ở Phú Yên có thiết kế theo phong cách làng chài ven biển, cung cấp các lớp học nấu ăn truyền thống cho du khách.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Cần homestay lãng mạn cho hai người để trốn cuối tuần, gần điểm ngắm bình minh ở quảng bình, không quá xa trung tâm"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q073",
+    "query": "Tôi cần một phòng đôi ở Thái Nguyên có cửa sổ cách âm tốt do tôi rất nhạy cảm với tiếng ồn khi ngủ.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Nhóm 6 người cần thuê villa hoặc biệt thự có bếp nấu ăn và khu BBQ ở quảng bình, ngân sách vừa phải"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q074",
+    "query": "Tìm kiếm homestay ở Bến Tre nằm rải rác trong các vườn dừa, có dịch vụ chèo xuồng ba lá và thưởng thức trái cây tại vườn.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tìm resort gia đình ở quảng bình có khu vui chơi trẻ em và hồ bơi cho trẻ em"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q075",
+    "query": "Có chỗ ở nào ở Lạng Sơn cung cấp xe đạp miễn phí để khách tự do khám phá các bản làng xung quanh không?",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Muốn khách sạn ngay trung tâm quảng bình, tiện đi bộ đến nhà hàng, an toàn cho đi một mình"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q076",
+    "query": "Gia đình tôi có người lớn tuổi nên cần tìm khách sạn ở Cà Mau chỉ có tầng trệt hoặc phải có thang máy rộng rãi.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Cần khách sạn ở quảng bình có phòng họp nhỏ cho 8 người, wifi mạnh, gần trung tâm triển lãm"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q077",
+    "query": "Tìm resort sang trọng ở Cam Ranh (Khánh Hòa) có thiết kế thân thiện với môi trường, sử dụng năng lượng mặt trời và hạn chế rác thải nhựa.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tôi cần chỗ ở gần sân bay quảng bình, có shuttle và có chính sách nhận phòng sớm"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q078",
+    "query": "Tôi muốn ở một nơi có phòng xông hơi ướt và khô ngay trong khuôn viên khách sạn ở thành phố Hồ Chí Minh.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Tìm place phù hợp để nghỉ dưỡng, có spa, hồ bơi vô cực, view biển ở quảng bình"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q079",
+    "query": "Cần tìm chỗ lưu trú ở Điện Biên có hướng dẫn viên địa phương am hiểu lịch sử để dẫn đi tham quan các di tích.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Muốn homestay có không gian vintage, yên tĩnh, để đọc sách ở quảng bình, giá phải chăng"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q080",
+    "query": "Tìm một khách sạn tình nhân ở Cần Thơ có trang trí hoa hồng, nến, bồn tắm đôi và đảm bảo sự riêng tư tuyệt đối.",
     "bucket_id": "bucket_2_long_context",
     "bucket_name": "long_context_rich",
-    "bucket_description": "Mô tả dài, có ngữ cảnh, nhiều điều kiện đồng thời như nhóm đi, ngân sách, tiện ích, mục đích chuyến đi.",
-    "bucket_order": 2,
-    "query": "Cần khách sạn cho tuần trăng mật, phòng có ban công view biển, phục vụ ăn sáng riêng cho cặp đôi ở quảng bình"
+    "bucket_description": "Long, context-rich queries with multiple constraints.",
+    "bucket_order": 2
   },
   {
     "query_id": "Q081",
+    "query": "khách sạn gần trung tâm đà nẵng",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn ở lạng sơn"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q082",
+    "query": "đặt phòng resort phú quốc",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "homestay lạng sơn gần chợ"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q083",
+    "query": "khách sạn 3 sao có ăn sáng đà lạt",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "resort lạng sơn"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q084",
+    "query": "homestay view đẹp sapa",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "nhà nghỉ lạng sơn cạnh sông"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q085",
+    "query": "khách sạn giá rẻ vũng tàu",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn lạng sơn ven biển"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q086",
+    "query": "tìm khách sạn ở hà nội",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn ở bắc kạn"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q087",
+    "query": "khách sạn hồ chí minh giá tốt",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "homestay bắc kạn gần chợ"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q088",
+    "query": "resort nha trang sát biển",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "resort bắc kạn"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q089",
+    "query": "nhà nghỉ bình dân cần thơ",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "nhà nghỉ bắc kạn cạnh sông"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q090",
+    "query": "homestay cho nhóm bạn ở đà lạt",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn bắc kạn ven biển"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q091",
+    "query": "khách sạn hải phòng có bãi đỗ xe",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn ở cao bằng"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q092",
+    "query": "villa nguyên căn hội an",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "homestay cao bằng gần chợ"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q093",
+    "query": "khách sạn huế gần sông hương",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "resort cao bằng"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q094",
+    "query": "resort hạ long có hồ bơi",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "nhà nghỉ cao bằng cạnh sông"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q095",
+    "query": "khách sạn đà nẵng view biển",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn cao bằng ven biển"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q096",
+    "query": "nhà nghỉ giá sinh viên hà nội",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn ở hà giang"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q097",
+    "query": "homestay đà lạt gần chợ đêm",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "homestay hà giang gần chợ"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q098",
+    "query": "khách sạn quy nhơn có xe đưa đón",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "resort hà giang"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q099",
+    "query": "resort phan thiết trọn gói",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "nhà nghỉ hà giang cạnh sông"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q100",
+    "query": "khách sạn phú quốc gần chợ đêm",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn hà giang ven biển"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q101",
+    "query": "đặt phòng khách sạn vũng tàu cuối tuần",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn ở lai châu"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q102",
+    "query": "homestay sapa cho 2 người",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "homestay lai châu gần chợ"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q103",
+    "query": "khách sạn hồ chí minh quận trung tâm",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "resort lai châu"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q104",
+    "query": "resort đà nẵng 5 sao",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "nhà nghỉ lai châu cạnh sông"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q105",
+    "query": "khách sạn nha trang giá dưới 1 triệu",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn lai châu ven biển"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q106",
+    "query": "villa đà lạt có bbq",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn ở điện biên"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q107",
+    "query": "khách sạn hà nội có phòng gym",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "homestay điện biên gần chợ"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q108",
+    "query": "homestay ninh bình gần tràng an",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "resort điện biên"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q109",
+    "query": "khách sạn cần thơ bến ninh kiều",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "nhà nghỉ điện biên cạnh sông"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q110",
+    "query": "resort phú quốc có bãi biển riêng",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn điện biên ven biển"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q111",
+    "query": "khách sạn vũng tàu có hồ bơi trên sân thượng",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn ở sơn la"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q112",
+    "query": "nhà nghỉ đà lạt giá rẻ",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "homestay sơn la gần chợ"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q113",
+    "query": "khách sạn hạ long 4 sao",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "resort sơn la"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q114",
+    "query": "homestay mộc châu có vườn hoa",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "nhà nghỉ sơn la cạnh sông"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q115",
+    "query": "khách sạn huế có thuê xe máy",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn sơn la ven biển"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q116",
+    "query": "resort đà lạt yên tĩnh",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn ở yên bái"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q117",
+    "query": "khách sạn nha trang đường trần phú",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "homestay yên bái gần chợ"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q118",
+    "query": "khách sạn hà nội gần hồ gươm",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "resort yên bái"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q119",
+    "query": "homestay hội an phong cách cổ",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "nhà nghỉ yên bái cạnh sông"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q120",
+    "query": "khách sạn đà nẵng có buffet sáng",
     "bucket_id": "bucket_3_geo_diverse",
     "bucket_name": "geo_diverse_priority_minor_provinces",
-    "bucket_description": "Đa dạng vị trí, ưu tiên tỉnh/thành ít phổ biến hoặc ngoài các điểm du lịch lớn để kiểm tra khả năng hiểu địa điểm hiếm.",
-    "bucket_order": 3,
-    "query": "khách sạn yên bái ven biển"
+    "bucket_description": "Geo-diverse normal queries with location emphasis.",
+    "bucket_order": 3
   },
   {
     "query_id": "Q121",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn thanh hóa",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tôi muốn một chỗ ở yên tĩnh, cách ồn ào thành phố, có phòng đọc sách và cà phê gần đó ở đà lạt"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q122",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "resort quảng bình",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Muốn tìm khách sạn cho chuyến công tác 2 ngày ở đà lạt, gần trung tâm có bữa sáng và wifi ổn định"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q123",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "homestay hà giang",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Cần chọn chỗ ở cho nhóm bạn thích party ban đêm nhưng cần nơi ngủ yên ở đà lạt"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q124",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn nghệ an",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tìm nơi phù hợp để tổ chức team building nhỏ ở đà lạt, có sân vườn và chỗ BBQ gần trung tâm"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q125",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "nhà nghỉ lạng sơn",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Muốn homestay phong cách tối giản, có cây xanh và không gian làm việc ở đà lạt"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q126",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn cao bằng",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tìm khách sạn gần bến tàu đến đảo ở đà lạt, tiện cho đi lại và có chỗ gửi hành lý"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q127",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "resort quảng ninh",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Cần khách sạn thân thiện cho gia đình có trẻ nhỏ ở đà lạt, có cũi hoặc giường em bé"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q128",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "homestay hòa bình",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Muốn resort spa, yên tĩnh, thích hợp cho tuần trăng mật ở đà lạt"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q129",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn nam định",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tìm chỗ ở cạnh khu ẩm thực ở đà lạt, thích ăn uống địa phương và đi bộ được"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q130",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn thái bình",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Cần khách sạn có dịch vụ đưa đón sân bay và giữ hành lý ở đà lạt"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q131",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khu nghỉ dưỡng ninh bình",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tôi muốn một chỗ ở yên tĩnh, cách ồn ào thành phố, có phòng đọc sách và cà phê gần đó ở hà nội"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q132",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn hà tĩnh",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Muốn tìm khách sạn cho chuyến công tác 2 ngày ở hà nội, gần trung tâm có bữa sáng và wifi ổn định"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q133",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "resort huế",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Cần chọn chỗ ở cho nhóm bạn thích party ban đêm nhưng cần nơi ngủ yên ở hà nội"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q134",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn quảng trị",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tìm nơi phù hợp để tổ chức team building nhỏ ở hà nội, có sân vườn và chỗ BBQ gần trung tâm"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q135",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "homestay đắk lắk",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Muốn homestay phong cách tối giản, có cây xanh và không gian làm việc ở hà nội"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q136",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn đắk nông",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tìm khách sạn gần bến tàu đến đảo ở hà nội, tiện cho đi lại và có chỗ gửi hành lý"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q137",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "resort gia lai",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Cần khách sạn thân thiện cho gia đình có trẻ nhỏ ở hà nội, có cũi hoặc giường em bé"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q138",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn kon tum",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Muốn resort spa, yên tĩnh, thích hợp cho tuần trăng mật ở hà nội"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q139",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn bình dương",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tìm chỗ ở cạnh khu ẩm thực ở hà nội, thích ăn uống địa phương và đi bộ được"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q140",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "resort đồng nai",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Cần khách sạn có dịch vụ đưa đón sân bay và giữ hành lý ở hà nội"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q141",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn tây ninh",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tôi muốn một chỗ ở yên tĩnh, cách ồn ào thành phố, có phòng đọc sách và cà phê gần đó ở phú quốc"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q142",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "nhà nghỉ bình phước",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Muốn tìm khách sạn cho chuyến công tác 2 ngày ở phú quốc, gần trung tâm có bữa sáng và wifi ổn định"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q143",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "homestay bến tre",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Cần chọn chỗ ở cho nhóm bạn thích party ban đêm nhưng cần nơi ngủ yên ở phú quốc"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q144",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn tiền giang",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tìm nơi phù hợp để tổ chức team building nhỏ ở phú quốc, có sân vườn và chỗ BBQ gần trung tâm"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q145",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn vĩnh long",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Muốn homestay phong cách tối giản, có cây xanh và không gian làm việc ở phú quốc"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q146",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "resort trà vinh",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tìm khách sạn gần bến tàu đến đảo ở phú quốc, tiện cho đi lại và có chỗ gửi hành lý"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q147",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn sóc trăng",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Cần khách sạn thân thiện cho gia đình có trẻ nhỏ ở phú quốc, có cũi hoặc giường em bé"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q148",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "homestay an giang",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Muốn resort spa, yên tĩnh, thích hợp cho tuần trăng mật ở phú quốc"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q149",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn kiên giang",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tìm chỗ ở cạnh khu ẩm thực ở phú quốc, thích ăn uống địa phương và đi bộ được"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q150",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn bạc liêu",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Cần khách sạn có dịch vụ đưa đón sân bay và giữ hành lý ở phú quốc"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q151",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "nhà nghỉ cà mau",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tôi muốn một chỗ ở yên tĩnh, cách ồn ào thành phố, có phòng đọc sách và cà phê gần đó ở huế"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q152",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn đồng tháp",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Muốn tìm khách sạn cho chuyến công tác 2 ngày ở huế, gần trung tâm có bữa sáng và wifi ổn định"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q153",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn hậu giang",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Cần chọn chỗ ở cho nhóm bạn thích party ban đêm nhưng cần nơi ngủ yên ở huế"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q154",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn phú yên",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tìm nơi phù hợp để tổ chức team building nhỏ ở huế, có sân vườn và chỗ BBQ gần trung tâm"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q155",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "resort ninh thuận",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Muốn homestay phong cách tối giản, có cây xanh và không gian làm việc ở huế"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q156",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn bình thuận",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tìm khách sạn gần bến tàu đến đảo ở huế, tiện cho đi lại và có chỗ gửi hành lý"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q157",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn vĩnh phúc",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Cần khách sạn thân thiện cho gia đình có trẻ nhỏ ở huế, có cũi hoặc giường em bé"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q158",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "homestay thái nguyên",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Muốn resort spa, yên tĩnh, thích hợp cho tuần trăng mật ở huế"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q159",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn bắc giang",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Tìm chỗ ở cạnh khu ẩm thực ở huế, thích ăn uống địa phương và đi bộ được"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q160",
-    "bucket_id": "bucket_4_natural_semantics",
+    "query": "khách sạn lai châu",
+    "bucket_id": "bucket_4_natural_language_semantic",
     "bucket_name": "natural_language_semantic_queries",
-    "bucket_description": "Câu truy vấn gần ngôn ngữ tự nhiên, diễn đạt mục tiêu/ngữ nghĩa thay vì chỉ nêu từ khóa.",
-    "bucket_order": 4,
-    "query": "Cần khách sạn có dịch vụ đưa đón sân bay và giữ hành lý ở huế"
+    "bucket_description": "Location-only queries across many provinces.",
+    "bucket_order": 4
   },
   {
     "query_id": "Q161",
+    "query": "Có phòng nào còn trống đêm nay không?",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn hcm"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q162",
+    "query": "Khách sạn có cho check-in sớm không?",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "homestay hcm"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q163",
+    "query": "Tìm chỗ ngủ có ghế tình yêu",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "resort hcm"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q164",
+    "query": "Resort tiêu chuẩn quốc tế 5 sao",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn gần sân bay hcm"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q165",
+    "query": "Khách sạn có dịch vụ đưa đón sân bay",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "villa hcm"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q166",
+    "query": "Cần tìm phòng có bồn tắm sục jacuzzi",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "hostel hcm"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q167",
+    "query": "Khách sạn thân thiện với môi trường",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn giá rẻ hcm"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q168",
+    "query": "Cho tôi xem các khách sạn đang có khuyến mãi",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn sang trọng hcm"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q169",
+    "query": "Ở đây có hỗ trợ trang trí phòng tân hôn không?",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "ở hcm"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q170",
+    "query": "Khách sạn có phục vụ bữa sáng tại giường",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "chỗ nghỉ gần biển hcm"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q171",
+    "query": "Chỗ lưu trú không hút thuốc",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn đà lạt"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q172",
+    "query": "Có xuất hóa đơn đỏ (VAT) cho công ty được không?",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "homestay đà lạt"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q173",
+    "query": "Phòng có netflix không?",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "resort đà lạt"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q174",
+    "query": "Chỗ đỗ xe ô tô 7 chỗ an toàn",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn gần sân bay đà lạt"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q175",
+    "query": "Homestay có bếp sử dụng chung",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "villa đà lạt"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q176",
+    "query": "Resort có tổ chức tiệc tất niên cho công ty",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "hostel đà lạt"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q177",
+    "query": "Khách sạn có phòng thông nhau cho gia đình",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn giá rẻ đà lạt"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q178",
+    "query": "Có nhận trông trẻ theo giờ không?",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn sang trọng đà lạt"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q179",
+    "query": "Wifi mạnh để họp zoom",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "ở đà lạt"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q180",
+    "query": "Bữa sáng có đồ ăn chay không?",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "chỗ nghỉ gần biển đà lạt"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q181",
+    "query": "Phòng có máy sấy tóc và bàn ủi",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn nha trang"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q182",
+    "query": "Khách sạn có phòng gym mở cửa 24/7",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "homestay nha trang"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q183",
+    "query": "Chỗ nghỉ có view ngắm hoàng hôn",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "resort nha trang"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q184",
+    "query": "Có dịch vụ cho thuê lều trại không?",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn gần sân bay nha trang"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q185",
+    "query": "Tôi bị dị ứng nên cần phòng thật sạch sẽ",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "villa nha trang"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q186",
+    "query": "Giá phòng đã bao gồm thuế phí chưa?",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "hostel nha trang"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q187",
+    "query": "Có tính thêm phí khi mang theo em bé 2 tuổi không?",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn giá rẻ nha trang"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q188",
+    "query": "Resort có các môn thể thao dưới nước",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn sang trọng nha trang"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q189",
+    "query": "Phòng có cửa sổ mở ra ngoài trời",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "ở nha trang"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q190",
+    "query": "Có dịch vụ massage đá nóng",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "chỗ nghỉ gần biển nha trang"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q191",
+    "query": "Homestay có chủ nhà biết nói tiếng Anh",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn phú quốc"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q192",
+    "query": "Chỗ ngủ giá sinh viên đi phượt",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "homestay phú quốc"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q193",
+    "query": "Khách sạn có an ninh tốt và lễ tân 24/24",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "resort phú quốc"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q194",
+    "query": "Có xe đạp cho khách sử dụng miễn phí",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn gần sân bay phú quốc"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q195",
+    "query": "Phòng có máy pha cà phê espresso",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "villa phú quốc"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q196",
+    "query": "Khu nghỉ dưỡng có sòng bạc casino",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "hostel phú quốc"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q197",
+    "query": "Có cho phép tổ chức tiệc sinh nhật trong phòng không?",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn giá rẻ phú quốc"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q198",
+    "query": "Phòng tắm có vòi hoa sen áp lực mạnh",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "khách sạn sang trọng phú quốc"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q199",
+    "query": "Khách sạn có nhà hàng đạt sao Michelin",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "ở phú quốc"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   },
   {
     "query_id": "Q200",
+    "query": "Có quầy bar pha chế cocktail ngon",
     "bucket_id": "bucket_5_random_mix",
     "bucket_name": "random_mix_robustness",
-    "bucket_description": "Các truy vấn hỗn hợp/ngẫu nhiên, có thể ngắn, mơ hồ, thiếu thuộc tính hoặc pha nhiều tín hiệu khác nhau để kiểm tra độ bền của mô hình.",
-    "bucket_order": 5,
-    "query": "chỗ nghỉ gần biển phú quốc"
+    "bucket_description": "Mixed and noisy robustness queries.",
+    "bucket_order": 5
   }
 ]

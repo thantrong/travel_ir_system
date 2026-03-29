@@ -15,6 +15,7 @@ sys.path.insert(0, str(project_root))
 from rank_bm25 import BM25Okapi
 
 from database.mongo_connection import get_database
+from nlp.tokenizer import tokenize_vi
 
 
 def _tokenize_text(text: str) -> list[str]:
@@ -51,37 +52,51 @@ def fetch_reviews_for_indexing() -> list[dict]:
                 "types": list(doc.get("types", []) or []),
                 "location": doc.get("location", ""),
                 "rating": doc.get("rating", ""),
+                # backfill hotel_name similar to vector index
+                "hotel_name": doc.get("name", doc.get("hotel_name", "")),
             }
 
     docs = []
-    cursor = reviews_col.find({"tokens": {"$exists": True, "$type": "array"}})
+    cursor = reviews_col.find({"$or": [{"tokens": {"$exists": True, "$type": "array"}}, {"clean_text": {"$exists": True}}]})
     for row in cursor:
         sid = str(row.get("source_hotel_id", "")).strip()
         if sid not in place_map:
             continue
-            
-        tokens = row.get("tokens", [])
-        if not isinstance(tokens, list):
+
+        # Prefer existing token list from preprocessing
+        tokens_field = row.get("tokens")
+        tokens = []
+        if isinstance(tokens_field, list) and tokens_field:
+            tokens = [str(tok).strip() for tok in tokens_field if str(tok).strip()]
+        else:
+            # fallback to tokenize clean_text with Vietnamese tokenizer
+            clean = str(row.get("clean_text", "")).strip()
+            if clean:
+                try:
+                    tokens = tokenize_vi(clean)
+                except Exception:
+                    # fallback to simple regex tokenization
+                    tokens = _tokenize_text(clean)
+
+        if not tokens:
+            # If still no tokens, skip this review for BM25 indexing
             continue
-            
-        valid_tokens = [str(tok).strip() for tok in tokens if str(tok).strip()]
-        if not valid_tokens:
-            continue
-            
+
         docs.append({
             "review_id": str(row.get("_id", row.get("review_id", ""))).strip(),
             "source": row.get("source", ""),
             "source_hotel_id": sid,
+            "hotel_name": place_map[sid].get("hotel_name", ""),
             "types": list(place_map[sid].get("types", []) or []),
             "location": place_map[sid]["location"],
             "rating": place_map[sid].get("rating", row.get("review_rating", "")),
             "review_rating": row.get("review_rating", ""),
             "review_text": row.get("review_text", ""),
-            "tokens": valid_tokens,
+            "tokens": tokens,
             "category_tags": list(row.get("category_tags", []) or []),
             "descriptor_tags": list(row.get("descriptor_tags", []) or []),
         })
-        
+
     return docs
 
 
@@ -91,26 +106,29 @@ def build_index_payload(reviews: list[dict]) -> dict:
 
     for r in reviews:
         doc_tokens = []
-        
-        # PHẦN 3: Field Weighting (types: 2, location: 2, text: 1)
-        _extend_tags(doc_tokens, r.get("types", []), weight=2)
-        
+
+        # PHẦN 3: Field Weighting (hotel name: 3,types: 1, location: 2, text: 1)
+        _extend_tags(doc_tokens, [r.get("hotel_name", "")], weight=3)
+        _extend_tags(doc_tokens, r.get("types", []), weight=1)
+
         loc_tokens = _tokenize_text(r["location"])
-        doc_tokens.extend(loc_tokens * 2)
-        
-        doc_tokens.extend(r["tokens"])
+        doc_tokens.extend(loc_tokens * 2)  # location weight = 2
+
+        # Use tokens provided or precomputed Vietnamese tokenizer tokens
+        doc_tokens.extend(r.get("tokens", []))
 
         # Tags mới được nhúng trực tiếp vào corpus để tăng khả năng khớp intent.
         _extend_tags(doc_tokens, r.get("category_tags", []), weight=2)
         _extend_tags(doc_tokens, r.get("descriptor_tags", []), weight=2)
 
         tokenized_corpus.append(doc_tokens)
-        
+
         # Schema Document Review-level (PHẦN 2)
         documents.append({
             "_id": r["review_id"],
             "review_id": r["review_id"],
             "source_hotel_id": r["source_hotel_id"],
+            "hotel_name": r.get("hotel_name", ""),
             "types": list(r.get("types", []) or []),
             "location": r["location"],
             "review_text": r["review_text"],
@@ -145,7 +163,7 @@ def main():
     reviews = fetch_reviews_for_indexing()
     print(f"Bắt đầu index {len(reviews)} reviews...")
     payload = build_index_payload(reviews)
-    
+
     with output_path.open("wb") as f:
         pickle.dump(payload, f)
 

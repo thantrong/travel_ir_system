@@ -39,6 +39,7 @@ def load_reviews(records: list[dict]) -> tuple[int, int]:
                             "types": normalized_types,
                             "location": row.get("location", ""),
                             "rating": row.get("rating", ""),
+                            "hotel_name": row.get("hotel_name", ""),
                         }
                     },
                     upsert=True,
@@ -60,6 +61,7 @@ def load_reviews(records: list[dict]) -> tuple[int, int]:
         review_doc.pop("place_types", None)
         review_doc.pop("place_type_source", None)
         review_doc.pop("types", None)
+        review_doc.pop("matched_phrases", None)
 
         review_ops.append(
             UpdateOne(

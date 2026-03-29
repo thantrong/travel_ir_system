@@ -1,0 +1,188 @@
+# Location aliases used by query understanding.
+# Keys are canonical locations; values are aliases/forms to match.
+
+locations:
+  phú_quốc:
+    - phú quốc
+    - phu quoc
+    - kiên giang
+  đà_nẵng:
+    - đà nẵng
+    - da nang
+  nha_trang:
+    - nha trang
+    - khánh hòa
+  hạ_long:
+    - hạ long
+    - ha long
+    - quảng ninh
+  vũng_tàu:
+    - vũng tàu
+    - vung tau
+    - bà rịa
+  hội_an:
+    - hội an
+    - hoi an
+    - quảng nam
+  sapa:
+    - sa pa
+    - sapa
+    - lào cai
+  đà_lạt:
+    - đà lạt
+    - da lat
+    - lâm đồng
+  hồ_chí_minh:
+    - hồ chí minh
+    - sài gòn
+    - hcm
+    - saigon
+    - thành phố hồ
+    - quận 1
+  hà_nội:
+    - hà nội
+    - ha noi
+  cần_thơ:
+    - cần thơ
+    - can tho
+  huế:
+    - huế
+    - thừa thiên huế
+  quy_nhơn:
+    - quy nhơn
+    - quynhon
+    - bình định
+  phan_thiết:
+    - phan thiết
+    - phanthiet
+    - bình thuận
+  mũi_né:
+    - mũi né
+    - muine
+  ninh_bình:
+    - ninh bình
+    - tràng an
+    - tam cốc
+  quảng_bình:
+    - quảng bình
+    - đồng hới
+  phong_nha:
+    - phong nha
+    - kẻ bàng
+  hải_phòng:
+    - hải phòng
+    - haiphong
+    - cát bà
+  buôn_ma_thuột:
+    - buôn ma thuột
+    - đắk lắk
+    - bmt
+  tây_ninh:
+    - tây ninh
+    - núi bà đen
+  tuyên_quang:
+    - tuyên quang
+    - tuyen quang
+  cao_bằng:
+    - cao bằng
+    - cao bang
+  lai_châu:
+    - lai châu
+    - lai chau
+  lào_cai:
+    - lào cai
+    - lao cai
+  thái_nguyên:
+    - thái nguyên
+    - thai nguyen
+  điện_biên:
+    - điện biên
+    - dien bien
+    - mường thanh
+    - muong thanh
+  lạng_sơn:
+    - lạng sơn
+    - lang son
+  sơn_la:
+    - sơn la
+    - son la
+    - mộc châu
+    - moc chau
+  phú_thọ:
+    - phú thọ
+    - phu tho
+  bắc_ninh:
+    - bắc ninh
+    - bac ninh
+  hưng_yên:
+    - hưng yên
+    - hung yen
+  thanh_hóa:
+    - thanh hóa
+    - thanh hoa
+    - sầm sơn
+    - sam son
+  nghệ_an:
+    - nghệ an
+    - nghe an
+    - cửa lò
+    - cua lo
+  hà_tĩnh:
+    - hà tĩnh
+    - ha tinh
+  quảng_ngãi:
+    - quảng ngãi
+    - quang ngai
+    - lý sơn
+    - ly son
+  gia_lai:
+    - gia lai
+    - pleiku
+  đắk_lắk:
+    - đắk lắk
+    - dak lak
+    - buôn ma thuột
+    - bmt
+  khánh_hòa:
+    - khánh hòa
+    - khanh hoa
+    - nha trang
+    - cam ranh
+  lâm_đồng:
+    - lâm đồng
+    - lam dong
+    - đà lạt
+    - bảo lộc
+  đồng_nai:
+    - đồng nai
+    - dong nai
+    - biên hòa
+    - bien hoa
+  đồng_tháp:
+    - đồng tháp
+    - dong thap
+    - sa đéc
+    - sa dec
+  an_giang:
+    - an giang
+    - châu đốc
+    - chau doc
+    - núi cấm
+  vĩnh_long:
+    - vĩnh long
+    - vinh long
+  cà_mau:
+    - cà mau
+    - ca mau
+    - đất mũi
+    - dat mui
+  bình_thuận:
+    - bình thuận
+    - binh thuan
+    - phan thiết
+    - mũi né
+  phú_yên:
+    - phú yên
+    - phu yen
+    - tuy hòa
+    - tuy hoa
