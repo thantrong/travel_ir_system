@@ -418,9 +418,355 @@ cities:
   - name: Hội An
     code: HA
     geo_id: "10010308"
-    enabled: true
+    enabled: false
     region: trung
     city_type: coastal
     crawl_priority: 1
     max_hotels_per_city: 200
     max_reviews_per_hotel: 200
+  - name: Bạc Liêu
+    code: BACL
+    geo_id: "10009872"
+    enabled: false
+    region: nam
+    city_type: coastal
+    crawl_priority: 3
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+
+  - name: Bắc Giang
+    code: BG
+    geo_id: "30010599"
+    enabled: false
+    region: bac
+    city_type: plain
+    crawl_priority: 3
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Bắc Kạn
+    code: BKN
+    geo_id: "111"
+    enabled: false
+    region: bac
+    city_type: mountain
+    crawl_priority: 4
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Bến Tre
+    code: BTR
+    geo_id: ""
+    enabled: false
+    region: nam
+    city_type: plain
+    crawl_priority: 3
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+
+  - name: Bình Định
+    code: BDI
+    geo_id: "11"
+    enabled: false
+    region: trung
+    city_type: coastal
+    crawl_priority: 3
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Bình Phước
+    code: BPM
+    geo_id: "11111111"
+    enabled: false
+    region: nam
+    city_type: plain
+    crawl_priority: 4
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Đắk Nông
+    code: DKN
+    geo_id: "11111111"
+    enabled: false
+    region: trung
+    city_type: mountain
+    crawl_priority: 4
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Hà Giang
+    code: HAG
+    geo_id: "11111111"
+    enabled: false
+    region: bac
+    city_type: mountain
+    crawl_priority: 4
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Hà Nam
+    code: HNM
+    geo_id: ""
+    enabled: false
+    region: bac
+    city_type: plain
+    crawl_priority: 3
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Hải Dương
+    code: HDG
+    geo_id: "11111111"
+    enabled: false
+    region: bac
+    city_type: plain
+    crawl_priority: 3
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Hậu Giang
+    code: HGI
+    geo_id: "11111111"
+    enabled: false
+    region: nam
+    city_type: plain
+    crawl_priority: 4
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Hòa Bình
+    code: HOB
+    geo_id: "11111111"
+    enabled: false
+    region: bac
+    city_type: mountain
+    crawl_priority: 4
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Kiên Giang
+    code: KGN
+    geo_id: "11111111"
+    enabled: false
+    region: nam
+    city_type: coastal
+    crawl_priority: 2
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Kon Tum
+    code: KTN
+    geo_id: "11111111"
+    enabled: false
+    region: trung
+    city_type: mountain
+    crawl_priority: 4
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Long An
+    code: LAN
+    geo_id: "11111111"
+    enabled: false
+    region: nam
+    city_type: plain
+    crawl_priority: 3
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Nam Định
+    code: NMD
+    geo_id: "11111111"
+    enabled: false
+    region: bac
+    city_type: plain
+    crawl_priority: 3
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Ninh Thuận
+    code: NTH
+    geo_id: "11111111"
+    enabled: false
+    region: nam
+    city_type: coastal
+    crawl_priority: 4
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Quảng Bình
+    code: QBH
+    geo_id: "11111111"
+    enabled: false
+    region: trung
+    city_type: coastal
+    crawl_priority: 3
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Quảng Nam
+    code: QNM
+    geo_id: "11111111"
+    enabled: false
+    region: trung
+    city_type: coastal
+    crawl_priority: 2
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Sóc Trăng
+    code: STG
+    geo_id: "11111111"
+    enabled: false
+    region: nam
+    city_type: plain
+    crawl_priority: 4
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Thái Bình
+    code: TBH
+    geo_id: "11111111"
+    enabled: false
+    region: bac
+    city_type: plain
+    crawl_priority: 4
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Tiền Giang
+    code: TGI
+    geo_id: "11111111"
+    enabled: false
+    region: nam
+    city_type: plain
+    crawl_priority: 3
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Trà Vinh
+    code: TRV
+    geo_id: "11111111"
+    enabled: false
+    region: nam
+    city_type: plain
+    crawl_priority: 4
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Vĩnh Phúc
+    code: VPF
+    geo_id: "11111111"
+    enabled: false
+    region: bac
+    city_type: plain
+    crawl_priority: 3
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Yên Bái
+    code: YBA
+    geo_id: "11111111"
+    enabled: false
+    region: bac
+    city_type: mountain
+    crawl_priority: 4
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+  - name: Mộc Châu
+    code: MCH
+    geo_id: "11111111"
+    enabled: false
+    region: bac
+    city_type: mountain
+    crawl_priority: 3
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 50
+  - name: Tam Đảo
+    code: TDA
+    geo_id: "11111111"
+    enabled: false
+    region: bac
+    city_type: mountain
+    crawl_priority: 3
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 50
+  - name: Hạ Long
+    code: HLG
+    geo_id: "11111111"
+    enabled: false
+    region: bac
+    city_type: coastal
+    crawl_priority: 2
+    max_hotels_per_city: 200
+    max_reviews_per_hotel: 200
+
+  - name: Đồng Văn
+    code: DOV
+    geo_id: "11111111"
+    enabled: false
+    region: bac
+    city_type: mountain
+    crawl_priority: 4
+    max_hotels_per_city: 50
+    max_reviews_per_hotel: 30
+
+  - name: Quy Nhơn
+    code: QNH
+    geo_id: "11111111"
+    enabled: false
+    region: trung
+    city_type: coastal
+    crawl_priority: 3
+    max_hotels_per_city: 150
+    max_reviews_per_hotel: 150
+
+  - name: Cam Ranh
+    code: CRH
+    geo_id: "11111111"
+    enabled: false
+    region: trung
+    city_type: coastal
+    crawl_priority: 3
+    max_hotels_per_city: 150
+    max_reviews_per_hotel: 150
+
+  - name: Măng Đen
+    code: MGD
+    geo_id: "11111111"
+    enabled: false
+    region: trung
+    city_type: mountain
+    crawl_priority: 4
+    max_hotels_per_city: 50
+    max_reviews_per_hotel: 30
+  - name: Buôn Ma Thuột
+    code: BMT
+    geo_id: "11111111"
+    enabled: false
+    region: trung
+    city_type: mountain
+    crawl_priority: 3
+    max_hotels_per_city: 150
+    max_reviews_per_hotel: 150
+  - name: Phan Thiết
+    code: PHT
+    geo_id: "11111111"
+    enabled: false
+    region: nam
+    city_type: coastal
+    crawl_priority: 2
+    max_hotels_per_city: 150
+    max_reviews_per_hotel: 150
+  - name: Mũi Né
+    code: MNE
+    geo_id: "11111111"
+    enabled: false
+    region: nam
+    city_type: coastal
+    crawl_priority: 2
+    max_hotels_per_city: 100
+    max_reviews_per_hotel: 100
+  - name: Hồ Tràm
+    code: HTR
+    geo_id: "11111111"
+    enabled: false
+    region: nam
+    city_type: coastal
+    crawl_priority: 3
+    max_hotels_per_city: 80
+    max_reviews_per_hotel: 80
+  - name: Côn Đảo
+    code: CDA
+    geo_id: "11111111"
+    enabled: false
+    region: nam
+    city_type: coastal
+    crawl_priority: 4
+    max_hotels_per_city: 50
+    max_reviews_per_hotel: 50
+  - name: Châu Đốc
+    code: CDC
+    geo_id: "11111111"
+    enabled: true
+    region: nam
+    max_hotels_per_city: 5
+    max_reviews_per_hotel: 5

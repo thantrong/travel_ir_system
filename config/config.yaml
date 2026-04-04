@@ -1,9 +1,4 @@
 # System configuration
-from os import getenv
-from dotenv import load_dotenv
-
-load_dotenv()
-
 app:
   name: "travel_ir_system"
   debug: false
@@ -29,7 +24,6 @@ crawler:
     skip_idle_seconds: 20
     detail_task_timeout_seconds: 45 # timeout cứng cho mỗi tab hotel detail, tránh treo tab
     city_task_timeout_seconds: 1000 # timeout mỗi city, quá lâu sẽ bỏ để không treo worker
-
 
 data:
   raw_dir: "data/raw"

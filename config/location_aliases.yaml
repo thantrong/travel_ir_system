@@ -184,3 +184,96 @@ locations:
     - phu yen
     - tuy hòa
     - tuy hoa
+  bắc_giang:
+    - bắc giang
+    - bac giang
+  bắc_kạn:
+    - bắc kạn
+    - bac kan
+  bạc_liêu:
+    - bạc liêu
+    - bac lieu
+  bến_tre:
+    - bến tre
+    - ben tre
+  bình_dương:
+    - bình dương
+    - binh duong
+  bình_định:
+    - bình định
+    - binh dinh
+  bình_phước:
+    - bình phước
+    - binh phuoc
+  đắk_nông:
+    - đắk nông
+    - dak nong
+  hà_giang:
+    - hà giang
+    - ha giang
+  hà_nam:
+    - hà nam
+    - ha nam
+  hải_dương:
+    - hải dương
+    - hai duong
+  hậu_giang:
+    - hậu giang
+    - hau giang
+  hòa_bình:
+    - hòa bình
+    - hoa binh
+  kiên_giang:
+    - kiên giang
+    - kien giang
+  kon_tum:
+    - kon tum
+    - kontum
+  long_an:
+    - long an
+    - long_an
+  nam_định:
+    - nam định
+    - nam dinh
+  ninh_thuận:
+    - ninh thuận
+    - ninh thuan
+  quảng_nam:
+    - quảng nam
+    - quang nam
+  sóc_trăng:
+    - sóc trăng
+    - soc trang
+  thái_bình:
+    - thái bình
+    - thai binh
+  tiền_giang:
+    - tiền giang
+    - tien giang
+  trà_vinh:
+    - trà vinh
+    - tra vinh
+  vĩnh_phúc:
+    - vĩnh phúc
+    - vinh phuc
+  yên_bái:
+    - yên bái
+    - yen bai
+  tam_đảo:
+    - tam đảo
+    - tam dao
+  đồng_văn:
+    - đồng văn
+    - dong van
+  măng_đen:
+    - măng đen
+    - mang den
+  hồ_tràm:
+    - hồ tràm
+    - ho tram
+  côn_đảo:
+    - côn đảo
+    - con dao
+  tuy_hoa:
+    - tuy hòa
+    - tuy hoa
