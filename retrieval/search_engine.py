@@ -13,6 +13,7 @@ from functools import lru_cache
 import numpy as np
 
 from retrieval.query_understanding import understand_query, location_matched, QueryUnderstandingResult
+from retrieval.query_tag_extractor import extract_query_tags
 from summarization import summarize_reviews_tfidf
 from nlp.normalization import normalize_text
 from nlp.tokenizer import tokenize_vi
@@ -35,6 +36,58 @@ _CATEGORY_TEXT_HINTS: dict[str, tuple[str, ...]] = {
     "pet": ("thú cưng", "chó", "mèo", "pet")
 }
 
+_NEGATIVE_DESCRIPTOR_HINTS: dict[str, set[str]] = {
+    "cleanliness": {"sạch", "sạch_sẽ", "vệ_sinh"},
+    "breakfast": {"ăn_sáng", "bữa_sáng", "buffet", "điểm_tâm"},
+    "food_quality": {"đồ_ăn", "ăn_ngon", "ẩm_thực", "nhà_hàng"},
+    "pool": {"hồ_bơi", "bể_bơi", "pool"},
+    "bathroom": {"phòng_tắm", "nhà_tắm", "toilet", "wc"},
+    "staff_friendly": {"nhân_viên", "phục_vụ", "lễ_tân"},
+    "room_spacious": {"phòng_rộng", "rộng_rãi", "giường_rộng"},
+    "view_beach": {"view_biển", "hướng_biển"},
+    "view_mountain": {"view_núi", "hướng_núi"},
+    "near_center": {"trung_tâm", "gần_trung_tâm"},
+    "near_beach": {"gần_biển", "ven_biển"},
+    "quiet_room": {"yên_tĩnh", "ít_ồn", "cách_âm"},
+    "convenience": {"tiện_nghi", "tiện_lợi", "thuận_tiện"},
+    "good_service": {"dịch_vụ", "phục_vụ"},
+    "ambiance": {"đẹp", "decor", "hiện_đại", "sống_ảo", "chụp_hình"},
+}
+
+def _query_forms(tokens: list[str]) -> set[str]:
+    out: set[str] = set()
+    for tok in tokens:
+        low = str(tok).lower().strip()
+        if not low:
+            continue
+        out.add(low)
+        if "_" in low:
+            out.update(p for p in low.split("_") if p)
+    return out
+
+def _required_negative_tags(qu: QueryUnderstandingResult) -> set[str]:
+    if not qu.descriptor_tokens:
+        return set()
+    forms = _query_forms(qu.descriptor_tokens)
+    required: set[str] = set()
+    for tag, hints in _NEGATIVE_DESCRIPTOR_HINTS.items():
+        if forms.intersection(hints):
+            required.add(tag)
+    return required
+
+def _filter_negative_reviews(reviews: list[dict], required_tags: set[str]) -> list[dict]:
+    if not required_tags:
+        return reviews
+    neg_tags = {f"!{t}" for t in required_tags}
+    filtered: list[dict] = []
+    for data in reviews:
+        doc = data.get("doc", {})
+        tags = list(doc.get("descriptor_tags", []) or []) + list(doc.get("category_tags", []) or [])
+        tag_set = {str(t).strip().lower() for t in tags if str(t).strip()}
+        if tag_set.intersection(neg_tags):
+            continue
+        filtered.append(data)
+    return filtered
 
 def load_index(path: Path) -> dict:
     with path.open("rb") as f:
@@ -141,7 +194,9 @@ def _descriptor_supported_by_reviews(descriptor_tokens: list[str], review_texts:
 def _infer_doc_categories(doc: dict) -> set[str]:
     tags = doc.get("category_tags")
     if isinstance(tags, list) and tags:
-        return {str(t).strip().lower() for t in tags if str(t).strip()}
+        cleaned = {str(t).strip().lower() for t in tags if str(t).strip() and not str(t).strip().startswith("!")}
+        if cleaned:
+            return cleaned
 
     # Fallback cũ cho dữ liệu legacy chưa backfill tag.
     text = " ".join([
@@ -332,6 +387,10 @@ def search_hybrid(
         if data["hybrid_score"] > 0:
             valid_reviews.append(data)
 
+    required_negative_tags = _required_negative_tags(qu)
+    if required_negative_tags:
+        valid_reviews = _filter_negative_reviews(valid_reviews, required_negative_tags)
+
     # PHẦN 6: Review Aggregation (Group theo Hotel)
     hotel_groups = defaultdict(list)
     for data in valid_reviews:
@@ -367,19 +426,14 @@ def search_hybrid(
             if strict_descriptor_filter and not descriptor_supported:
                 continue
 
-        # PHẦN 7: POI / category boosting dựa trên tags đã dán sẵn
+        # PHẦN 7: POI / category boosting - BỎ VÌ ĐÃ CÓ FLASHTEXT FILTER
+        # FlashText đã filter reviews có tags nên không cần boost nữa
         query_categories = {c.lower() for c in qu.detected_categories}
         doc_categories = set()
         for rr in top_reviews:
-            doc_categories.update({str(t).lower() for t in rr["doc"].get("category_tags", []) if str(t).strip()})
+            doc_categories.update({str(t).lower() for t in rr["doc"].get("category_tags", []) if str(t).strip() and not str(t).strip().startswith("!")})
         if not doc_categories:
             doc_categories = _infer_doc_categories(first_doc)
-
-        if query_categories:
-            if query_categories.intersection(doc_categories):
-                hotel_score *= 1.15
-            else:
-                hotel_score *= 0.85
 
         # PHẦN 8: Location Boosting
         loc_matched = False
@@ -420,24 +474,14 @@ def search_hybrid(
 
         # Debug info: tracking score qua từng bước boost
         score_after_aggregation = sum(r["hybrid_score"] for r in top_reviews)
-        score_after_category = score_after_aggregation
         score_after_location = score_after_aggregation
         score_after_type = score_after_aggregation
         
-        # Reverse category boost
-        if query_categories:
-            if query_categories.intersection(doc_categories):
-                score_after_category = score_after_aggregation / 1.15
-            else:
-                score_after_category = score_after_aggregation / 0.85
-        else:
-            score_after_category = score_after_aggregation
-            
         # Reverse location boost
         if qu.detected_location and loc_matched:
-            score_after_location = score_after_category / location_boost_factor
+            score_after_location = score_after_aggregation / location_boost_factor
         else:
-            score_after_location = score_after_category
+            score_after_location = score_after_aggregation
             
         # Reverse type boost
         type_boost_keywords_found = [type_query_keyword] if type_query_keyword else []
@@ -456,7 +500,6 @@ def search_hybrid(
             "hotel_name": first_doc.get("hotel_name", ""),
             "review_count": len(r_list),
             "score_after_aggregation": round(score_after_aggregation, 4),
-            "score_after_category_boost": round(score_after_category, 4),
             "score_after_location_boost": round(score_after_location, 4),
             "score_final": round(hotel_score, 4),
             "hotel_acc_types": list(hotel_acc_types),
@@ -464,7 +507,6 @@ def search_hybrid(
             "query_categories_detected": list(query_categories),
             "doc_categories": list(doc_categories),
             "location_matched": loc_matched,
-            "category_matched": bool(query_categories.intersection(doc_categories)) if query_categories else False,
             "descriptor_filtered": strict_descriptor_filter and not descriptor_supported,
             "descriptor_supported": descriptor_supported,
             "descriptor_tokens_used": tokens_to_check,
@@ -487,7 +529,6 @@ def search_hybrid(
             "bm25_score": float(max_b_score),
             "location_matched": loc_matched,
             "descriptor_matched": descriptor_supported,
-            "category_matched": bool(query_categories.intersection(doc_categories)) if query_categories else False,
             "top_reviews": top_review_texts[:3],
             "debug_info": debug_info,
         })

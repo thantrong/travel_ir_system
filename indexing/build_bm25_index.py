@@ -33,7 +33,7 @@ def _normalize_tag_token(tag: str) -> list[str]:
 def _extend_tags(doc_tokens: list[str], tags: list[str], weight: int = 1) -> None:
     for tag in tags or []:
         token = str(tag or "").strip().lower().replace(" ", "_")
-        if not token:
+        if not token or token.startswith("!"):
             continue
         doc_tokens.extend([token] * weight)
 

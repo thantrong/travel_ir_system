@@ -62,6 +62,8 @@ def load_reviews(records: list[dict]) -> tuple[int, int]:
         review_doc.pop("place_type_source", None)
         review_doc.pop("types", None)
         review_doc.pop("matched_phrases", None)
+        review_doc.pop("contexts", None)
+        review_doc.pop("descriptor_polarity", None)
 
         review_ops.append(
             UpdateOne(

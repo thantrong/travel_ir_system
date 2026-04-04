@@ -1,0 +1,155 @@
+**GIẢI THÍCH CHI TIẾT LUỒNG PIPELINE**
+
+---
+
+## PHẦN 1: OFFLINE PREPROCESSING (Chạy 1 lần khi có data mới)
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ 1. Crawl data (traveloka_crawler.py)                    │
+│    → traveloka_raw_final.json (19 reviews)              │
+│    → traveloka_checkpoint.jsonl (76 reviews)            │
+└────────────────────┬────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────┐
+│ 2. main.py - Preprocessing Pipeline                     │
+│    ┌──────────────────────────────────────────────┐     │
+│    │ a. clean_review_text()                       │     │
+│    │    → Loại bỏ HTML, ký tự đặc biệt            │     │
+│    │                                              │     │
+│    │ b. normalize_text()                          │     │
+│    │    → Chuẩn hóa unicode, lowercase            │     │
+│    │                                              │     │
+│    │ c. tokenize_vi()                             │     │
+│    │    → Tách từ tiếng Việt                      │     │
+│    │                                              │     │
+│    │ d. remove_stopwords()                        │     │
+│    │    → Loại bỏ từ dừng (là, và, của...)        │     │
+│    │                                              │     │
+│    │ e. tag_record() ← review_tagger.py           │     │
+│    │    ┌────────────────────────────────────┐    │     │
+│    │    │ 1. FlashText matching              │    │     │
+│    │    │    → Tìm category tags nhanh       │    │     │
+│    │    │                                    │    │     │
+│    │    │ 2. Descriptor phrase matching      │    │     │
+│    │    │    → Tìm từ mô tả + position       │    │     │
+│    │    │                                    │    │     │
+│    │    │ 3. Subject validation              │    │     │
+│    │    │    → "phòng nhỏ" ✓, "cháu nhỏ" ✗   │    │     │
+│    │    │                                    │    │     │
+│    │    │ 4. Extract context ±5 tokens       │    │     │
+│    │    │    → "ban công không được sạch"    │    │     │
+│    │    │                                    │    │     │
+│    │    │ 5. PhoBERT predict sentiment       │    │     │
+│    │    │    → context → POS/NEG/NEU         │    │     │
+│    │    │                                    │    │     │
+│    │    │ 6. Conflict resolution             │    │     │
+│    │    │    → positive + negative = negative│    │     │
+│    │    └────────────────────────────────────┘    │     │
+│    │                                              │     │
+│    │ f. Lưu kết quả                               │     │
+│    │    → reviews_processed.json (75 reviews)     │     │
+│    └──────────────────────────────────────────────┘     │
+└────────────────────┬────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────┐
+│ 3. database/data_loader.py - Load vào MongoDB           │
+│    ┌──────────────────────────────────────────────┐     │
+│    │ Places collection:                           │     │
+│    │   {_id, types, location, rating, hotel_name} │     │
+│    │                                              │     │
+│    │ Reviews collection:                          │     │
+│    │   {_id, review_text, clean_text, tokens,     │     │
+│    │    category_tags, descriptor_tags}           │     │
+│    └──────────────────────────────────────────────┘     │
+└────────────────────┬────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────┐
+│ 4. indexing/ - Build indexes                            │
+│    → bm25_index.pkl (BM25 scores)                       │
+│    → vector_index.pkl (Sentence embeddings)             │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+## PHẦN 2: ONLINE SEARCH (Chạy khi user search)
+
+```
+User query: "khách sạn gần biển giá rẻ ở Vũng Tàu"
+                     ↓
+┌─────────────────────────────────────────────────────────┐
+│ 1. query_tag_extractor.py - FlashText extract tags      │
+│    → category_tags: ["beach", "budget"]                 │
+│    → descriptor_tags: []                                │
+└────────────────────┬────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────┐
+│ 2. query_understanding.py - Phân tích query             │
+│    → detected_location: "Vũng Tàu"                      │
+│    → detected_categories: ["beach", "budget"]           │
+│    → core_tokens: ["khách", "sạn", "biển", "giá", "rẻ"] │
+└────────────────────┬────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────┐
+│ 3. _build_candidate_mask() - Filter sơ bộ               │
+│    ┌────────────────────────────────────────────┐       │
+│    │ Location match: "Vũng Tàu" ✓               │       │
+│    │ Category match: "beach" HOẶC "budget" ✓    │       │
+│    │ → mask = [True, False, True, ...]          │       │
+│    │ → Còn ~5,000 reviews (từ 50,000)           │       │
+│    └────────────────────────────────────────────┘       │
+└────────────────────┬────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────┐
+│ 4. BM25 Retrieval                                       │
+│    → Score 5,000 reviews với query tokens               │
+│    → bm25_scores = [0.5, 0.3, 0.8, ...]                 │
+└────────────────────┬────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────┐
+│ 5. Vector Retrieval (Sentence Transformer)              │
+│    → Encode query → vector                              │
+│    → Cosine similarity với 5,000 embeddings             │
+│    → vector_scores = [0.7, 0.4, 0.6, ...]               │
+└────────────────────┬────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────┐
+│ 6. Hybrid Scoring                                       │
+│    hybrid = 0.4 * vector + 0.6 * bm25                   │
+│    → hybrid_scores = [0.62, 0.36, 0.68, ...]            │
+└────────────────────┬────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────┐
+│ 7. _filter_negative_reviews()                           │
+│    → Loại reviews có !cleanliness nếu query yêu cầu     │
+│      "sạch sẽ"                                          │
+└────────────────────┬────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────┐
+│ 8. Review Aggregation - Group by hotel                  │
+│    ┌────────────────────────────────────────────┐       │
+│    │ Hotel A: [review1(0.8), review2(0.6), ...] │       │
+│    │ Hotel B: [review3(0.7), review4(0.5), ...] │       │
+│    │ → hotel_score = sum(top 5 reviews)         │       │
+│    └────────────────────────────────────────────┘       │
+└────────────────────┬────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────┐
+│ 9. Boosting                                             │
+│    ┌────────────────────────────────────────────┐       │
+│    │ a. Category boost: ×1.15 nếu match tags    │       │
+│    │ b. Location boost: ×1.8 nếu match location │       │
+│    │ c. Type boost: ×1.2 nếu match type         │       │
+│    └────────────────────────────────────────────┘       │
+└────────────────────┬────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────────────────────┐
+│ 10. Sort + Return Top K                                 │
+│     → Hotel A: 3.45                                     │
+│     → Hotel B: 2.87                                     │
+│     → Hotel C: 2.34                                     │
+└─────────────────────────────────────────────────────────┘
+```
+
+---

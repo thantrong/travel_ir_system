@@ -1,0 +1,2750 @@
+[
+  {
+    "review_id": "traveloka_9000000796940_126228038",
+    "rating": "4.2",
+    "category_tags": [],
+    "descriptor_tags": [
+      "room_spacious",
+      "ambiance"
+    ],
+    "descriptor_polarity": {
+      "room_spacious": "positive",
+      "ambiance": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "rộng_rãi",
+        "tag": "room_spacious",
+        "rule_polarity": "positive",
+        "context": "phòng rộng_rãi thoải_mái tiệm nghi , hành_lang",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "thoải_mái",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": "phòng rộng_rãi thoải_mái tiệm nghi , hành_lang tới",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          2,
+          3
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000000796940_125054373",
+    "rating": "5.0",
+    "category_tags": [],
+    "descriptor_tags": [
+      "cleanliness",
+      "room_spacious",
+      "staff_friendly",
+      "!balcony"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive",
+      "room_spacious": "positive",
+      "staff_friendly": "positive",
+      "balcony": "negative"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "phòng sạch_sẽ , rộng_rãi , các bạn",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "rộng_rãi",
+        "tag": "room_spacious",
+        "rule_polarity": "positive",
+        "context": "phòng sạch_sẽ , rộng_rãi , các bạn nhân_viên nhiệt_tình",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          3,
+          4
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "rộng_rãi , các bạn nhân_viên nhiệt_tình vui_vẻ . có 1 điểm",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          8,
+          9
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhỏ",
+        "tag": "room_spacious",
+        "rule_polarity": "negative",
+        "context": "vui_vẻ . có 1 điểm nhỏ là hình gắn với phòng_không",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          14,
+          15
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "ban công",
+        "tag": "balcony",
+        "rule_polarity": "positive",
+        "context": "không có hướng ra ban công bánh_xe , chỉ có phòng",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          30,
+          32
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000000796940_124417111",
+    "rating": "4.5",
+    "category_tags": [
+      "family",
+      "budget"
+    ],
+    "descriptor_tags": [
+      "convenience",
+      "staff_friendly",
+      "!staff_friendly",
+      "!minibar"
+    ],
+    "descriptor_polarity": {
+      "convenience": "positive",
+      "staff_friendly": "negative",
+      "minibar": "negative"
+    },
+    "contexts": [
+      {
+        "descriptor": "tiện_nghi",
+        "tag": "convenience",
+        "rule_polarity": "positive",
+        "context": "khách_sạn mới_tinh , đầy_đủ tiện_nghi . view xịn miễn bàn",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          4,
+          5
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhân_viên thân_thiện",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": ". giá hợp_lý . nhân_viên thân_thiện , nhiệt_tình . chưa từng",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          14,
+          16
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "hợp_lý . nhân_viên thân_thiện , nhiệt_tình . chưa từng thấy khách_sạn",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          17,
+          18
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "chu_đáo",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "trang_bị cả cuộn giấy không chu_đáo thế_này . đặc_biệt , tưởng",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          29,
+          30
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "tủ_lạnh",
+        "tag": "minibar",
+        "rule_polarity": "positive",
+        "context": "phòng 1 giường cũng trang_bị tủ_lạnh gia_đình nhưng tủ_trống , không",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          53,
+          54
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000000796940_124296346",
+    "rating": "4.2",
+    "category_tags": [],
+    "descriptor_tags": [
+      "ambiance",
+      "cleanliness",
+      "staff_friendly",
+      "elevator"
+    ],
+    "descriptor_polarity": {
+      "ambiance": "positive",
+      "cleanliness": "positive",
+      "staff_friendly": "positive",
+      "elevator": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "đẹp",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": "phòng view đẹp , sạch_sẽ nhân_viên thân_thiện có",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          2,
+          3
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "phòng view đẹp , sạch_sẽ nhân_viên thân_thiện có thang_máy .",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          4,
+          5
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhân_viên thân_thiện",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "view đẹp , sạch_sẽ nhân_viên thân_thiện có thang_máy .",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          5,
+          7
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "có thang_máy + thang_máy",
+        "tag": "elevator|elevator",
+        "rule_polarity": "positive",
+        "context": ", sạch_sẽ nhân_viên thân_thiện có thang_máy .",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          7,
+          9
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000000796940_123868497",
+    "rating": "4.2",
+    "category_tags": [],
+    "descriptor_tags": [
+      "cleanliness",
+      "staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive",
+      "staff_friendly": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "phòng sạch_sẽ , nhân_viên nhiệt_tình , thân_thiện",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "phòng sạch_sẽ , nhân_viên nhiệt_tình , thân_thiện , dễ gần",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          4,
+          5
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000002577262_1860368037327143728",
+    "rating": "3.8",
+    "category_tags": [],
+    "descriptor_tags": [
+      "!convenience"
+    ],
+    "descriptor_polarity": {
+      "convenience": "negative"
+    },
+    "contexts": [
+      {
+        "descriptor": "bất_tiện",
+        "tag": "convenience",
+        "rule_polarity": "negative",
+        "context": "lùa đóng lại thôi , bất_tiện khi đi vệ_sinh .",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          20,
+          21
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000002577262_1858179270816317192",
+    "rating": "4.7",
+    "category_tags": [],
+    "descriptor_tags": [
+      "cleanliness"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "phòng sạch_sẽ , đầy_đủ thiết_bị cần_thiết .",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000002577262_1854208329541236757",
+    "rating": "4.7",
+    "category_tags": [],
+    "descriptor_tags": [
+      "staff_friendly",
+      "cleanliness"
+    ],
+    "descriptor_polarity": {
+      "staff_friendly": "positive",
+      "cleanliness": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "nhân_viên rất thân_thiện , nhiệt_tình , phòng sạch_sẽ và vị_trí",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          4,
+          5
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "thân_thiện , nhiệt_tình , phòng sạch_sẽ và vị_trí thuận_lợi để đi",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          7,
+          8
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000005501941_1845973042164943957",
+    "rating": "4.7",
+    "category_tags": [],
+    "descriptor_tags": [
+      "cleanliness",
+      "ambiance"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive",
+      "ambiance": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "phòng sạch_sẽ , đẹp và mới lắm",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "đẹp",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": "phòng sạch_sẽ , đẹp và mới lắm ạ",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          3,
+          4
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000005501941_1845131484293252412",
+    "rating": "4.2",
+    "category_tags": [
+      "center"
+    ],
+    "descriptor_tags": [
+      "security",
+      "staff_friendly",
+      "ambiance",
+      "!room_spacious",
+      "!hot_water",
+      "!elevator",
+      "!convenience"
+    ],
+    "descriptor_polarity": {
+      "security": "positive",
+      "staff_friendly": "positive",
+      "ambiance": "positive",
+      "room_spacious": "negative",
+      "hot_water": "negative",
+      "elevator": "negative",
+      "convenience": "negative"
+    },
+    "contexts": [
+      {
+        "descriptor": "bảo_vệ",
+        "tag": "security",
+        "rule_polarity": "positive",
+        "context": "ưu_điểm : chú bảo_vệ quá nhiệt_tình . a lễ_tân",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          3,
+          4
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "ưu_điểm : chú bảo_vệ quá nhiệt_tình . a lễ_tân cũng thoải_mái",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          5,
+          6
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "thoải_mái",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": "nhiệt_tình . a lễ_tân cũng thoải_mái , mình trả phòng lúc",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          10,
+          11
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhỏ",
+        "tag": "room_spacious",
+        "rule_polarity": "negative",
+        "context": "nên còn thiếu_sót , cửa_sổ nhỏ , ko kéo rèm lên",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          39,
+          40
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nước nóng",
+        "tag": "hot_water",
+        "rule_polarity": "positive",
+        "context": "cả tối ko có nước nóng , tắm lạnh quá kinh_khủng",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          51,
+          53
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "có thang_máy + thang_máy",
+        "tag": "elevator|elevator",
+        "rule_polarity": "positive",
+        "context": "kinh_khủng , ksan ko có thang_máy , vị_trí xa trung_tâm nên",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          61,
+          63
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "bất_tiện",
+        "tag": "convenience",
+        "rule_polarity": "negative",
+        "context": "trung_tâm nên đi đâu cũng bất_tiện , nhà_xe còn ko biết",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          71,
+          72
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000005501941_1844494686143646996",
+    "rating": "4.7",
+    "category_tags": [],
+    "descriptor_tags": [
+      "staff_friendly",
+      "cleanliness",
+      "convenience"
+    ],
+    "descriptor_polarity": {
+      "staff_friendly": "positive",
+      "cleanliness": "positive",
+      "convenience": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "nhân_viên nhiệt_tình , thân_thiện , phòng_ốc sạch_sẽ",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "nhiệt_tình , thân_thiện , phòng_ốc sạch_sẽ , dịch_vụ thuê xe thuận_tiện",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          6,
+          7
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "thuận_tiện",
+        "tag": "convenience",
+        "rule_polarity": "positive",
+        "context": "sạch_sẽ , dịch_vụ thuê xe thuận_tiện , các bạn nhân_viên ở",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          11,
+          12
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000005501941_1842319602264067468",
+    "rating": "3.1",
+    "category_tags": [],
+    "descriptor_tags": [
+      "!room_spacious"
+    ],
+    "descriptor_polarity": {
+      "room_spacious": "negative"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhỏ",
+        "tag": "room_spacious",
+        "rule_polarity": "negative",
+        "context": "ngày chưa đụng tới , nhỏ và lúc vào có mùi",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          8,
+          9
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000005501941_1828810285747541268",
+    "rating": "4.7",
+    "category_tags": [
+      "quiet"
+    ],
+    "descriptor_tags": [
+      "soundproofing",
+      "cleanliness",
+      "ambiance"
+    ],
+    "descriptor_polarity": {
+      "soundproofing": "positive",
+      "cleanliness": "positive",
+      "ambiance": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "yên_tĩnh",
+        "tag": "soundproofing",
+        "rule_polarity": "positive",
+        "context": "yên_tĩnh , phòng_ốc mới sạch_sẽ ,",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          0,
+          1
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "yên_tĩnh , phòng_ốc mới sạch_sẽ , chỉ chủ thân_thiện thoải_mái",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          4,
+          5
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "thoải_mái",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": "sạch_sẽ , chỉ chủ thân_thiện thoải_mái",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          9,
+          10
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000000966728_1854454336520735035",
+    "rating": "4.1",
+    "category_tags": [],
+    "descriptor_tags": [
+      "staff_friendly",
+      "cleanliness",
+      "ambiance",
+      "parking"
+    ],
+    "descriptor_polarity": {
+      "staff_friendly": "positive",
+      "cleanliness": "positive",
+      "ambiance": "positive",
+      "parking": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "là nhân_viên cực_kỳ thân_thiện và nhiệt_tình hỗ_trợ khách . phòng_ốc sạch_sẽ",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          17,
+          18
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "nhiệt_tình hỗ_trợ khách . phòng_ốc sạch_sẽ , gọn_gàng , tạo cảm_giác",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          22,
+          23
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "thoải_mái",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": ", gọn_gàng , tạo cảm_giác thoải_mái . đặc_biệt , phía sau",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          28,
+          29
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "bãi đậu xe",
+        "tag": "parking",
+        "rule_polarity": "positive",
+        "context": ", phía sau có bãi đậu xe rất rộng_rãi , cực_kỳ",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          35,
+          38
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000000966728_1831541102768821065",
+    "rating": "3.2",
+    "category_tags": [],
+    "descriptor_tags": [],
+    "descriptor_polarity": {},
+    "contexts": []
+  },
+  {
+    "review_id": "traveloka_9000000966728_1831541069108491648",
+    "rating": "3.2",
+    "category_tags": [],
+    "descriptor_tags": [],
+    "descriptor_polarity": {},
+    "contexts": []
+  },
+  {
+    "review_id": "traveloka_9000000966728_1830537060079912651",
+    "rating": "4.4",
+    "category_tags": [],
+    "descriptor_tags": [],
+    "descriptor_polarity": {},
+    "contexts": []
+  },
+  {
+    "review_id": "traveloka_9000000966728_1823914180507344972",
+    "rating": "4.5",
+    "category_tags": [],
+    "descriptor_tags": [
+      "ambiance",
+      "cleanliness",
+      "breakfast"
+    ],
+    "descriptor_polarity": {
+      "ambiance": "positive",
+      "cleanliness": "positive",
+      "breakfast": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "đẹp",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": "phòng đẹp , sạch_sẽ , chưa ăn",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "phòng đẹp , sạch_sẽ , chưa ăn sáng nên",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          3,
+          4
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "ăn sáng",
+        "tag": "breakfast",
+        "rule_polarity": "positive",
+        "context": ", sạch_sẽ , chưa ăn sáng nên chưa đánh_giá món ăn",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          6,
+          8
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000007531753_1859691575199663294",
+    "rating": "3.1",
+    "category_tags": [],
+    "descriptor_tags": [
+      "cleanliness",
+      "!soundproofing"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive",
+      "soundproofing": "negative"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "ổn . ban_công không được sạch . giá phòng so với",
+        "phobert_sentiment": "neutral",
+        "token_range": [
+          10,
+          11
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "cách âm + cách âm không tốt",
+        "tag": "soundproofing|soundproofing",
+        "rule_polarity": "negative",
+        "context": "khá cao nhưng cách âm không tốt . rất ồn .",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          21,
+          25
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "ồn",
+        "tag": "soundproofing",
+        "rule_polarity": "negative",
+        "context": "âm không tốt . rất ồn . khách đi bên ngoài",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          27,
+          28
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "ồn",
+        "tag": "soundproofing",
+        "rule_polarity": "negative",
+        "context": "hành_lang bên trong nghe rất ồn . khó ngủ",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          38,
+          39
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000000417345_124383034",
+    "rating": "5.0",
+    "category_tags": [],
+    "descriptor_tags": [
+      "breakfast",
+      "staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "breakfast": "positive",
+      "staff_friendly": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "bữa sáng + sáng ngon",
+        "tag": "breakfast|breakfast",
+        "rule_polarity": "positive",
+        "context": "mới , sạch_sẽ , bữa sáng ngon , nhân_viên thân_thiện và",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          5,
+          8
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhân_viên thân_thiện",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "bữa sáng ngon , nhân_viên thân_thiện và chu_đáo . sẽ tiếp_tục",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          9,
+          11
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "chu_đáo",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "ngon , nhân_viên thân_thiện và chu_đáo . sẽ tiếp_tục quay lại",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          12,
+          13
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000000417345_124278003",
+    "rating": "5.0",
+    "category_tags": [],
+    "descriptor_tags": [],
+    "descriptor_polarity": {},
+    "contexts": []
+  },
+  {
+    "review_id": "traveloka_9000000417345_124095641",
+    "rating": "4.8",
+    "category_tags": [
+      "quiet",
+      "business"
+    ],
+    "descriptor_tags": [
+      "soundproofing",
+      "cleanliness",
+      "ambiance",
+      "staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "soundproofing": "positive",
+      "cleanliness": "positive",
+      "ambiance": "positive",
+      "staff_friendly": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "yên_tĩnh",
+        "tag": "soundproofing",
+        "rule_polarity": "positive",
+        "context": "đi công_tác như tôi . yên_tĩnh , sạch_sẽ , phòng rất",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          11,
+          12
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "như tôi . yên_tĩnh , sạch_sẽ , phòng rất đẹp .",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          13,
+          14
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "đẹp",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": ", sạch_sẽ , phòng rất đẹp . nhân_viên tất_cả các ca",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          17,
+          18
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "tất_cả các ca đều thân_thiện nhiệt_tình . sẽ là sự lựa_chọn",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          25,
+          26
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000000417345_124093121",
+    "rating": "4.8",
+    "category_tags": [],
+    "descriptor_tags": [
+      "staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "staff_friendly": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "chu_đáo",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "kit . các receptionist super chu_đáo 👍 🏻",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          26,
+          27
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_1859271634062421180",
+    "rating": "3.1",
+    "category_tags": [],
+    "descriptor_tags": [
+      "!parking"
+    ],
+    "descriptor_polarity": {
+      "parking": "negative"
+    },
+    "contexts": [
+      {
+        "descriptor": "khó tìm chỗ đỗ + đỗ xe",
+        "tag": "parking|parking",
+        "rule_polarity": "negative",
+        "context": "phố cổ nên khó tìm chỗ đỗ xe xuống hành_lý .",
+        "phobert_sentiment": "neutral",
+        "token_range": [
+          15,
+          20
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "đỗ xe",
+        "tag": "parking",
+        "rule_polarity": "positive",
+        "context": "rất bất_tiện về đậu đỗ xe cho khách lưu_trú người việt_nam",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          27,
+          29
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_1852097351561264524",
+    "rating": "5.0",
+    "category_tags": [],
+    "descriptor_tags": [
+      "staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "staff_friendly": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "bún_cá và bún_ngang . nhân_viên nhiệt_tình",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          14,
+          15
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_1844828152261526844",
+    "rating": "5.0",
+    "category_tags": [
+      "budget"
+    ],
+    "descriptor_tags": [
+      "cleanliness",
+      "staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive",
+      "staff_friendly": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "lại hợp_lý vậy , phòng_ốc sạch_sẽ , nhân_viên thân_thiện , một",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          7,
+          8
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhân_viên thân_thiện",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": ", phòng_ốc sạch_sẽ , nhân_viên thân_thiện , một trải_nghiệm tuyệt_vời",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          9,
+          11
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_1843117247290156482",
+    "rating": "4.2",
+    "category_tags": [],
+    "descriptor_tags": [],
+    "descriptor_polarity": {},
+    "contexts": []
+  },
+  {
+    "review_id": "traveloka_1000000308502_1839496741606398850",
+    "rating": "4.4",
+    "category_tags": [],
+    "descriptor_tags": [],
+    "descriptor_polarity": {},
+    "contexts": []
+  },
+  {
+    "review_id": "traveloka_1000000308502_1839496577567169410",
+    "rating": "4.4",
+    "category_tags": [
+      "center"
+    ],
+    "descriptor_tags": [
+      "convenience"
+    ],
+    "descriptor_polarity": {
+      "convenience": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "bất_tiện",
+        "tag": "convenience",
+        "rule_polarity": "negative",
+        "context": ", vui_chơi . chỉ mỗi bất_tiện là muốn đón taxi phải",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          16,
+          17
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_1837756530416435013",
+    "rating": "4.5",
+    "category_tags": [],
+    "descriptor_tags": [],
+    "descriptor_polarity": {},
+    "contexts": []
+  },
+  {
+    "review_id": "traveloka_1000000308502_1836962031832414939",
+    "rating": "4.4",
+    "category_tags": [],
+    "descriptor_tags": [],
+    "descriptor_polarity": {},
+    "contexts": []
+  },
+  {
+    "review_id": "traveloka_1000000308502_1835595516064306196",
+    "rating": "4.2",
+    "category_tags": [],
+    "descriptor_tags": [
+      "cleanliness",
+      "staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive",
+      "staff_friendly": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "phòng sạch_sẽ nhân_viên thân_thiện",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhân_viên thân_thiện",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "phòng sạch_sẽ nhân_viên thân_thiện",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          2,
+          4
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_1828374511454524692",
+    "rating": "3.0",
+    "category_tags": [],
+    "descriptor_tags": [
+      "!breakfast"
+    ],
+    "descriptor_polarity": {
+      "breakfast": "negative"
+    },
+    "contexts": [
+      {
+        "descriptor": "ăn sáng",
+        "tag": "breakfast",
+        "rule_polarity": "positive",
+        "context": "chỗ ăn sáng có gián_chạy xung_quanh đĩa trong",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          1,
+          3
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_127733749",
+    "rating": "3.0",
+    "category_tags": [],
+    "descriptor_tags": [],
+    "descriptor_polarity": {},
+    "contexts": []
+  },
+  {
+    "review_id": "traveloka_1000000308502_126972567",
+    "rating": "4.2",
+    "category_tags": [],
+    "descriptor_tags": [
+      "cleanliness"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "phòng sạch_sẽ , gọn_gàng . nhân_viên dễ_thương",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_126919606",
+    "rating": "4.2",
+    "category_tags": [
+      "center"
+    ],
+    "descriptor_tags": [],
+    "descriptor_polarity": {},
+    "contexts": []
+  },
+  {
+    "review_id": "traveloka_1000000308502_126875993",
+    "rating": "4.7",
+    "category_tags": [],
+    "descriptor_tags": [
+      "ambiance",
+      "room_spacious",
+      "good_service"
+    ],
+    "descriptor_polarity": {
+      "ambiance": "positive",
+      "room_spacious": "positive",
+      "good_service": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "đẹp",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": "phòng đẹp , rộng_rãi , dịch_vụ tốt",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "rộng_rãi",
+        "tag": "room_spacious",
+        "rule_polarity": "positive",
+        "context": "phòng đẹp , rộng_rãi , dịch_vụ tốt , nhân_viên",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          3,
+          4
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "dịch_vụ tốt",
+        "tag": "good_service",
+        "rule_polarity": "positive",
+        "context": "đẹp , rộng_rãi , dịch_vụ tốt , nhân_viên lịch_sự thân_thiện ,",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          5,
+          7
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_126848297",
+    "rating": "2.5",
+    "category_tags": [],
+    "descriptor_tags": [
+      "elevator",
+      "!breakfast"
+    ],
+    "descriptor_polarity": {
+      "elevator": "positive",
+      "breakfast": "negative"
+    },
+    "contexts": [
+      {
+        "descriptor": "thang_máy",
+        "tag": "elevator",
+        "rule_polarity": "positive",
+        "context": "cuối . khách_sạn bị hư thang_máy cũng hay hư . ăn",
+        "phobert_sentiment": "neutral",
+        "token_range": [
+          9,
+          10
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "ăn sáng",
+        "tag": "breakfast",
+        "rule_polarity": "positive",
+        "context": "cũng hay hư . ăn sáng thì có một món rất",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          14,
+          16
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_126840534",
+    "rating": "4.8",
+    "category_tags": [],
+    "descriptor_tags": [
+      "ambiance"
+    ],
+    "descriptor_polarity": {
+      "ambiance": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "đẹp",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": "khách_sạn đẹp giá_cả hợp_lí_điều quan_trọng là nhân_viên",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_126795955",
+    "rating": "4.5",
+    "category_tags": [],
+    "descriptor_tags": [
+      "room_spacious",
+      "staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "room_spacious": "positive",
+      "staff_friendly": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhỏ",
+        "tag": "room_spacious",
+        "rule_polarity": "negative",
+        "context": "nằm trong 1 con hẻm nhỏ tọa_lạc ngay quận hoàn_kiếm ,",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          6,
+          7
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": ". nhân_viên khách_sạn cũng rất nhiệt_tình và giúp_đỡ khách khi cần",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          39,
+          40
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_126759143",
+    "rating": "2.7",
+    "category_tags": [],
+    "descriptor_tags": [
+      "!air_conditioning"
+    ],
+    "descriptor_polarity": {
+      "air_conditioning": "negative"
+    },
+    "contexts": [
+      {
+        "descriptor": "điều hòa",
+        "tag": "air_conditioning",
+        "rule_polarity": "positive",
+        "context": "to_tát gì . nhưng điều hòa thì kêu tiếng to cả",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          59,
+          61
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_126758771",
+    "rating": "4.2",
+    "category_tags": [],
+    "descriptor_tags": [
+      "ambiance",
+      "cleanliness"
+    ],
+    "descriptor_polarity": {
+      "ambiance": "positive",
+      "cleanliness": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "đẹp",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": "phòng giống như hình .. đẹp và sạch_sẽ",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          5,
+          6
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "như hình .. đẹp và sạch_sẽ",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          7,
+          8
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_126728602",
+    "rating": "4.4",
+    "category_tags": [],
+    "descriptor_tags": [],
+    "descriptor_polarity": {},
+    "contexts": []
+  },
+  {
+    "review_id": "traveloka_1000000308502_126727108",
+    "rating": "2.5",
+    "category_tags": [],
+    "descriptor_tags": [
+      "!cleanliness",
+      "!good_service",
+      "parking"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "negative",
+      "good_service": "negative",
+      "parking": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "phòng_không được dọn sạch_sẽ . thái_độ phục_vụ thiếu chuyên_nghiệp",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          3,
+          4
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "chuyên_nghiệp",
+        "tag": "good_service",
+        "rule_polarity": "positive",
+        "context": "sạch_sẽ . thái_độ phục_vụ thiếu chuyên_nghiệp . không xứng_đáng với 4",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          8,
+          9
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "gửi xe",
+        "tag": "parking",
+        "rule_polarity": "positive",
+        "context": "phải mất 40 k gửi xe .",
+        "phobert_sentiment": "neutral",
+        "token_range": [
+          29,
+          31
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_126658320",
+    "rating": "4.7",
+    "category_tags": [],
+    "descriptor_tags": [
+      "!room_spacious",
+      "ambiance"
+    ],
+    "descriptor_polarity": {
+      "room_spacious": "negative",
+      "ambiance": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhỏ",
+        "tag": "room_spacious",
+        "rule_polarity": "negative",
+        "context": "phòng nhỏ , xe ô_tô không đi",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "đẹp",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": "vào được nhưng phòng rất đẹp giá phòng ổn phòng mình",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          12,
+          13
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_126652792",
+    "rating": "2.9",
+    "category_tags": [
+      "center"
+    ],
+    "descriptor_tags": [],
+    "descriptor_polarity": {},
+    "contexts": []
+  },
+  {
+    "review_id": "traveloka_1000000308502_126651991",
+    "rating": "4.2",
+    "category_tags": [],
+    "descriptor_tags": [
+      "cleanliness"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "khách_sạn mới sạch_sẽ tuy_nhiên phòng tắm hay bị",
+        "phobert_sentiment": "neutral",
+        "token_range": [
+          2,
+          3
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_126648304",
+    "rating": "2.9",
+    "category_tags": [],
+    "descriptor_tags": [
+      "!elevator"
+    ],
+    "descriptor_polarity": {
+      "elevator": "negative"
+    },
+    "contexts": [
+      {
+        "descriptor": "thang_máy",
+        "tag": "elevator",
+        "rule_polarity": "positive",
+        "context": "thang_máy hư , thực_tế khác xa",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          0,
+          1
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_126647439",
+    "rating": "3.0",
+    "category_tags": [],
+    "descriptor_tags": [
+      "!staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "staff_friendly": "negative"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "nhân_viên không nhiệt_tình chăm_sóc khách_hàng . khách có",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          2,
+          3
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_126638122",
+    "rating": "3.0",
+    "category_tags": [],
+    "descriptor_tags": [
+      "!ambiance"
+    ],
+    "descriptor_polarity": {
+      "ambiance": "negative"
+    },
+    "contexts": [
+      {
+        "descriptor": "cũ",
+        "tag": "ambiance",
+        "rule_polarity": "negative",
+        "context": "bắt tôi chuyển sang phòng cũ hơn , mặc_dù tôi có",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          41,
+          42
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_126619974",
+    "rating": "4.8",
+    "category_tags": [],
+    "descriptor_tags": [
+      "cleanliness"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "phòng mới sạch_sẽ , có dịch_vụ thuê xe_máy",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          2,
+          3
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_1000000308502_126589857",
+    "rating": "4.8",
+    "category_tags": [],
+    "descriptor_tags": [],
+    "descriptor_polarity": {},
+    "contexts": []
+  },
+  {
+    "review_id": "traveloka_1000000308502_103998644",
+    "rating": "2.6",
+    "category_tags": [],
+    "descriptor_tags": [
+      "!room_spacious",
+      "cleanliness"
+    ],
+    "descriptor_polarity": {
+      "room_spacious": "negative",
+      "cleanliness": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhỏ",
+        "tag": "room_spacious",
+        "rule_polarity": "negative",
+        "context": "phòng nhỏ mà sàn nhà chưa sạch",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "sạch",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "nhỏ mà sàn nhà chưa sạch . thanks",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          6,
+          7
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1860789931812603621",
+    "rating": "5.0",
+    "category_tags": [],
+    "descriptor_tags": [
+      "convenience"
+    ],
+    "descriptor_polarity": {
+      "convenience": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "tiện_nghi",
+        "tag": "convenience",
+        "rule_polarity": "positive",
+        "context": "ở đây tiện_nghi và dễ kết_nối với các",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          2,
+          3
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1850739636396103428",
+    "rating": "3.2",
+    "category_tags": [],
+    "descriptor_tags": [],
+    "descriptor_polarity": {},
+    "contexts": []
+  },
+  {
+    "review_id": "traveloka_9000001072385_1845419222223562583",
+    "rating": "5.0",
+    "category_tags": [],
+    "descriptor_tags": [
+      "staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "staff_friendly": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhân_viên thân_thiện",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "nhân_viên thân_thiện nhiệt_tình",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          0,
+          2
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "nhân_viên thân_thiện nhiệt_tình",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          2,
+          3
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1844828180327704407",
+    "rating": "4.2",
+    "category_tags": [],
+    "descriptor_tags": [
+      "convenience"
+    ],
+    "descriptor_polarity": {
+      "convenience": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "tiện_nghi",
+        "tag": "convenience",
+        "rule_polarity": "positive",
+        "context": "giá_cả hợp_lí , đầy_đủ tiện_nghi",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          4,
+          5
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1842232568344227167",
+    "rating": "4.7",
+    "category_tags": [],
+    "descriptor_tags": [
+      "cleanliness",
+      "convenience",
+      "staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive",
+      "convenience": "positive",
+      "staff_friendly": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "đây 3 đêm , phòng_ốc sạch_sẽ , đồ_dùng đầy_đủ tiện_nghi (",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          9,
+          10
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "tiện_nghi",
+        "tag": "convenience",
+        "rule_polarity": "positive",
+        "context": "phòng_ốc sạch_sẽ , đồ_dùng đầy_đủ tiện_nghi ( có máy giặt_sấy tiện_lợi",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          13,
+          14
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "tại hà_nội cho mình rất nhiệt_tình , tạo cho mình cảm_giác",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          71,
+          72
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1840126305755988263",
+    "rating": "5.0",
+    "category_tags": [
+      "budget"
+    ],
+    "descriptor_tags": [
+      "convenience",
+      "cleanliness"
+    ],
+    "descriptor_polarity": {
+      "convenience": "positive",
+      "cleanliness": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "tiện_nghi",
+        "tag": "convenience",
+        "rule_polarity": "positive",
+        "context": "2 phòng ngủ , full tiện_nghi , sạch_sẽ gọn_gàng xinh_xắn cực_kỳ",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          20,
+          21
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "ngủ , full tiện_nghi , sạch_sẽ gọn_gàng xinh_xắn cực_kỳ",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          22,
+          23
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1839794783084617353",
+    "rating": "4.2",
+    "category_tags": [],
+    "descriptor_tags": [
+      "cleanliness"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "thứ như một căn_hộ , sạch_sẽ , chỉ tiếc phòng cửa_sổ",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          16,
+          17
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1835541468597467891",
+    "rating": "4.8",
+    "category_tags": [
+      "family"
+    ],
+    "descriptor_tags": [
+      "convenience",
+      "air_conditioning"
+    ],
+    "descriptor_polarity": {
+      "convenience": "positive",
+      "air_conditioning": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "tiện_nghi",
+        "tag": "convenience",
+        "rule_polarity": "positive",
+        "context": "hai phòng ngủ , đầy_đủ tiện_nghi có 3 máy điều hòa",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          19,
+          20
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "điều hòa",
+        "tag": "air_conditioning",
+        "rule_polarity": "positive",
+        "context": "tiện_nghi có 3 máy điều hòa , 1 máy giặt ,",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          23,
+          25
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1833163755427475056",
+    "rating": "4.7",
+    "category_tags": [
+      "center"
+    ],
+    "descriptor_tags": [
+      "ambiance"
+    ],
+    "descriptor_polarity": {
+      "ambiance": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "đẹp",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": ", 10 ₫ , cảnh đẹp gần trung_tâm",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          11,
+          12
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1833094424652941351",
+    "rating": "5.0",
+    "category_tags": [],
+    "descriptor_tags": [],
+    "descriptor_polarity": {},
+    "contexts": []
+  },
+  {
+    "review_id": "traveloka_9000001072385_1831116909279462028",
+    "rating": "4.1",
+    "category_tags": [],
+    "descriptor_tags": [
+      "staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "staff_friendly": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhân_viên thân_thiện",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "nhân_viên thân_thiện tốt_bụng",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          0,
+          2
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1827005246697640712",
+    "rating": "4.5",
+    "category_tags": [],
+    "descriptor_tags": [
+      "ambiance",
+      "cleanliness",
+      "convenience"
+    ],
+    "descriptor_polarity": {
+      "ambiance": "positive",
+      "cleanliness": "positive",
+      "convenience": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "đẹp",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": "phòng đẹp , mới sạch_sẽ , vị_trí",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "phòng đẹp , mới sạch_sẽ , vị_trí thuận_lợi , tiện_nghi",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          4,
+          5
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "tiện_nghi",
+        "tag": "convenience",
+        "rule_polarity": "positive",
+        "context": "sạch_sẽ , vị_trí thuận_lợi , tiện_nghi đầy_đủ , lần sau mình",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          9,
+          10
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "đẹp",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": "kế bên nhiều quán cf đẹp , quán ăn thuận_lợi ,",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          26,
+          27
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1824041914617300792",
+    "rating": "5.0",
+    "category_tags": [],
+    "descriptor_tags": [
+      "staff_friendly",
+      "cleanliness",
+      "convenience"
+    ],
+    "descriptor_polarity": {
+      "staff_friendly": "positive",
+      "cleanliness": "positive",
+      "convenience": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "nhân_viên nhiệt_tình , phòng sạch_sẽ , đầy_đủ",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "nhân_viên nhiệt_tình , phòng sạch_sẽ , đầy_đủ tiện_nghi .",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          4,
+          5
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "tiện_nghi",
+        "tag": "convenience",
+        "rule_polarity": "positive",
+        "context": ", phòng sạch_sẽ , đầy_đủ tiện_nghi .",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          7,
+          8
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1815414448395916286",
+    "rating": "4.5",
+    "category_tags": [
+      "family"
+    ],
+    "descriptor_tags": [
+      "cleanliness",
+      "convenience",
+      "staff_friendly",
+      "elevator"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive",
+      "convenience": "positive",
+      "staff_friendly": "positive",
+      "elevator": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "phòng rất sạch_sẽ , đầy_đủ và tiện_nghi ,",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          2,
+          3
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "tiện_nghi",
+        "tag": "convenience",
+        "rule_polarity": "positive",
+        "context": "rất sạch_sẽ , đầy_đủ và tiện_nghi , đầy_đủ bát_đũa , bếp",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          6,
+          7
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "như ở nhà . nhân_viên nhiệt_tình và dễ_thương . gia_đình có",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          21,
+          22
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "thang_máy",
+        "tag": "elevator",
+        "rule_polarity": "positive",
+        "context": "khi ông bị lạc khỏi thang_máy bạn lễ_tân_hoàng anh đã giúp",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          37,
+          38
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1812526328968121014",
+    "rating": "4.5",
+    "category_tags": [],
+    "descriptor_tags": [
+      "staff_friendly",
+      "cleanliness"
+    ],
+    "descriptor_polarity": {
+      "staff_friendly": "positive",
+      "cleanliness": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "lễ_tân thân_thiện nhiệt_tình . phòng sạch .. sẽ",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          2,
+          3
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "sạch",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "lễ_tân thân_thiện nhiệt_tình . phòng sạch .. sẽ quay lại",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          5,
+          6
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1811429740593026264",
+    "rating": "4.4",
+    "category_tags": [],
+    "descriptor_tags": [
+      "staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "staff_friendly": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "í , hỗ_trợ mình rất nhiệt_tình luôn nha . mình gặp",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          16,
+          17
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1803265105012470995",
+    "rating": "5.0",
+    "category_tags": [],
+    "descriptor_tags": [
+      "staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "staff_friendly": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "chị nhân_viên rất thân_thiện và nhiệt_tình , lần sau đến hà_nội",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          5,
+          6
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_1798296639982554079",
+    "rating": "3.1",
+    "category_tags": [],
+    "descriptor_tags": [
+      "!housekeeping"
+    ],
+    "descriptor_polarity": {
+      "housekeeping": "negative"
+    },
+    "contexts": [
+      {
+        "descriptor": "dọn phòng",
+        "tag": "housekeeping",
+        "rule_polarity": "positive",
+        "context": "đến check in chưa dọn phòng xong , . phòng muỗi",
+        "phobert_sentiment": "negative",
+        "token_range": [
+          10,
+          12
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_128021377",
+    "rating": "4.7",
+    "category_tags": [],
+    "descriptor_tags": [
+      "room_spacious",
+      "ambiance",
+      "cleanliness",
+      "convenience",
+      "staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "room_spacious": "positive",
+      "ambiance": "positive",
+      "cleanliness": "positive",
+      "convenience": "positive",
+      "staff_friendly": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "rộng_rãi",
+        "tag": "room_spacious",
+        "rule_polarity": "positive",
+        "context": "phòng rộng_rãi thoải_mái , cực_kỳ sạch_sẽ ,",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "thoải_mái",
+        "tag": "ambiance",
+        "rule_polarity": "positive",
+        "context": "phòng rộng_rãi thoải_mái , cực_kỳ sạch_sẽ , đầy_đủ",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          2,
+          3
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "phòng rộng_rãi thoải_mái , cực_kỳ sạch_sẽ , đầy_đủ tiện_nghi . lễ_tân",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          5,
+          6
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "tiện_nghi",
+        "tag": "convenience",
+        "rule_polarity": "positive",
+        "context": ", cực_kỳ sạch_sẽ , đầy_đủ tiện_nghi . lễ_tân rất nhiệt_tình ,",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          8,
+          9
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "đầy_đủ tiện_nghi . lễ_tân rất nhiệt_tình , thân_thiện . mình sẽ",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          12,
+          13
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_127843863",
+    "rating": "4.8",
+    "category_tags": [
+      "quiet"
+    ],
+    "descriptor_tags": [
+      "cleanliness",
+      "convenience",
+      "staff_friendly",
+      "soundproofing"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive",
+      "convenience": "positive",
+      "staff_friendly": "positive",
+      "soundproofing": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "điểm cộng : - phòng sạch_sẽ , giống_hình , đầy_đủ tiện_nghi",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          5,
+          6
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "tiện_nghi",
+        "tag": "convenience",
+        "rule_polarity": "positive",
+        "context": "sạch_sẽ , giống_hình , đầy_đủ tiện_nghi cho việc ở ngắn và",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          10,
+          11
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "ngày - nhân_viên dễ_thương , nhiệt_tình - phòng_ban công_thoáng mát do",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          22,
+          23
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "yên_tĩnh",
+        "tag": "soundproofing",
+        "rule_polarity": "positive",
+        "context": "do gần hồ , không_gian yên_tĩnh do ít xe_cộ qua_lại -",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          32,
+          33
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "thuận_tiện",
+        "tag": "convenience",
+        "rule_polarity": "positive",
+        "context": "nổi_tiếng ở hà_nội , đi_lại thuận_tiện góp_ý : - phòng có",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          48,
+          49
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_127836500",
+    "rating": "4.8",
+    "category_tags": [
+      "center"
+    ],
+    "descriptor_tags": [
+      "cleanliness",
+      "convenience",
+      "staff_friendly"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive",
+      "convenience": "positive",
+      "staff_friendly": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "trung_tâm di_chuyển tiện_lợi , phòng sạch_sẽ đầy_đủ tiện_nghi , đặc_biệt phục_vụ",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          8,
+          9
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "tiện_nghi",
+        "tag": "convenience",
+        "rule_polarity": "positive",
+        "context": "tiện_lợi , phòng sạch_sẽ đầy_đủ tiện_nghi , đặc_biệt phục_vụ lễ_tân rất",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          10,
+          11
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "chu_đáo",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": ", đặc_biệt phục_vụ lễ_tân rất chu_đáo bữa mình checking và check",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          16,
+          17
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_127823113",
+    "rating": "4.8",
+    "category_tags": [],
+    "descriptor_tags": [
+      "cleanliness",
+      "staff_friendly",
+      "convenience"
+    ],
+    "descriptor_polarity": {
+      "cleanliness": "positive",
+      "staff_friendly": "positive",
+      "convenience": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": "phòng sạch_sẽ , thoáng_mát , nhân_viên siêu_siêu",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          1,
+          2
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": ", nhân_viên siêu_siêu dễ_thương và nhiệt_tình . phòng có đầy_đủ tiện_nghi",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          9,
+          10
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "tiện_nghi",
+        "tag": "convenience",
+        "rule_polarity": "positive",
+        "context": "nhiệt_tình . phòng có đầy_đủ tiện_nghi , ở dài ngày rất",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          14,
+          15
+        ],
+        "subject_validated": true
+      }
+    ]
+  },
+  {
+    "review_id": "traveloka_9000001072385_127745145",
+    "rating": "4.8",
+    "category_tags": [],
+    "descriptor_tags": [
+      "staff_friendly",
+      "cleanliness",
+      "room_spacious"
+    ],
+    "descriptor_polarity": {
+      "staff_friendly": "positive",
+      "cleanliness": "positive",
+      "room_spacious": "positive"
+    },
+    "contexts": [
+      {
+        "descriptor": "nhiệt_tình",
+        "tag": "staff_friendly",
+        "rule_polarity": "positive",
+        "context": "vị_trí rất thuận_lợi , nhân_viên nhiệt_tình , phòng sạch_sẽ , rộng_rãi",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          5,
+          6
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "sạch_sẽ",
+        "tag": "cleanliness",
+        "rule_polarity": "positive",
+        "context": ", nhân_viên nhiệt_tình , phòng sạch_sẽ , rộng_rãi và như hình",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          8,
+          9
+        ],
+        "subject_validated": true
+      },
+      {
+        "descriptor": "rộng_rãi",
+        "tag": "room_spacious",
+        "rule_polarity": "positive",
+        "context": "nhiệt_tình , phòng sạch_sẽ , rộng_rãi và như hình , rất",
+        "phobert_sentiment": "positive",
+        "token_range": [
+          10,
+          11
+        ],
+        "subject_validated": true
+      }
+    ]
+  }
+]

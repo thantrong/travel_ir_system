@@ -167,6 +167,31 @@ category_tags:
       - riêng tư
     negative:
       - gia đình đông người
+  nightlife:
+    positive:
+      - gần bar
+      - gần pub
+      - phố tây
+      - quán bar
+      - khu vui chơi
+      - về đêm
+      - đi chơi đêm
+    negative:
+      - xa khu vui chơi
+      - không có gì về đêm
+  shopping:
+    positive:
+      - gần chợ
+      - gần mall
+      - gần siêu thị
+      - mua sắm
+      - cửa hàng
+      - tiện mua sắm
+      - gần trung tâm thương mại
+    negative:
+      - xa chợ
+      - không có chỗ mua sắm
+      - khó mua đồ
 
 
 descriptor_tags:
@@ -211,6 +236,21 @@ descriptor_tags:
       - dơ
       - xuống cấp
       - ẩm mốc
+  bathroom:
+    positive:
+      - phòng tắm sạch
+      - nhà tắm sạch
+      - toilet sạch
+      - wc sạch
+      - phòng tắm rộng
+      - nhà tắm rộng
+    negative:
+      - phòng tắm bẩn
+      - nhà tắm bẩn
+      - toilet bẩn
+      - wc bẩn
+      - phòng tắm tệ
+      - nhà tắm tệ
   staff_friendly:
     positive:
       - nhân viên thân thiện
@@ -265,35 +305,6 @@ descriptor_tags:
       - hướng đồi
     negative:
       - không có view núi
-  near_center:
-    positive:
-      - gần trung tâm
-      - ngay trung tâm
-      - sát trung tâm
-      - tiện đi bộ
-      - gần chợ đêm
-      - gần phố đi bộ
-    negative:
-      - xa trung tâm
-  near_beach:
-    positive:
-      - gần biển
-      - sát biển
-      - ven biển
-      - đi bộ ra biển
-      - bãi biển gần
-    negative:
-      - xa biển
-  near_attraction:
-    positive:
-      - gần điểm tham quan
-      - gần chợ đêm
-      - gần phố cổ
-      - gần bãi sau
-      - gần hồ xuân hương
-      - gần địa điểm du lịch
-    negative:
-      - xa điểm tham quan
   good_service:
     positive:
       - dịch vụ tốt
@@ -336,6 +347,195 @@ descriptor_tags:
       - cũ
       - xấu
       - xuống cấp
+  parking:
+    positive:
+      - bãi đậu xe
+      - chỗ đậu xe
+      - bãi giữ xe
+      - gửi xe
+      - đỗ xe
+      - parking
+      - bãi xe rộng
+      - miễn phí xe
+    negative:
+      - không có chỗ đậu xe
+      - khó tìm chỗ đỗ
+      - phí gửi xe cao
+  balcony:
+    positive:
+      - ban công
+      - ban công rộng
+      - ban công đẹp
+      - lan can view
+      - cửa sổ lớn
+    negative:
+      - không có ban công
+      - ban công nhỏ
+      - ban công bẩn
+  wifi:
+    positive:
+      - wifi mạnh
+      - wifi nhanh
+      - internet tốt
+      - wifi miễn phí
+      - kết nối tốt
+    negative:
+      - wifi yếu
+      - wifi chậm
+      - không có wifi
+      - mất mạng
+  elevator:
+    positive:
+      - thang máy
+      - có thang máy
+      - thang máy hoạt động
+    negative:
+      - không có thang máy
+      - thang máy hỏng
+  hot_water:
+    positive:
+      - nước nóng
+      - bình nóng lạnh
+      - vòi sen nước nóng
+    negative:
+      - không có nước nóng
+      - nước lạnh
+      - nước nóng yếu
+      - hỏng nước nóng
+  air_conditioning:
+    positive:
+      - điều hòa
+      - máy lạnh
+      - điều hòa mát
+      - điều hòa tốt
+      - máy lạnh mát
+    negative:
+      - điều hòa nóng
+      - máy lạnh hỏng
+      - không mát
+      - ồn máy lạnh
+  minibar:
+    positive:
+      - tủ lạnh
+      - minibar
+      - minibar đầy đủ
+      - nước miễn phí
+    negative:
+      - không có tủ lạnh
+      - minibar trống
+  soundproofing:
+    positive:
+      - cách âm tốt
+      - cách âm
+      - yên tĩnh
+    negative:
+      - cách âm kém
+      - cách âm không tốt
+      - ồn ào
+      - tiếng ồn
+      - ồn
+  check_in:
+    positive:
+      - check in nhanh
+      - nhận phòng nhanh
+      - check in dễ dàng
+    negative:
+      - check in chậm
+      - chờ check in
+      - không có phòng khi check in
+  housekeeping:
+    positive:
+      - dọn phòng
+      - dọn phòng hàng ngày
+      - dọn phòng sạch
+    negative:
+      - không dọn phòng
+      - dọn phòng kém
+  security:
+    positive:
+      - an ninh
+      - an ninh tốt
+      - camera an ninh
+      - bảo vệ
+    negative:
+      - an ninh kém
+      - không an toàn
+      - trộm cắp
+  value_for_money:
+    positive:
+      - đáng tiền
+      - hợp lý
+      - tương xứng giá
+      - giá ok
+      - rẻ so với chất lượng
+      - xứng đáng
+    negative:
+      - không đáng tiền
+      - đắt so với
+      - giá chát
+      - overpriced
+      - đắt vô lý
+      - không tương xứng
+  noise_level:
+    positive:
+      - yên lặng
+      - không tiếng ồn
+      - không ồn
+      - yên tĩnh tuyệt đối
+    negative:
+      - tiếng xe
+      - tiếng máy lạnh
+      - tiếng người
+      - ồn ào đêm
+      - tiếng nhạc
+      - tiếng nói chuyện
+      - ồn hành lang
+  bed_comfort:
+    positive:
+      - nệm êm
+      - giường thoải mái
+      - đệm tốt
+      - gối mềm
+      - giường êm
+      - nệm tốt
+      - chăn ga êm
+    negative:
+      - nệm cứng
+      - giường cũ
+      - gối cứng
+      - đệm bẩn
+      - giường chật
+      - nệm lõm
+      - giường kêu
+  lighting:
+    positive:
+      - sáng sủa
+      - nhiều ánh sáng
+      - đèn đẹp
+      - ánh sáng tốt
+      - phòng sáng
+      - đèn chiếu sáng tốt
+    negative:
+      - tối
+      - thiếu sáng
+      - đèn mờ
+      - phòng tối
+      - ánh sáng yếu
+      - đèn hỏng
+  smell:
+    positive:
+      - thơm
+      - mùi dễ chịu
+      - không mùi
+      - thơm mát
+      - thông thoáng
+    negative:
+      - mùi hôi
+      - mùi ẩm mốc
+      - mùi thuốc lá
+      - mùi nồng
+      - mùi khó chịu
+      - mùi cống rãnh
 
 hotel_type_tags:
   resort:

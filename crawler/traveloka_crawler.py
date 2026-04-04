@@ -683,7 +683,7 @@ def extract_page_tag_from_soup(soup):
             return "guesthouse"
         if value in {"boutiquehotel", "boutique_hotel", "boutique hotel"}:
             return "boutique_hotel"
-        if value in {"aparthotel", "apartmenthotel", "apartment hotel"}:
+        if value in {"aparthotel", "apartmenthotel", "apartment hotel", "apartment"}:
             return "aparthotel"
         return ""
 
@@ -749,7 +749,7 @@ def extract_name_type_tags(hotel_name):
         tags.append("guesthouse")
     if "boutique hotel" in name or "boutique" in name:
         tags.append("boutique_hotel")
-    if "aparthotel" in name or "apartment hotel" in name:
+    if "aparthotel" in name or "apartment hotel" in name or "apartment" in name or "căn hộ" in name:
         tags.append("aparthotel")
     return tags
 

@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Iterable
 
 import yaml
+from flashtext import KeywordProcessor
 
 from nlp.normalization import normalize_text
 from nlp.tokenizer import tokenize_vi
@@ -19,7 +20,9 @@ RULE_FILE = PROJECT_ROOT / "config" / "review_tag_rules.yaml"
 class TagResult:
     category_tags: list[str] = field(default_factory=list)
     descriptor_tags: list[str] = field(default_factory=list)
+    descriptor_polarity: dict[str, str] = field(default_factory=dict)
     matched_phrases: dict[str, list[str]] = field(default_factory=dict)
+    contexts: list[dict] = field(default_factory=list)
 
 
 def _load_rules() -> dict:
@@ -51,57 +54,404 @@ def _prepare_text(review_text: str, hotel_name: str = "", location: str = "") ->
     return normalize_text(joined)
 
 
-def _score_rule(text: str, positive: list[str], negative: list[str]) -> tuple[int, list[str]]:
-    score = 0
-    matched: list[str] = []
+def _match_phrases(text: str, positive: list[str], negative: list[str]) -> tuple[list[str], list[str]]:
+    pos_hits: list[str] = []
+    neg_hits: list[str] = []
     for phrase in positive:
         if phrase and phrase in text:
-            score += 1
-            matched.append(phrase)
+            pos_hits.append(phrase)
     for phrase in negative:
         if phrase and phrase in text:
-            score -= 1
-            matched.append(f"!{phrase}")
-    return score, matched
+            neg_hits.append(phrase)
+    return pos_hits, neg_hits
 
 
 def _apply_tag_group(text: str, spec: dict[str, dict]) -> tuple[list[str], dict[str, list[str]]]:
+    """
+    Apply tag group với logic: nếu cả positive và negative cùng match → ưu tiên negative.
+    Dùng FlashText để tìm kiếm nhanh.
+    """
+    global _CATEGORY_KEYWORD_PROCESSOR
+    
+    if _CATEGORY_KEYWORD_PROCESSOR is None:
+        _build_phrase_maps()
+    
+    # Use FlashText for fast keyword extraction
+    # extract_keywords returns list of keywords (the values we stored)
+    keywords_found = _CATEGORY_KEYWORD_PROCESSOR.extract_keywords(text)
+    
+    # Group by tag
+    tag_hits: dict[str, dict[str, list[str]]] = {}  # tag -> {"positive": [...], "negative": [...]}
+    for tag, polarity in keywords_found:
+        tag_hits.setdefault(tag, {"positive": [], "negative": []})
+        tag_hits[tag][polarity].append(f"{tag}_{polarity}")
+    
+    # Apply conflict resolution
     tags: list[str] = []
     matched_map: dict[str, list[str]] = {}
-    for tag, cfg in spec.items():
-        if not isinstance(cfg, dict):
-            continue
-        positive = _normalize_phrases(cfg.get("positive", []))
-        negative = _normalize_phrases(cfg.get("negative", []))
-        score, matched = _score_rule(text, positive, negative)
-        if score > 0:
+    for tag, hits in tag_hits.items():
+        pos_hits = hits["positive"]
+        neg_hits = hits["negative"]
+        
+        if pos_hits and neg_hits:
+            neg_tag = f"!{tag}"
+            tags.append(neg_tag)
+            matched_map[tag] = [f"!{tag}"]
+        elif pos_hits:
             tags.append(tag)
-            matched_map[tag] = matched
+            matched_map[tag] = [tag]
+        elif neg_hits:
+            neg_tag = f"!{tag}"
+            tags.append(neg_tag)
+            matched_map[tag] = [f"!{tag}"]
+    
     return tags, matched_map
 
 
-def tag_review(review_text: str, hotel_name: str = "", location: str = "") -> TagResult:
-    """Rule-based tagging for a single review.
+# --- PhoBERT Sentiment Integration ---
 
-    Designed for phase-1 enrichment before MongoDB/indexing.
+# Subject mapping: descriptor tag -> subjects phù hợp
+SUBJECT_VALIDATION = {
+    "room_spacious": ["phòng", "phòng_", "ksan", "khách_sạn", "cửa_sổ", "giường", "diện_tích", "không_gian"],
+    "cleanliness": ["phòng", "bathroom", "phòng_tắm", "nhà_vệ_sinh", "khăn", "ga", "nệm", "sàn", "bàn", "ghế", "ban_công", "tủ_lạnh"],
+    "ambiance": ["phòng", "ksan", "khách_sạn", "trang_trí", "nội_thất", "view", "cảnh", "thiết_kế", "kiến_trúc", "lobby", "sảnh"],
+    "convenience": ["tiện_nghi", "đồ_đạc", "trang_bị", "thiết_bị", "phòng", "dịch_vụ", "di_chuyển", "đi_lại"],
+    "staff_friendly": ["nhân_viên", "lễ_tân", "phục_vụ", "bảo_vệ", "cư_dân", "quản_lý", "chủ", "dân", "bạn"],
+    "quiet_room": ["phòng", "cách_âm", "tiếng_ồn", "âm_thanh", "yên_tĩnh", "giấc_ngủ", "đêm"],
+    "bathroom": ["phòng_tắm", "nhà_vệ_sinh", "toilet", "wc", "vòi_sen", "nước_nóng"],
+    "pool": ["hồ_bơi", "bể_bơi", "pool"],
+    "breakfast": ["ăn_sáng", "bữa_sáng", "buffet", "đồ_ăn", "món_ăn", "thực_đơn"],
+    "food_quality": ["đồ_ăn", "món_ăn", "ẩm_thực", "nhà_hàng", "buffet", "ăn_uống", "menu"],
+    "view_beach": ["view", "hướng", "nhìn_ra", "ban_công", "cửa_sổ", "biển"],
+    "view_mountain": ["view", "hướng", "nhìn_ra", "ban_công", "cửa_sổ", "núi", "đồi"],
+    "good_service": ["dịch_vụ", "phục_vụ", "hỗ_trợ", "đón", "đưa", "thuê_xe", "dọn_phòng"],
+    "parking": ["xe", "bãi", "đậu", "đỗ", "gửi_", "giữ_xe", "phí", "cost"],
+    "balcony": ["ban_công", "lan_can", "cửa_sổ", "sân"],
+    "wifi": ["wifi", "internet", "mạng", "kết_nối"],
+    "elevator": ["thang_máy", "thang bộ", "lầu"],
+    "hot_water": ["nước_nóng", "bình_nóng", "vòi_sen", "phòng_tắm"],
+    "air_conditioning": ["điều_hòa", "máy_lạnh", "phòng", "nhiệt_độ"],
+    "minibar": ["tủ_lạnh", "minibar", "nước_uống"],
+    "soundproofing": ["cách_âm", "tiếng_ồn", "âm_thanh", "ồn", "yên_tĩnh"],
+    "check_in": ["check_in", "checkin", "nhận_phòng", "lễ_tân"],
+    "housekeeping": ["dọn_phòng", "phòng", "dọn_dẹp"],
+    "security": ["an_ninh", "bảo_vệ", "an_toàn", "trộm"],
+    "value_for_money": ["giá", "tiền", "phí", "chi_phí", "đắt", "rẻ"],
+    "noise_level": ["tiếng", "ồn", "âm_thanh", "tiếng_ồn", "phòng", "đêm", "hành_lang"],
+    "bed_comfort": ["nệm", "giường", "đệm", "gối", "chăn", "ga"],
+    "lighting": ["đèn", "ánh_sáng", "sáng", "tối", "phòng"],
+    "smell": ["mùi", "thơm", "hôi", "ẩm_mốc", "thuốc_lá", "phòng"],
+}
+
+# Descriptor cần subject validation (generic words)
+GENERIC_DESCRIPTORS = {"room_spacious", "cleanliness", "ambiance", "convenience", "soundproofing", "air_conditioning"}
+
+# Exclusion phrases
+EXCLUSION_PHRASES = {
+    "room_spacious": [
+        "cháu nhỏ", "em nhỏ", "con nhỏ", "người nhỏ", "bạn nhỏ", "bé nhỏ",
+        "nhỏ tuổi", "nhỏ tuổi hơn", "nhỏ hơn", "nhỏ nhất",
+        "nhỏ lòng", "nhỏ nhen", "nhỏ nhẹ", "nhỏ to",
+        "nhỏ xíu", "nhỏ tí", "nhỏ tí hon","nhỏ kia", "nhỏ đó", "nhỏ này"
+    ],
+    "cleanliness": [
+        "sạch nợ", "sạch trơn",
+    ],
+}
+
+# Strong negative keywords
+STRONG_NEGATIVE_KEYWORDS = {
+    "gián", "chuột", "rận", "bọ", "muỗi", "ruồi", "nhện", "mối", "mọt",
+    "phân", "nước tiểu", "mùi hôi", "thối", "khủng khiếp", "kinh khủng",
+    "ghê tởm", "ghê", "sợ", "ác mộng", "ám ảnh",
+}
+
+# Build descriptor phrase map
+_DESCRIPTOR_PHRASES = {}
+_CATEGORY_PHRASES = {}
+
+# FlashText keyword processors for fast matching
+_CATEGORY_KEYWORD_PROCESSOR = None
+_DESCRIPTOR_KEYWORD_PROCESSOR = None
+
+def _build_phrase_maps():
+    """Build phrase maps from rules using FlashText for fast matching."""
+    global _DESCRIPTOR_PHRASES, _CATEGORY_PHRASES
+    global _CATEGORY_KEYWORD_PROCESSOR, _DESCRIPTOR_KEYWORD_PROCESSOR
+    
+    if _DESCRIPTOR_PHRASES:
+        return
+    
+    r = rules()
+    
+    # Build FlashText processor for category tags
+    _CATEGORY_KEYWORD_PROCESSOR = KeywordProcessor(case_sensitive=False)
+    for tag, cfg in r.get("category_tags", {}).items():
+        for phrase in cfg.get("positive", []):
+            normalized = normalize_text(str(phrase).replace("_", " "))
+            if normalized:
+                _CATEGORY_KEYWORD_PROCESSOR.add_keyword(normalized, (tag, "positive"))
+        for phrase in cfg.get("negative", []):
+            normalized = normalize_text(str(phrase).replace("_", " "))
+            if normalized:
+                _CATEGORY_KEYWORD_PROCESSOR.add_keyword(normalized, (tag, "negative"))
+    
+    # Build FlashText processor for descriptor tags
+    _DESCRIPTOR_KEYWORD_PROCESSOR = KeywordProcessor(case_sensitive=False)
+    for tag, cfg in r.get("descriptor_tags", {}).items():
+        for phrase in cfg.get("positive", []):
+            phrase_tokens = tuple(tokenize_vi(normalize_text(phrase.replace("_", " "))))
+            if phrase_tokens:
+                _DESCRIPTOR_PHRASES[phrase_tokens] = (tag, False)
+                _DESCRIPTOR_KEYWORD_PROCESSOR.add_keyword(phrase.replace("_", " "), (tag, "positive", phrase_tokens))
+        for phrase in cfg.get("negative", []):
+            phrase_tokens = tuple(tokenize_vi(normalize_text(phrase.replace("_", " "))))
+            if phrase_tokens:
+                _DESCRIPTOR_PHRASES[phrase_tokens] = (tag, True)
+                _DESCRIPTOR_KEYWORD_PROCESSOR.add_keyword(phrase.replace("_", " "), (tag, "negative", phrase_tokens))
+
+
+def _find_phrase_in_tokens(tokens: list[str], phrase_tokens: tuple[str, ...]) -> list[int]:
+    positions = []
+    phrase_len = len(phrase_tokens)
+    for i in range(len(tokens) - phrase_len + 1):
+        if tuple(tokens[i:i + phrase_len]) == phrase_tokens:
+            positions.append(i)
+    return positions
+
+
+def _get_token_window(tokens: list[str], center_idx: int, window: int = 5) -> str:
+    start = max(0, center_idx - window)
+    end = min(len(tokens), center_idx + window + 1)
+    return " ".join(tokens[start:end])
+
+
+def _check_exclusion(text: str, tag: str) -> bool:
+    exclusions = EXCLUSION_PHRASES.get(tag, [])
+    text_lower = text.lower()
+    for phrase in exclusions:
+        if phrase in text_lower:
+            return True
+    return False
+
+
+def _validate_subject(tokens: list[str], tag: str, descriptor_pos: int, window: int = 15) -> bool:
+    if tag not in GENERIC_DESCRIPTORS:
+        return True
+    subjects = SUBJECT_VALIDATION.get(tag, [])
+    if not subjects:
+        return True
+    start = max(0, descriptor_pos - window)
+    end = min(len(tokens), descriptor_pos + window)
+    context_tokens = tokens[start:end]
+    for subject in subjects:
+        for tok in context_tokens:
+            if subject in tok or tok in subject:
+                return True
+    return False
+
+
+def _extract_descriptor_contexts(text: str, window: int = 5) -> list[dict]:
+    _build_phrase_maps()
+    tokens = tokenize_vi(text.lower())
+    matches = []
+    
+    for phrase_tokens, (tag, is_negative) in _DESCRIPTOR_PHRASES.items():
+        positions = _find_phrase_in_tokens(tokens, phrase_tokens)
+        for start_idx in positions:
+            if _check_exclusion(text, tag):
+                continue
+            if not _validate_subject(tokens, tag, start_idx, window=15):
+                continue
+            end_idx = start_idx + len(phrase_tokens)
+            phrase_str = " ".join(tokens[start_idx:end_idx])
+            matches.append((start_idx, end_idx, tag, is_negative, phrase_str))
+    
+    matches.sort(key=lambda x: x[0])
+    
+    merged = []
+    for match in matches:
+        start, end, tag, is_neg, phrase = match
+        if merged and start < merged[-1][1]:
+            prev = merged[-1]
+            merged[-1] = (prev[0], max(prev[1], end), prev[2] + "|" + tag, prev[3] or is_neg, prev[4] + " + " + phrase)
+        else:
+            merged.append(match)
+    
+    results = []
+    for start, end, tag, is_neg, phrase in merged:
+        center_idx = (start + end) // 2
+        context = _get_token_window(tokens, center_idx, window)
+        results.append({
+            "descriptor": phrase,
+            "tag": tag,
+            "rule_polarity": "negative" if is_neg else "positive",
+            "context": context,
+            "phobert_sentiment": "",
+            "token_range": (start, end),
+        })
+    return results
+
+
+def _extract_category_tags(text: str) -> list[str]:
+    _build_phrase_maps()
+    tokens = tokenize_vi(text.lower())
+    tags = set()
+    for phrase_tokens, tag in _CATEGORY_PHRASES.items():
+        if _find_phrase_in_tokens(tokens, phrase_tokens):
+            tags.add(tag)
+    return list(tags)
+
+
+# PhoBERT pipeline (lazy loaded)
+_PHOBERT_PIPELINE = None
+
+def _load_phobert_model():
+    global _PHOBERT_PIPELINE
+    if _PHOBERT_PIPELINE is None:
+        try:
+            from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
+            from warnings import filterwarnings
+            filterwarnings("ignore")
+            
+            model_name = "wonrax/phobert-base-vietnamese-sentiment"
+            tokenizer = AutoTokenizer.from_pretrained(model_name)
+            model = AutoModelForSequenceClassification.from_pretrained(model_name)
+            
+            _PHOBERT_PIPELINE = pipeline(
+                "sentiment-analysis",
+                model=model,
+                tokenizer=tokenizer,
+                device=-1
+            )
+        except Exception as e:
+            _PHOBERT_PIPELINE = "lexicon"
+    return _PHOBERT_PIPELINE
+
+
+def _phobert_sentiment_predict(context: str) -> str:
+    # Check strong negative keywords first
+    context_lower = context.lower()
+    for kw in STRONG_NEGATIVE_KEYWORDS:
+        if kw in context_lower:
+            return "negative"
+    
+    model = _load_phobert_model()
+    
+    if model == "lexicon":
+        return _lexicon_sentiment(context)
+    else:
+        try:
+            result = model(context)[0]
+            label = result["label"]
+            if label == "POS":
+                return "positive"
+            elif label == "NEG":
+                return "negative"
+            else:
+                return "neutral"
+        except Exception:
+            return _lexicon_sentiment(context)
+
+
+def _lexicon_sentiment(context: str) -> str:
+    positive_words = {"tốt", "đẹp", "sạch", "thoải_mái", "nhiệt_tình", "thân_thiện", 
+                      "tiện_nghi", "hợp_lý", "xịn", "mới", "rộng", "gọn_gàng", 
+                      "chu_đáo", "hài_lòng", "tuyệt_vời", "ok", "ổn", "rộng_rãi",
+                      "sạch_sẽ", "tiện_lợi", "thuận_tiện", "vui_vẻ", "dễ_gần",
+                      "hỗ_trợ", "yên_tĩnh", "tạm_ổn"}
+    negative_words = {"tệ", "dở", "bẩn", "chật", "nhỏ", "cũ", "hỏng", "kém", 
+                      "bất_tiện", "xa", "đắt", "ồn", "ồn_ào", "lạnh", "nóng", "thiếu",
+                      "kinh_khủng", "khó_chịu", "tối", "gãy", "trống", "nồng",
+                      "khó_ngủ", "không_tốt", "cao", "chưa"}
+    
+    tokens = set(context.split())
+    pos_count = len(tokens & positive_words)
+    neg_count = len(tokens & negative_words)
+    
+    if pos_count > neg_count:
+        return "positive"
+    elif neg_count > pos_count:
+        return "negative"
+    else:
+        return "neutral"
+
+
+def _assign_tags_from_sentiment(contexts: list[dict]) -> tuple[list[str], dict[str, str]]:
     """
+    Gán tag dựa trên sentiment. Nếu cùng tag có cả positive và negative → ưu tiên negative.
+    """
+    # Thu thập tất cả polarity cho mỗi tag
+    tag_polarities: dict[str, list[str]] = {}
+    for ctx in contexts:
+        sentiment = ctx.get("phobert_sentiment", "")
+        rule_polarity = ctx.get("rule_polarity", "")
+        tag = ctx["tag"].split("|")[0]
+        
+        if sentiment == "positive":
+            tag_polarities.setdefault(tag, []).append("positive")
+        elif sentiment == "negative":
+            tag_polarities.setdefault(tag, []).append("negative")
+        else:
+            # Neutral → dùng rule_polarity
+            if rule_polarity in ("positive", "negative"):
+                tag_polarities.setdefault(tag, []).append(rule_polarity)
+    
+    # Assign tags: nếu có cả positive và negative → ưu tiên negative
+    descriptor_tags = []
+    descriptor_polarity = {}
+    for tag, polarities in tag_polarities.items():
+        if "negative" in polarities:
+            neg_tag = f"!{tag}"
+            descriptor_tags.append(neg_tag)
+            descriptor_polarity[tag] = "negative"
+        elif "positive" in polarities:
+            descriptor_tags.append(tag)
+            descriptor_polarity[tag] = "positive"
+    
+    return descriptor_tags, descriptor_polarity
+
+
+def tag_review(review_text: str, hotel_name: str = "", location: str = "") -> TagResult:
+    """Rule-based + PhoBERT sentiment tagging for a single review."""
     payload = rules()
     text = _prepare_text(review_text, hotel_name, location)
     if not text:
         return TagResult()
-
+    
+    # Category tags (rule-based)
     category_rules = payload.get("category_tags", {})
-    descriptor_rules = payload.get("descriptor_tags", {})
     category_tags, category_matches = _apply_tag_group(text, category_rules)
-    descriptor_tags, descriptor_matches = _apply_tag_group(text, descriptor_rules)
-
+    
+    # Descriptor tags with PhoBERT sentiment
+    contexts = _extract_descriptor_contexts(text, window=5)
+    
+    # Predict sentiment for each context
+    for ctx in contexts:
+        ctx["phobert_sentiment"] = _phobert_sentiment_predict(ctx["context"])
+    
+    # Assign tags based on sentiment
+    descriptor_tags, descriptor_polarity = _assign_tags_from_sentiment(contexts)
+    
+    # Build matched phrases for backward compatibility
+    descriptor_matches = {}
+    for ctx in contexts:
+        tag = ctx["tag"].split("|")[0]
+        sentiment = ctx.get("phobert_sentiment", ctx.get("rule_polarity"))
+        if sentiment == "positive":
+            descriptor_matches.setdefault(tag, []).append(ctx["descriptor"])
+        elif sentiment == "negative":
+            descriptor_matches.setdefault(f"!{tag}", []).append(ctx["descriptor"])
+    
     return TagResult(
         category_tags=category_tags,
         descriptor_tags=descriptor_tags,
+        descriptor_polarity=descriptor_polarity,
         matched_phrases={
             "category_tags": category_matches,
             "descriptor_tags": descriptor_matches,
         },
+        contexts=contexts,
     )
 
 
@@ -110,9 +460,11 @@ def tag_record(record: dict) -> dict:
     hotel_name = str(record.get("hotel_name", ""))
     location = str(record.get("location", ""))
     res = tag_review(review_text, hotel_name=hotel_name, location=location)
-
+    
     tagged = dict(record)
     tagged["category_tags"] = res.category_tags
     tagged["descriptor_tags"] = res.descriptor_tags
+    tagged["descriptor_polarity"] = res.descriptor_polarity
     tagged["matched_phrases"] = res.matched_phrases
+    tagged["contexts"] = res.contexts
     return tagged
