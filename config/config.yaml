@@ -9,7 +9,7 @@ app:
   debug: false
 
 database:
-  mongodb_uri: "${MONGODB_URI}" # Set private URI locally, do not commit credentials
+  mongodb_uri: "mongodb+srv://thanvinhtrongsv:Trong1532000@dbtest.vsj0kew.mongodb.net/?appName=DBTest" # Set private URI locally, do not commit credentials
   db_name: "travel_ir"
   collections:
     places: "places"

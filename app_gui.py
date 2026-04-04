@@ -10,8 +10,10 @@ project_root = Path(__file__).resolve().parent
 if str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
 
+import json
 import streamlit as st
 from retrieval.search_engine import search_hybrid
+from summarization.debug_logger import save_debug_log
 
 
 def get_index_dir() -> Path:
@@ -84,24 +86,11 @@ def main():
         
         top_k = st.number_input("Số kết quả (Top-K)", min_value=1, max_value=50, value=10)
         
-        st.divider()
-        st.markdown("**Gợi ý truy vấn:**")
-        suggestions = [
-            "--- Tự nhập ---",
-            "tôi muốn tìm khách sạn view biển đẹp ở phú quốc",
-            "resort có hồ bơi và ăn sáng ngon ở đà nẵng",
-            "homestay giá rẻ gần chợ đêm đà lạt",
-            "khách sạn sang trọng 5 sao tại nha trang",
-            "khách sạn sạch sẽ nhân viên thân thiện sài gòn"
-        ]
-        quick_query = st.selectbox("Chọn query mẫu", suggestions, label_visibility="collapsed")
-
-    query_input = st.text_input(
+    query = st.text_input(
         "Nhập câu truy vấn (tiếng Việt)",
         placeholder="Ví dụ: khách sạn view biển đẹp ở phú quốc",
         key="query_input",
     )
-    query = query_input if quick_query == "--- Tự nhập ---" else quick_query
 
 
     if st.button("🔍 Tìm kiếm", type="primary", use_container_width=True):
@@ -124,11 +113,60 @@ def main():
             cols[2].metric("Điểm đến (Location)", qu.detected_location.replace("_", " ").title() if qu.detected_location else "Không rõ")
             cols[3].metric("Từ khoá nổi bật", ", ".join(qu.descriptor_tokens) if qu.descriptor_tokens else "Trống")
 
+        # Lưu debug log
+        weights_info = {
+            "vector_weight": vector_weight,
+            "bm25_weight": bm25_weight,
+            "location_boost": loc_boost,
+            "top_k": top_k,
+        }
+        qu_info = {
+            "core_tokens": qu.core_tokens,
+            "expanded_tokens": qu.expanded_tokens,
+            "detected_location": qu.detected_location,
+            "descriptor_tokens": qu.descriptor_tokens,
+            "detected_categories": qu.detected_categories,
+        }
+        debug_path = save_debug_log(query, results, qu_info, weights_info)
+        st.info(f"📋 Đã lưu debug log: `{debug_path.name}`")
+
         if not results:
             st.info("Không tìm thấy khách sạn phù hợp với truy vấn.")
             return
 
         st.success(f"Tìm thấy top {len(results)} khách sạn phù hợp nhất.")
+
+        # Debug Panel
+        with st.expander("🔧 Debug: Score Breakdown", expanded=False):
+            st.caption("Phân tích điểm số từng khách sạn - Giúp hiểu tại sao khách sạn ở vị trí này")
+            for i, r in enumerate(results, 1):
+                d = r.get("debug_info", {})
+                if d:
+                    with st.container(border=True):
+                        st.markdown(f"**{i}. {d.get('hotel_name', r.get('hotel_name', ''))}** (Score: {r.get('hybrid_score', 0):.4f})")
+                        cols = st.columns([2, 1, 1, 1, 2])
+                        cols[0].metric("Aggregation", d.get("score_after_aggregation", 0))
+                        cols[1].metric("Category", d.get("score_after_category_boost", 0))
+                        cols[2].metric("Location", d.get("score_after_location_boost", 0))
+                        cols[3].metric("Final", d.get("score_final", 0))
+                        
+                        st.markdown(f"- Location detected: `{d.get('query_detected_location', 'Không')}` | Matched: {'✅' if d.get('location_matched') else '❌'}")
+                        st.markdown(f"- Categories detected: `{d.get('query_categories_detected', [])}` | Doc: `{d.get('doc_categories', [])}`")
+                        st.markdown(f"- Category matched: {'✅' if d.get('category_matched') else '❌'}")
+                        st.markdown(f"- Descriptor tokens: `{d.get('descriptor_tokens_used', [])}` | Supported: {'✅' if d.get('descriptor_supported') else '❌'}")
+                        type_status = ""
+                        if d.get('type_boost_applied'):
+                            type_status = f"✅ Boosted x{d.get('types_boot_factor', '')}"
+                        elif d.get('type_mismatch_penalty'):
+                            type_status = "⚠️ Penalty (0.7x) - Không đúng loại hình"
+                        else:
+                            type_status = "❌ Không áp dụng"
+                        st.markdown(f"- Type boost applied: {type_status}")
+                        if d.get('type_boost_keywords_found'):
+                            st.markdown(f"- Keywords tìm loại hình: `{d.get('type_boost_keywords_found')}`")
+                        st.markdown(f"- Acc types khách sạn: `{d.get('hotel_acc_types', [])}`")
+                        if d.get('hotel_type_matched') is not None:
+                            st.markdown(f"- Hotel type matched query: {'✅' if d.get('hotel_type_matched') else '❌'}")
 
         for i, r in enumerate(results, 1):
             name = r.get("hotel_name", "Không tên")

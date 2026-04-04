@@ -160,9 +160,7 @@ def _infer_doc_categories(doc: dict) -> set[str]:
 def _infer_doc_accommodation_types(doc: dict) -> set[str]:
     """Infer loại hình lưu trú từ field đã crawl/gán nhãn, fallback theo tên."""
     candidate_fields = [
-        doc.get("place_types"),
         doc.get("types"),
-        doc.get("accommodation_types"),
         doc.get("hotel_types"),
     ]
     out: set[str] = set()
@@ -236,11 +234,12 @@ def search_hybrid(
     index_dir: Path,
     stopwords_path: Path,
     top_k: int = 10,
-    vector_weight: float = 0.6,
-    bm25_weight: float = 0.4,
-    location_boost_factor: float = 2,
+    vector_weight: float = 0.4,
+    bm25_weight: float = 0.6,
+    location_boost_factor: float = 1.8,
+    types_boot : float = 1.2,
     strict_descriptor_filter: bool = True,
-    review_pool_size: int = 1500,
+    review_pool_size: int = 4000,
 ) -> tuple[list[dict], QueryUnderstandingResult]:
     
     # PHẦN 4: Query Understanding
@@ -387,31 +386,94 @@ def search_hybrid(
         if qu.detected_location and location_matched(qu.detected_location, first_doc.get("location", "")):
             hotel_score *= location_boost_factor
             loc_matched = True
-       
+        
         # PHẦN 9: Phân loại hình lưu trú (Accommodation Type Boosting)
         raw_q_lower = qu.raw_query.lower()
         acc_types = {
             "resort": ["resort", "khu nghỉ dưỡng", "retreat"],
-            "homestay": ["homestay", "lodge", "cabin", "nhà dân"],
-            "villa": ["villa", "biệt thự"],
+            "homestay": ["homestay", "lodge", "cabin", "nhà dân", "farmstay", "glamping", "camping", "eco", "sinh_thái"],
+            "villa": ["villa", "biệt thự", "bungalow"],
             "hostel": ["hostel"],
-            "guesthouse": ["guesthouse", "nhà khách"],
-            "aparthotel": ["aparthotel", "apartment hotel"],
+            "guesthouse": ["guesthouse", "nhà khách", "nhà nghỉ"],
+            "aparthotel": ["aparthotel", "apartment hotel", "căn_hộ", "căn hộ dịch vụ"],
             "boutique_hotel": ["boutique", "boutique hotel"],
             "hotel": ["hotel", "khách sạn"],
         }
-        target_type = None
-        for atype, keywords in acc_types.items():
+        # Boost điểm dựa trên loại hình lưu trú nếu query có gợi ý rõ ràng
+        # và khách sạn đó khớp loại hình được yêu cầu trong query
+        hotel_acc_types = _infer_doc_accommodation_types(first_doc)
+        type_boost_applied = False
+        type_mismatch_penalty = False
+        type_query_keyword = ""
+        
+        for acc_type, keywords in acc_types.items():
             if any(k in raw_q_lower for k in keywords):
-                target_type = atype
+                type_query_keyword = acc_type
+                if acc_type in hotel_acc_types:
+                    hotel_score *= types_boot
+                    type_boost_applied = True
+                else:
+                    # Phạt kết quả không đúng loại hình lưu trú
+                    hotel_score *= 0.7
+                    type_mismatch_penalty = True
                 break
-        if target_type:
-            doc_types = _infer_doc_accommodation_types(first_doc)
-            is_correct_type = target_type in doc_types
-            if is_correct_type:
-                hotel_score *= 1.2
+
+        # Debug info: tracking score qua từng bước boost
+        score_after_aggregation = sum(r["hybrid_score"] for r in top_reviews)
+        score_after_category = score_after_aggregation
+        score_after_location = score_after_aggregation
+        score_after_type = score_after_aggregation
+        
+        # Reverse category boost
+        if query_categories:
+            if query_categories.intersection(doc_categories):
+                score_after_category = score_after_aggregation / 1.15
             else:
-                hotel_score *= 0.9
+                score_after_category = score_after_aggregation / 0.85
+        else:
+            score_after_category = score_after_aggregation
+            
+        # Reverse location boost
+        if qu.detected_location and loc_matched:
+            score_after_location = score_after_category / location_boost_factor
+        else:
+            score_after_location = score_after_category
+            
+        # Reverse type boost
+        type_boost_keywords_found = [type_query_keyword] if type_query_keyword else []
+        if type_query_keyword:
+            if type_boost_applied:
+                score_after_type = score_after_location / types_boot
+            elif type_mismatch_penalty:
+                score_after_type = score_after_location / 0.7
+            else:
+                score_after_type = score_after_location
+        else:
+            score_after_type = score_after_location
+
+        debug_info = {
+            "hotel_id": hid,
+            "hotel_name": first_doc.get("hotel_name", ""),
+            "review_count": len(r_list),
+            "score_after_aggregation": round(score_after_aggregation, 4),
+            "score_after_category_boost": round(score_after_category, 4),
+            "score_after_location_boost": round(score_after_location, 4),
+            "score_final": round(hotel_score, 4),
+            "hotel_acc_types": list(hotel_acc_types),
+            "query_detected_location": qu.detected_location,
+            "query_categories_detected": list(query_categories),
+            "doc_categories": list(doc_categories),
+            "location_matched": loc_matched,
+            "category_matched": bool(query_categories.intersection(doc_categories)) if query_categories else False,
+            "descriptor_filtered": strict_descriptor_filter and not descriptor_supported,
+            "descriptor_supported": descriptor_supported,
+            "descriptor_tokens_used": tokens_to_check,
+            "type_boost_applied": type_boost_applied,
+            "type_mismatch_penalty": type_mismatch_penalty,
+            "type_boost_keywords_found": type_boost_keywords_found,
+            "types_boot_factor": types_boot,
+            "hotel_type_matched": type_query_keyword in hotel_acc_types if type_query_keyword else False,
+        }
 
         results.append({
             "source": first_doc.get("source", ""),
@@ -427,6 +489,7 @@ def search_hybrid(
             "descriptor_matched": descriptor_supported,
             "category_matched": bool(query_categories.intersection(doc_categories)) if query_categories else False,
             "top_reviews": top_review_texts[:3],
+            "debug_info": debug_info,
         })
     # Sort top K Hotel
     results.sort(key=lambda x: x["hybrid_score"], reverse=True)

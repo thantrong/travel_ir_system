@@ -1,5 +1,3 @@
-# Location aliases used by query understanding.
-# Keys are canonical locations; values are aliases/forms to match.
 
 locations:
   phú_quốc:

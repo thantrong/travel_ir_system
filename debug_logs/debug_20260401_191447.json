@@ -1,0 +1,367 @@
+{
+  "timestamp": "2026-04-01T19:14:47.619755",
+  "query": "homestay ",
+  "weights": {
+    "vector_weight": 0.6,
+    "bm25_weight": 0.4,
+    "location_boost": 1.8,
+    "top_k": 10
+  },
+  "query_understanding": {
+    "core_tokens": [
+      "homestay"
+    ],
+    "expanded_tokens": [
+      "homestay"
+    ],
+    "detected_location": "",
+    "descriptor_tokens": [],
+    "detected_categories": []
+  },
+  "total_results": 10,
+  "results": [
+    {
+      "rank": 1,
+      "hotel_name": "5 homestay garden",
+      "hybrid_score": 5.200395739660277,
+      "debug": {
+        "hotel_id": "9000001109501",
+        "hotel_name": "5 homestay garden",
+        "review_count": 105,
+        "score_after_aggregation": 4.3337,
+        "score_after_category_boost": 4.3337,
+        "score_after_location_boost": 4.3337,
+        "score_final": 5.2004,
+        "hotel_acc_types": [
+          "homestay",
+          "hotel"
+        ],
+        "query_detected_location": "",
+        "query_categories_detected": [],
+        "doc_categories": [
+          "airport"
+        ],
+        "location_matched": false,
+        "category_matched": false,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 2,
+      "hotel_name": "Sunny Trang An Homestay",
+      "hybrid_score": 4.966523867067008,
+      "debug": {
+        "hotel_id": "1000001771584",
+        "hotel_name": "Sunny Trang An Homestay",
+        "review_count": 17,
+        "score_after_aggregation": 4.1388,
+        "score_after_category_boost": 4.1388,
+        "score_after_location_boost": 4.1388,
+        "score_final": 4.9665,
+        "hotel_acc_types": [
+          "homestay",
+          "hotel"
+        ],
+        "query_detected_location": "",
+        "query_categories_detected": [],
+        "doc_categories": [
+          "quiet"
+        ],
+        "location_matched": false,
+        "category_matched": false,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 3,
+      "hotel_name": "Xuan Homestay - The Song Vung Tau",
+      "hybrid_score": 4.922135347908101,
+      "debug": {
+        "hotel_id": "9000001099736",
+        "hotel_name": "Xuan Homestay - The Song Vung Tau",
+        "review_count": 197,
+        "score_after_aggregation": 4.1018,
+        "score_after_category_boost": 4.1018,
+        "score_after_location_boost": 4.1018,
+        "score_final": 4.9221,
+        "hotel_acc_types": [
+          "homestay",
+          "hotel"
+        ],
+        "query_detected_location": "",
+        "query_categories_detected": [],
+        "doc_categories": [],
+        "location_matched": false,
+        "category_matched": false,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 4,
+      "hotel_name": "Quynh Chau Homestay",
+      "hybrid_score": 4.879398657980771,
+      "debug": {
+        "hotel_id": "3000010027079",
+        "hotel_name": "Quynh Chau Homestay",
+        "review_count": 52,
+        "score_after_aggregation": 4.0662,
+        "score_after_category_boost": 4.0662,
+        "score_after_location_boost": 4.0662,
+        "score_final": 4.8794,
+        "hotel_acc_types": [
+          "homestay",
+          "hotel"
+        ],
+        "query_detected_location": "",
+        "query_categories_detected": [],
+        "doc_categories": [
+          "center"
+        ],
+        "location_matched": false,
+        "category_matched": false,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 5,
+      "hotel_name": "La An Homestay",
+      "hybrid_score": 4.755286582981341,
+      "debug": {
+        "hotel_id": "3000020017905",
+        "hotel_name": "La An Homestay",
+        "review_count": 56,
+        "score_after_aggregation": 3.9627,
+        "score_after_category_boost": 3.9627,
+        "score_after_location_boost": 3.9627,
+        "score_final": 4.7553,
+        "hotel_acc_types": [
+          "homestay",
+          "hotel"
+        ],
+        "query_detected_location": "",
+        "query_categories_detected": [],
+        "doc_categories": [
+          "center"
+        ],
+        "location_matched": false,
+        "category_matched": false,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 6,
+      "hotel_name": "Sóng Homestay - The Sóng Vũng Tàu",
+      "hybrid_score": 4.725215333376768,
+      "debug": {
+        "hotel_id": "9000001136478",
+        "hotel_name": "Sóng Homestay - The Sóng Vũng Tàu",
+        "review_count": 198,
+        "score_after_aggregation": 3.9377,
+        "score_after_category_boost": 3.9377,
+        "score_after_location_boost": 3.9377,
+        "score_final": 4.7252,
+        "hotel_acc_types": [
+          "homestay",
+          "hotel"
+        ],
+        "query_detected_location": "",
+        "query_categories_detected": [],
+        "doc_categories": [],
+        "location_matched": false,
+        "category_matched": false,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 7,
+      "hotel_name": "MeoMeo Homestay - The Song Apartment Vung tau",
+      "hybrid_score": 4.663051079863078,
+      "debug": {
+        "hotel_id": "9000003303412",
+        "hotel_name": "MeoMeo Homestay - The Song Apartment Vung tau",
+        "review_count": 110,
+        "score_after_aggregation": 3.8859,
+        "score_after_category_boost": 3.8859,
+        "score_after_location_boost": 3.8859,
+        "score_final": 4.6631,
+        "hotel_acc_types": [
+          "homestay",
+          "hotel"
+        ],
+        "query_detected_location": "",
+        "query_categories_detected": [],
+        "doc_categories": [
+          "photo"
+        ],
+        "location_matched": false,
+        "category_matched": false,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 8,
+      "hotel_name": "Viet Xua Homestay",
+      "hybrid_score": 4.662784439044141,
+      "debug": {
+        "hotel_id": "9000000809268",
+        "hotel_name": "Viet Xua Homestay",
+        "review_count": 33,
+        "score_after_aggregation": 3.8857,
+        "score_after_category_boost": 3.8857,
+        "score_after_location_boost": 3.8857,
+        "score_final": 4.6628,
+        "hotel_acc_types": [
+          "homestay",
+          "hotel"
+        ],
+        "query_detected_location": "",
+        "query_categories_detected": [],
+        "doc_categories": [
+          "quiet",
+          "center"
+        ],
+        "location_matched": false,
+        "category_matched": false,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 9,
+      "hotel_name": "Milan Homestay - The Song Vung Tau",
+      "hybrid_score": 4.653909946728853,
+      "debug": {
+        "hotel_id": "9000001071485",
+        "hotel_name": "Milan Homestay - The Song Vung Tau",
+        "review_count": 196,
+        "score_after_aggregation": 3.8783,
+        "score_after_category_boost": 3.8783,
+        "score_after_location_boost": 3.8783,
+        "score_final": 4.6539,
+        "hotel_acc_types": [
+          "homestay",
+          "hotel"
+        ],
+        "query_detected_location": "",
+        "query_categories_detected": [],
+        "doc_categories": [],
+        "location_matched": false,
+        "category_matched": false,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 10,
+      "hotel_name": "Chau Homestay - The Song Vung Tau",
+      "hybrid_score": 4.649600668106156,
+      "debug": {
+        "hotel_id": "9000001099844",
+        "hotel_name": "Chau Homestay - The Song Vung Tau",
+        "review_count": 155,
+        "score_after_aggregation": 3.8747,
+        "score_after_category_boost": 3.8747,
+        "score_after_location_boost": 3.8747,
+        "score_final": 4.6496,
+        "hotel_acc_types": [
+          "homestay",
+          "hotel"
+        ],
+        "query_detected_location": "",
+        "query_categories_detected": [],
+        "doc_categories": [],
+        "location_matched": false,
+        "category_matched": false,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    }
+  ]
+}

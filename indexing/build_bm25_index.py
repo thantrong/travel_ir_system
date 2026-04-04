@@ -107,9 +107,9 @@ def build_index_payload(reviews: list[dict]) -> dict:
     for r in reviews:
         doc_tokens = []
 
-        # PHẦN 3: Field Weighting (hotel name: 3,types: 1, location: 2, text: 1)
+        # PHẦN 3: Field Weighting (hotel name: 3,types: 2, location: 2, text: 1)
         _extend_tags(doc_tokens, [r.get("hotel_name", "")], weight=3)
-        _extend_tags(doc_tokens, r.get("types", []), weight=1)
+        _extend_tags(doc_tokens, r.get("types", []), weight=2)
 
         loc_tokens = _tokenize_text(r["location"])
         doc_tokens.extend(loc_tokens * 2)  # location weight = 2
@@ -138,7 +138,7 @@ def build_index_payload(reviews: list[dict]) -> dict:
             "descriptor_tags": list(r.get("descriptor_tags", []) or []),
         })
 
-    bm25 = BM25Okapi(tokenized_corpus) if tokenized_corpus else None
+    bm25 = BM25Okapi(corpus=tokenized_corpus, k1=1.5, b=0.75) if tokenized_corpus else None
 
     review_ids = [doc.get("review_id", "") for doc in documents]
     review_id_to_idx = {rid: idx for idx, rid in enumerate(review_ids) if rid}
@@ -164,8 +164,12 @@ def main():
     print(f"Bắt đầu index {len(reviews)} reviews...")
     payload = build_index_payload(reviews)
 
+
     with output_path.open("wb") as f:
         pickle.dump(payload, f)
+    
+    
+        
 
     print(f"Indexed reviews: {payload['corpus_size']}")
     print(f"Saved BM25 review-level index: {output_path}")

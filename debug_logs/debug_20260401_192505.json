@@ -1,0 +1,451 @@
+{
+  "timestamp": "2026-04-01T19:25:05.206198",
+  "query": "villa view đẹp ở hội an",
+  "weights": {
+    "vector_weight": 0.6,
+    "bm25_weight": 0.4,
+    "location_boost": 1.8,
+    "top_k": 10
+  },
+  "query_understanding": {
+    "core_tokens": [
+      "villa",
+      "view",
+      "đẹp"
+    ],
+    "expanded_tokens": [
+      "villa",
+      "view",
+      "đẹp",
+      "hội_an"
+    ],
+    "detected_location": "hội_an",
+    "descriptor_tokens": [
+      "view",
+      "đẹp"
+    ],
+    "detected_categories": [
+      "luxury"
+    ]
+  },
+  "total_results": 10,
+  "results": [
+    {
+      "rank": 1,
+      "hotel_name": "La An Central Boutique Villa",
+      "hybrid_score": 9.348224889876267,
+      "debug": {
+        "hotel_id": "9000000000980",
+        "hotel_name": "La An Central Boutique Villa",
+        "review_count": 105,
+        "score_after_aggregation": 3.7634,
+        "score_after_category_boost": 3.2725,
+        "score_after_location_boost": 1.8181,
+        "score_final": 9.3482,
+        "hotel_acc_types": [
+          "villa",
+          "hotel",
+          "boutique_hotel"
+        ],
+        "query_detected_location": "hội_an",
+        "query_categories_detected": [
+          "luxury"
+        ],
+        "doc_categories": [
+          "luxury",
+          "center"
+        ],
+        "location_matched": true,
+        "category_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [
+          "view",
+          "đẹp"
+        ],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "villa"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 2,
+      "hotel_name": "Hoi An Emotion Boutique Villa",
+      "hybrid_score": 9.19098690354774,
+      "debug": {
+        "hotel_id": "1000000666333",
+        "hotel_name": "Hoi An Emotion Boutique Villa",
+        "review_count": 69,
+        "score_after_aggregation": 3.7001,
+        "score_after_category_boost": 3.2175,
+        "score_after_location_boost": 1.7875,
+        "score_final": 9.191,
+        "hotel_acc_types": [
+          "villa",
+          "hotel",
+          "boutique_hotel"
+        ],
+        "query_detected_location": "hội_an",
+        "query_categories_detected": [
+          "luxury"
+        ],
+        "doc_categories": [
+          "luxury",
+          "center",
+          "family"
+        ],
+        "location_matched": true,
+        "category_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [
+          "view",
+          "đẹp"
+        ],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "villa"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 3,
+      "hotel_name": "Hoi An New Life Homestay & Villa",
+      "hybrid_score": 8.923377159215155,
+      "debug": {
+        "hotel_id": "9000000783775",
+        "hotel_name": "Hoi An New Life Homestay & Villa",
+        "review_count": 54,
+        "score_after_aggregation": 3.5923,
+        "score_after_category_boost": 3.1238,
+        "score_after_location_boost": 1.7354,
+        "score_final": 8.9234,
+        "hotel_acc_types": [
+          "homestay",
+          "villa",
+          "hotel"
+        ],
+        "query_detected_location": "hội_an",
+        "query_categories_detected": [
+          "luxury"
+        ],
+        "doc_categories": [
+          "luxury",
+          "center"
+        ],
+        "location_matched": true,
+        "category_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [
+          "view",
+          "đẹp"
+        ],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "villa"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 4,
+      "hotel_name": "Hoi An Corn Riverside Villa",
+      "hybrid_score": 8.794813708700797,
+      "debug": {
+        "hotel_id": "3000020006708",
+        "hotel_name": "Hoi An Corn Riverside Villa",
+        "review_count": 19,
+        "score_after_aggregation": 3.5406,
+        "score_after_category_boost": 3.0788,
+        "score_after_location_boost": 1.7104,
+        "score_final": 8.7948,
+        "hotel_acc_types": [
+          "villa",
+          "hotel"
+        ],
+        "query_detected_location": "hội_an",
+        "query_categories_detected": [
+          "luxury"
+        ],
+        "doc_categories": [
+          "luxury"
+        ],
+        "location_matched": true,
+        "category_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [
+          "view",
+          "đẹp"
+        ],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "villa"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 5,
+      "hotel_name": "Serene River Villa",
+      "hybrid_score": 8.59742331455414,
+      "debug": {
+        "hotel_id": "3000010029890",
+        "hotel_name": "Serene River Villa",
+        "review_count": 13,
+        "score_after_aggregation": 3.4611,
+        "score_after_category_boost": 3.0097,
+        "score_after_location_boost": 1.672,
+        "score_final": 8.5974,
+        "hotel_acc_types": [
+          "villa",
+          "hotel"
+        ],
+        "query_detected_location": "hội_an",
+        "query_categories_detected": [
+          "luxury"
+        ],
+        "doc_categories": [
+          "luxury",
+          "budget"
+        ],
+        "location_matched": true,
+        "category_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [
+          "view",
+          "đẹp"
+        ],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "villa"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 6,
+      "hotel_name": "Hoi An Coco River Resort & Spa",
+      "hybrid_score": 4.209105113393865,
+      "debug": {
+        "hotel_id": "1000000352506",
+        "hotel_name": "Hoi An Coco River Resort & Spa",
+        "review_count": 36,
+        "score_after_aggregation": 2.9048,
+        "score_after_category_boost": 2.5259,
+        "score_after_location_boost": 1.4033,
+        "score_final": 4.2091,
+        "hotel_acc_types": [
+          "resort",
+          "hotel"
+        ],
+        "query_detected_location": "hội_an",
+        "query_categories_detected": [
+          "luxury"
+        ],
+        "doc_categories": [
+          "luxury",
+          "beach"
+        ],
+        "location_matched": true,
+        "category_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [
+          "view",
+          "đẹp"
+        ],
+        "type_boost_applied": false,
+        "type_mismatch_penalty": true,
+        "type_boost_keywords_found": [
+          "villa"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": false
+      }
+    },
+    {
+      "rank": 7,
+      "hotel_name": "Lasenta Boutique Hotel Hoian",
+      "hybrid_score": 4.084982149455222,
+      "debug": {
+        "hotel_id": "1000000628529",
+        "hotel_name": "Lasenta Boutique Hotel Hoian",
+        "review_count": 100,
+        "score_after_aggregation": 2.8192,
+        "score_after_category_boost": 2.4515,
+        "score_after_location_boost": 1.3619,
+        "score_final": 4.085,
+        "hotel_acc_types": [
+          "hotel",
+          "boutique_hotel"
+        ],
+        "query_detected_location": "hội_an",
+        "query_categories_detected": [
+          "luxury"
+        ],
+        "doc_categories": [
+          "luxury",
+          "family",
+          "eco",
+          "budget"
+        ],
+        "location_matched": true,
+        "category_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [
+          "view",
+          "đẹp"
+        ],
+        "type_boost_applied": false,
+        "type_mismatch_penalty": true,
+        "type_boost_keywords_found": [
+          "villa"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": false
+      }
+    },
+    {
+      "rank": 8,
+      "hotel_name": "Hoi An Memories Resort & Spa",
+      "hybrid_score": 4.055982347246656,
+      "debug": {
+        "hotel_id": "9000000928394",
+        "hotel_name": "Hoi An Memories Resort & Spa",
+        "review_count": 35,
+        "score_after_aggregation": 2.7992,
+        "score_after_category_boost": 2.4341,
+        "score_after_location_boost": 1.3523,
+        "score_final": 4.056,
+        "hotel_acc_types": [
+          "resort",
+          "hotel"
+        ],
+        "query_detected_location": "hội_an",
+        "query_categories_detected": [
+          "luxury"
+        ],
+        "doc_categories": [
+          "luxury",
+          "quiet",
+          "eco",
+          "center",
+          "honeymoon"
+        ],
+        "location_matched": true,
+        "category_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [
+          "view",
+          "đẹp"
+        ],
+        "type_boost_applied": false,
+        "type_mismatch_penalty": true,
+        "type_boost_keywords_found": [
+          "villa"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": false
+      }
+    },
+    {
+      "rank": 9,
+      "hotel_name": "Nghe Garden Resort Hoi An",
+      "hybrid_score": 4.0380703352788245,
+      "debug": {
+        "hotel_id": "3000020013897",
+        "hotel_name": "Nghe Garden Resort Hoi An",
+        "review_count": 31,
+        "score_after_aggregation": 2.7868,
+        "score_after_category_boost": 2.4233,
+        "score_after_location_boost": 1.3463,
+        "score_final": 4.0381,
+        "hotel_acc_types": [
+          "resort",
+          "hotel"
+        ],
+        "query_detected_location": "hội_an",
+        "query_categories_detected": [
+          "luxury"
+        ],
+        "doc_categories": [
+          "luxury",
+          "budget"
+        ],
+        "location_matched": true,
+        "category_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [
+          "view",
+          "đẹp"
+        ],
+        "type_boost_applied": false,
+        "type_mismatch_penalty": true,
+        "type_boost_keywords_found": [
+          "villa"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": false
+      }
+    },
+    {
+      "rank": 10,
+      "hotel_name": "Shining Riverside Hoi An Boutique and Spa",
+      "hybrid_score": 3.844890110561612,
+      "debug": {
+        "hotel_id": "9000000815720",
+        "hotel_name": "Shining Riverside Hoi An Boutique and Spa",
+        "review_count": 81,
+        "score_after_aggregation": 2.6535,
+        "score_after_category_boost": 2.3074,
+        "score_after_location_boost": 1.2819,
+        "score_final": 3.8449,
+        "hotel_acc_types": [
+          "hotel",
+          "boutique_hotel"
+        ],
+        "query_detected_location": "hội_an",
+        "query_categories_detected": [
+          "luxury"
+        ],
+        "doc_categories": [
+          "luxury"
+        ],
+        "location_matched": true,
+        "category_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [
+          "view",
+          "đẹp"
+        ],
+        "type_boost_applied": false,
+        "type_mismatch_penalty": true,
+        "type_boost_keywords_found": [
+          "villa"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": false
+      }
+    }
+  ]
+}
