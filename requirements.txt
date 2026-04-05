@@ -9,3 +9,6 @@ numpy
 scikit-learn
 streamlit
 sentence-transformers
+torch
+transformers
+flashtext
