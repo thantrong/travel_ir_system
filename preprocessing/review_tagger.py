@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Iterable
 
 import yaml
+import torch
 from flashtext import KeywordProcessor
 
 from nlp.normalization import normalize_text
@@ -331,30 +332,74 @@ def _extract_category_tags(text: str) -> list[str]:
     return list(tags)
 
 
-# PhoBERT pipeline (lazy loaded)
-_PHOBERT_PIPELINE = None
+# PhoBERT model + tokenizer (lazy loaded)
+_PHOBERT_TOKENIZER = None
+_PHOBERT_MODEL = None
+_PHOBERT_DEVICE = None
 
 def _load_phobert_model():
-    global _PHOBERT_PIPELINE
-    if _PHOBERT_PIPELINE is None:
-        try:
-            from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
-            from warnings import filterwarnings
-            filterwarnings("ignore")
+    """Load PhoBERT model và tự động dùng GPU nếu có."""
+    global _PHOBERT_TOKENIZER, _PHOBERT_MODEL, _PHOBERT_DEVICE
+    
+    if _PHOBERT_MODEL is not None:
+        return _PHOBERT_MODEL, _PHOBERT_TOKENIZER, _PHOBERT_DEVICE
+    
+    try:
+        from transformers import AutoTokenizer, AutoModelForSequenceClassification
+        from warnings import filterwarnings
+        filterwarnings("ignore")
+        
+        model_name = "wonrax/phobert-base-vietnamese-sentiment"
+        _PHOBERT_TOKENIZER = AutoTokenizer.from_pretrained(model_name)
+        _PHOBERT_MODEL = AutoModelForSequenceClassification.from_pretrained(model_name)
+        
+        # Tự động dùng GPU nếu có
+        if torch.cuda.is_available():
+            _PHOBERT_DEVICE = torch.device("cuda")
+            _PHOBERT_MODEL = _PHOBERT_MODEL.to(_PHOBERT_DEVICE)
+            print(f"[PhoBERT] Using GPU: {torch.cuda.get_device_name(0)}")
+        else:
+            _PHOBERT_DEVICE = torch.device("cpu")
+            print("[PhoBERT] Using CPU")
+        
+        _PHOBERT_MODEL.eval()
+    except Exception as e:
+        _PHOBERT_MODEL = "lexicon"
+        _PHOBERT_DEVICE = "cpu"
+    
+    return _PHOBERT_MODEL, _PHOBERT_TOKENIZER, _PHOBERT_DEVICE
+
+
+def _phobert_batch_predict(contexts: list[str], batch_size: int = 32) -> list[str]:
+    """Batch inference cho PhoBERT - NHANH HƠN inference từng câu."""
+    model, tokenizer, device = _load_phobert_model()
+    
+    if model == "lexicon":
+        return [_lexicon_sentiment(ctx) for ctx in contexts]
+    
+    results = []
+    
+    with torch.no_grad():
+        for i in range(0, len(contexts), batch_size):
+            batch = contexts[i:i + batch_size]
+            inputs = tokenizer(batch, return_tensors="pt", padding=True, truncation=True, max_length=512)
             
-            model_name = "wonrax/phobert-base-vietnamese-sentiment"
-            tokenizer = AutoTokenizer.from_pretrained(model_name)
-            model = AutoModelForSequenceClassification.from_pretrained(model_name)
+            if device.type == "cuda":
+                inputs = {k: v.to(device) for k, v in inputs.items()}
             
-            _PHOBERT_PIPELINE = pipeline(
-                "sentiment-analysis",
-                model=model,
-                tokenizer=tokenizer,
-                device=-1
-            )
-        except Exception as e:
-            _PHOBERT_PIPELINE = "lexicon"
-    return _PHOBERT_PIPELINE
+            outputs = model(**inputs)
+            predictions = torch.argmax(outputs.logits, dim=-1)
+            
+            for pred in predictions:
+                label = model.config.id2label[pred.item()]
+                if label == "POS":
+                    results.append("positive")
+                elif label == "NEG":
+                    results.append("negative")
+                else:
+                    results.append("neutral")
+    
+    return results
 
 
 def _phobert_sentiment_predict(context: str) -> str:
@@ -364,14 +409,21 @@ def _phobert_sentiment_predict(context: str) -> str:
         if kw in context_lower:
             return "negative"
     
-    model = _load_phobert_model()
+    model, tokenizer, device = _load_phobert_model()
     
     if model == "lexicon":
         return _lexicon_sentiment(context)
     else:
         try:
-            result = model(context)[0]
-            label = result["label"]
+            inputs = tokenizer(context, return_tensors="pt", truncation=True, max_length=512)
+            if device.type == "cuda":
+                inputs = {k: v.to(device) for k, v in inputs.items()}
+            
+            with torch.no_grad():
+                outputs = model(**inputs)
+                predictions = torch.argmax(outputs.logits, dim=-1)
+                label = model.config.id2label[predictions[0].item()]
+            
             if label == "POS":
                 return "positive"
             elif label == "NEG":
@@ -481,6 +533,77 @@ def tag_review(review_text: str, hotel_name: str = "", location: str = "") -> Ta
         },
         contexts=contexts,
     )
+
+
+def tag_records_batch(records: list[dict], phobert_batch_size: int = 32) -> list[dict]:
+    """Batch processing cho nhiều reviews - TỐI ƯU GPU."""
+    # Bước 1: Extract contexts cho tất cả reviews
+    all_contexts = []
+    review_context_ranges = []  # (start_idx, end_idx) cho mỗi review
+    
+    for record in records:
+        text = _prepare_text(
+            str(record.get("review_text", "")),
+            str(record.get("hotel_name", "")),
+            str(record.get("location", ""))
+        )
+        if not text:
+            review_context_ranges.append((0, 0))
+            continue
+        
+        contexts = _extract_descriptor_contexts(text, window=5)
+        start = len(all_contexts)
+        all_contexts.extend(contexts)
+        review_context_ranges.append((start, len(all_contexts)))
+    
+    # Bước 2: Batch PhoBERT inference
+    if all_contexts:
+        print(f"[PhoBERT] Processing {len(all_contexts)} contexts with batch_size={phobert_batch_size}...")
+        sentiments = _phobert_batch_predict([ctx["context"] for ctx in all_contexts], batch_size=phobert_batch_size)
+        for ctx, sent in zip(all_contexts, sentiments):
+            ctx["phobert_sentiment"] = sent
+    
+    # Bước 3: Assign tags cho mỗi review
+    output = []
+    for i, record in enumerate(records):
+        start, end = review_context_ranges[i]
+        contexts = all_contexts[start:end]
+        
+        descriptor_tags, descriptor_polarity = _assign_tags_from_sentiment(contexts)
+        
+        # Category tags
+        text = _prepare_text(
+            str(record.get("review_text", "")),
+            str(record.get("hotel_name", "")),
+            str(record.get("location", ""))
+        )
+        if not text:
+            continue
+            
+        category_rules = rules().get("category_tags", {})
+        category_tags, category_matches = _apply_tag_group(text, category_rules)
+        
+        descriptor_matches = {}
+        for ctx in contexts:
+            tag = ctx["tag"].split("|")[0]
+            sentiment = ctx.get("phobert_sentiment", ctx.get("rule_polarity"))
+            if sentiment == "positive":
+                descriptor_matches.setdefault(tag, []).append(ctx["descriptor"])
+            elif sentiment == "negative":
+                descriptor_matches.setdefault(f"!{tag}", []).append(ctx["descriptor"])
+        
+        tagged = dict(record)
+        tagged["category_tags"] = category_tags
+        tagged["descriptor_tags"] = descriptor_tags
+        tagged["descriptor_polarity"] = descriptor_polarity
+        tagged["matched_phrases"] = {
+            "category_tags": category_matches,
+            "descriptor_tags": descriptor_matches,
+        }
+        tagged["contexts"] = contexts
+        output.append(tagged)
+    
+    return output
 
 
 def tag_record(record: dict) -> dict:
