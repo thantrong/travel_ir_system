@@ -141,18 +141,46 @@ SUBJECT_VALIDATION = {
     "bed_comfort": ["nệm", "giường", "đệm", "gối", "chăn", "ga"],
     "lighting": ["đèn", "ánh_sáng", "sáng", "tối", "phòng"],
     "smell": ["mùi", "thơm", "hôi", "ẩm_mốc", "thuốc_lá", "phòng"],
+    # New descriptors
+    "jacuzzi": ["bồn_tắm", "jacuzzi", "bồn_sục", "spa", "phòng_tắm"],
+    "gym_fitness": ["gym", "phòng_tập", "fitness", "máy_tập", "thể_dục"],
+    "kitchen": ["bếp", "nấu_ăn", "bbq", "tiệc_nướng", "dụng_cụ"],
+    "laundry": ["giặt_là", "giặt_ủi", "máy_giặt", "sấy"],
+    "spa": ["spa", "massage", "xông_hơi", "sauna", "ngâm_chân", "trị_liệu"],
+    "room_amenities": ["máy_sấy", "bàn_ủi", "máy_phà", "tivi", "netflix"],
+    "sunset_view": ["view", "hướng", "hoàng_hôn", "sunset", "ban_công"],
+    "sports": ["thể_thao", "lướt_ván", "kayak", "lặn", "tennis"],
+    "english_speaking": ["tiếng_anh", "nói_tiếng_anh", "giao_tiếp", "hướng_dẫn"],
+    "cafe": ["cà_phê", "quán", "espresso", "cocktail", "quầy_bar"],
+    "connecting_rooms": ["phòng", "thông_nhau", "liền_kề", "gia_đình"],
+    "childcare": ["trông_trẻ", "giữ_trẻ", "babysitting", "club"],
+    "wheelchair": ["xe_lăn", "lối_đi", "khuyết_tật", "thang_máy"],
+    "yoga": ["yoga", "thiền", "chữa_lành", "healing", "chay"],
+    "tour_guide": ["hướng_dẫn", "tour", "dẫn_đoàn", "địa_phương"],
+    "karaoke": ["karaoke", "hát", "âm_thanh", "dàn"],
+    "river_view": ["view", "hướng", "sông", "nhìn_ra"],
+    "rice_terrace_view": ["ruộng", "bậc_thang", "view", "nhìn_xuống"],
+    "heritage_view": ["kiến_trúc", "cổ", "cung_đình", "phố_cổ", "di_tích"],
+    "garden_view": ["vườn", "sân_vườn", "view", "hoa"],
+    "city_view": ["view", "thành_phố", "toàn_cảnh", "panorama"],
+    "sunrise_view": ["view", "bình_minh", "sunrise", "hướng_đông"],
 }
 
 # Descriptor cần subject validation (generic words)
 GENERIC_DESCRIPTORS = {"room_spacious", "cleanliness", "ambiance", "convenience", "soundproofing", "air_conditioning"}
 
-# Exclusion phrases
+# Exclusion phrases - các trường hợp dễ nhầm lẫn
 EXCLUSION_PHRASES = {
     "room_spacious": [
+        # Từ chỉ người (nhầm với kích thước)
         "cháu nhỏ", "em nhỏ", "con nhỏ", "người nhỏ", "bạn nhỏ", "bé nhỏ",
+        "em bé", "bé", "bé yêu", "con bé", "thằng bé", "con nít",
+        "trẻ nhỏ", "đứa nhỏ", "nhóc", "bé con",
         "nhỏ tuổi", "nhỏ tuổi hơn", "nhỏ hơn", "nhỏ nhất",
         "nhỏ lòng", "nhỏ nhen", "nhỏ nhẹ", "nhỏ to",
-        "nhỏ xíu", "nhỏ tí", "nhỏ tí hon","nhỏ kia", "nhỏ đó", "nhỏ này"
+        "nhỏ xíu", "nhỏ tí", "nhỏ tí hon", "nhỏ kia", "nhỏ đó", "nhỏ này",
+        # Từ chỉ số lượng
+        "ít", "vài", "một ít", "một vài",
     ],
     "cleanliness": [
         "sạch nợ", "sạch trơn",

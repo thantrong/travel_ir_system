@@ -536,6 +536,241 @@ descriptor_tags:
       - mùi nồng
       - mùi khó chịu
       - mùi cống rãnh
+  jacuzzi:
+    positive:
+      - bồn tắm sục
+      - jacuzzi
+      - bồn sục
+      - bồn tắm đôi
+      - spa trong phòng
+    negative:
+      - không có jacuzzi
+      - bồn sục hỏng
+  gym_fitness:
+    positive:
+      - phòng gym
+      - phòng tập
+      - fitness
+      - máy tập
+      - thể dục
+      - tập thể hình
+    negative:
+      - không có gym
+      - phòng tập nhỏ
+      - máy tập cũ
+  kitchen:
+    positive:
+      - bếp
+      - bếp nấu
+      - nhà bếp
+      - bếp từ
+      - bếp ga
+      - dụng cụ nấu
+      - bếp nướng
+      - bbq
+      - tiệc nướng
+    negative:
+      - không có bếp
+      - bếp hỏng
+  laundry:
+    positive:
+      - giặt là
+      - giặt ủi
+      - dịch vụ giặt
+      - máy giặt
+      - sấy quần áo
+    negative:
+      - không có giặt là
+      - giặt là chậm
+  spa:
+    positive:
+      - spa
+      - massage
+      - xông hơi
+      - sauna
+      - ngâm chân
+      - trị liệu
+      - chăm sóc da
+    negative:
+      - không có spa
+      - spa đóng cửa
+      - massage tệ
+  non_smoking:
+    positive:
+      - phòng không hút thuốc
+      - không khói thuốc
+      - khu vực không hút thuốc
+    negative:
+      - mùi thuốc lá
+      - phòng có mùi thuốc
+  early_checkin:
+    positive:
+      - check in sớm
+      - nhận phòng sớm
+      - check in linh hoạt
+    negative:
+      - không cho check in sớm
+      - phải chờ check in
+  room_amenities:
+    positive:
+      - máy sấy tóc
+      - bàn ủi
+      - máy pha cà phê
+      - ấm đun
+      - dụng cụ pha trà
+      - netflix
+      - tivi
+      - máy chiếu
+    negative:
+      - thiếu tiện nghi
+      - máy sấy hỏng
+      - không có máy pha cà phê
+  sunset_view:
+    positive:
+      - view hoàng hôn
+      - ngắm hoàng hôn
+      - view sunset
+      - hướng tây
+    negative:
+      - không có view hoàng hôn
+  sports:
+    positive:
+      - thể thao dưới nước
+      - lướt ván
+      - chèo thuyền
+      - kayak
+      - lặn biển
+      - tennis
+      - bóng chuyền
+    negative:
+      - không có thể thao
+  english_speaking:
+    positive:
+      - nói tiếng anh
+      - tiếng anh
+      - giao tiếp tiếng anh
+      - hướng dẫn viên tiếng anh
+    negative:
+      - không nói được tiếng anh
+  cafe:
+    positive:
+      - quán cà phê
+      - cà phê ngon
+      - máy pha cà phê
+      - espresso
+      - quầy bar
+      - cocktail
+    negative:
+      - cà phê dở
+      - không có quán cà phê
+  vat_invoice:
+    positive:
+      - hóa đơn đỏ
+      - hóa đơn vat
+      - xuất hóa đơn
+      - hóa đơn công ty
+    negative:
+      - không xuất hóa đơn
+  connecting_rooms:
+    positive:
+      - phòng thông nhau
+      - phòng liền kề
+      - phòng gia đình
+    negative:
+      - không có phòng thông nhau
+  childcare:
+    positive:
+      - trông trẻ
+      - giữ trẻ
+      - babysitting
+      - club trẻ em
+    negative:
+      - không có dịch vụ trông trẻ
+  wheelchair:
+    positive:
+      - xe lăn
+      - lối đi xe lăn
+      - phòng cho người khuyết tật
+      - thang máy rộng
+    negative:
+      - không có lối đi xe lăn
+  yoga:
+    positive:
+      - yoga
+      - thiền
+      - chữa lành
+      - healing
+      - thực đơn chay
+    negative:
+      - không có yoga
+  tour_guide:
+    positive:
+      - hướng dẫn viên
+      - dẫn tour
+      - tour địa phương
+      - đặt tour
+    negative:
+      - không có hướng dẫn viên
+  karaoke:
+    positive:
+      - karaoke
+      - dàn âm thanh
+      - hát karaoke
+    negative:
+      - không có karaoke
+      - karaoke hỏng
+  river_view:
+    positive:
+      - view sông
+      - nhìn ra sông
+      - hướng sông
+    negative:
+      - không có view sông
+  rice_terrace_view:
+    positive:
+      - ruộng bậc thang
+      - view ruộng bậc thang
+      - nhìn xuống ruộng
+    negative:
+      - không có view ruộng bậc thang
+  heritage_view:
+    positive:
+      - kiến trúc cổ
+      - cung đình
+      - phố cổ
+      - di tích
+      - lịch sử
+    negative:
+      - không có di tích gần đó
+  garden_view:
+    positive:
+      - vườn hoa
+      - sân vườn
+      - view vườn
+      - nhìn ra vườn
+    negative:
+      - không có vườn
+  city_view:
+    positive:
+      - view thành phố
+      - nhìn ra thành phố
+      - toàn cảnh
+      - view panorama
+    negative:
+      - không có view thành phố
+  sunrise_view:
+    positive:
+      - view bình minh
+      - ngắm bình minh
+      - hướng đông
+    negative:
+      - không có view bình minh
+  shisha:
+    positive:
+      - shisha
+      - hookah
+    negative:
+      - không có shisha
 
 hotel_type_tags:
   resort:
