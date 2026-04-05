@@ -8,6 +8,7 @@ from typing import Iterable
 import yaml
 import torch
 from flashtext import KeywordProcessor
+from tqdm import tqdm
 
 from nlp.normalization import normalize_text
 from nlp.tokenizer import tokenize_vi
@@ -541,7 +542,8 @@ def tag_records_batch(records: list[dict], phobert_batch_size: int = 32) -> list
     all_contexts = []
     review_context_ranges = []  # (start_idx, end_idx) cho mỗi review
     
-    for record in records:
+    print("[Step 1/3] Extracting descriptor contexts...")
+    for record in tqdm(records, desc="Extracting contexts"):
         text = _prepare_text(
             str(record.get("review_text", "")),
             str(record.get("hotel_name", "")),
@@ -558,14 +560,22 @@ def tag_records_batch(records: list[dict], phobert_batch_size: int = 32) -> list
     
     # Bước 2: Batch PhoBERT inference
     if all_contexts:
-        print(f"[PhoBERT] Processing {len(all_contexts)} contexts with batch_size={phobert_batch_size}...")
-        sentiments = _phobert_batch_predict([ctx["context"] for ctx in all_contexts], batch_size=phobert_batch_size)
+        print(f"\n[Step 2/3] Running PhoBERT inference on {len(all_contexts)} contexts (batch_size={phobert_batch_size})...")
+        sentiments = []
+        for i in tqdm(range(0, len(all_contexts), phobert_batch_size), desc="PhoBERT inference"):
+            batch_contexts = [ctx["context"] for ctx in all_contexts[i:i+phobert_batch_size]]
+            batch_sentiments = _phobert_batch_predict(batch_contexts, batch_size=phobert_batch_size)
+            sentiments.extend(batch_sentiments)
+        
         for ctx, sent in zip(all_contexts, sentiments):
             ctx["phobert_sentiment"] = sent
+    else:
+        print("\n[Step 2/3] No contexts to process, skipping PhoBERT.")
     
     # Bước 3: Assign tags cho mỗi review
+    print("\n[Step 3/3] Assigning tags to reviews...")
     output = []
-    for i, record in enumerate(records):
+    for i, record in enumerate(tqdm(records, desc="Assigning tags")):
         start, end = review_context_ranges[i]
         contexts = all_contexts[start:end]
         
