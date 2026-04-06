@@ -1,0 +1,378 @@
+{
+  "timestamp": "2026-04-05T17:52:09.431730",
+  "query": "homestay giá rẻ ở Đà Lạt",
+  "weights": {
+    "vector_weight": 0.6,
+    "bm25_weight": 0.4,
+    "location_boost": 1.8,
+    "top_k": 10
+  },
+  "query_understanding": {
+    "core_tokens": [
+      "homestay",
+      "giá",
+      "rẻ"
+    ],
+    "expanded_tokens": [
+      "homestay",
+      "giá",
+      "rẻ",
+      "lâm_đồng"
+    ],
+    "detected_location": "lâm_đồng",
+    "descriptor_tokens": [],
+    "detected_categories": [
+      "budget"
+    ]
+  },
+  "total_results": 10,
+  "results": [
+    {
+      "rank": 1,
+      "hotel_name": "One Million Homestay",
+      "hybrid_score": 7.907700213426571,
+      "debug": {
+        "hotel_id": "9000001296766",
+        "hotel_name": "One Million Homestay",
+        "review_count": 5,
+        "score_after_aggregation": 3.661,
+        "score_after_location_boost": 2.0339,
+        "score_final": 7.9077,
+        "hotel_acc_types": [
+          "hotel",
+          "homestay"
+        ],
+        "query_detected_location": "lâm_đồng",
+        "query_categories_detected": [
+          "budget"
+        ],
+        "doc_categories": [
+          "budget"
+        ],
+        "location_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 2,
+      "hotel_name": "O Cua Mua Thu Homestay Dalat",
+      "hybrid_score": 5.954243869849095,
+      "debug": {
+        "hotel_id": "3000020006699",
+        "hotel_name": "O Cua Mua Thu Homestay Dalat",
+        "review_count": 6,
+        "score_after_aggregation": 2.7566,
+        "score_after_location_boost": 1.5314,
+        "score_final": 5.9542,
+        "hotel_acc_types": [
+          "hotel",
+          "homestay"
+        ],
+        "query_detected_location": "lâm_đồng",
+        "query_categories_detected": [
+          "budget"
+        ],
+        "doc_categories": [
+          "budget",
+          "center"
+        ],
+        "location_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": true,
+        "type_mismatch_penalty": false,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": true
+      }
+    },
+    {
+      "rank": 3,
+      "hotel_name": "Hung Nguyen Valley Da Lat",
+      "hybrid_score": 4.032120259645478,
+      "debug": {
+        "hotel_id": "9000000966496",
+        "hotel_name": "Hung Nguyen Valley Da Lat",
+        "review_count": 20,
+        "score_after_aggregation": 3.2001,
+        "score_after_location_boost": 1.7778,
+        "score_final": 4.0321,
+        "hotel_acc_types": [
+          "hotel"
+        ],
+        "query_detected_location": "lâm_đồng",
+        "query_categories_detected": [
+          "budget"
+        ],
+        "doc_categories": [
+          "budget"
+        ],
+        "location_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": false,
+        "type_mismatch_penalty": true,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": false
+      }
+    },
+    {
+      "rank": 4,
+      "hotel_name": "Nam Xuan Premium Hotel",
+      "hybrid_score": 3.948996824192649,
+      "debug": {
+        "hotel_id": "3000010034696",
+        "hotel_name": "Nam Xuan Premium Hotel",
+        "review_count": 30,
+        "score_after_aggregation": 3.1341,
+        "score_after_location_boost": 1.7412,
+        "score_final": 3.949,
+        "hotel_acc_types": [
+          "hotel"
+        ],
+        "query_detected_location": "lâm_đồng",
+        "query_categories_detected": [
+          "budget"
+        ],
+        "doc_categories": [
+          "budget"
+        ],
+        "location_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": false,
+        "type_mismatch_penalty": true,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": false
+      }
+    },
+    {
+      "rank": 5,
+      "hotel_name": "Hali Hotel Da Lat",
+      "hybrid_score": 3.6497520734058213,
+      "debug": {
+        "hotel_id": "3000010029974",
+        "hotel_name": "Hali Hotel Da Lat",
+        "review_count": 6,
+        "score_after_aggregation": 2.8966,
+        "score_after_location_boost": 1.6092,
+        "score_final": 3.6498,
+        "hotel_acc_types": [
+          "hotel"
+        ],
+        "query_detected_location": "lâm_đồng",
+        "query_categories_detected": [
+          "budget"
+        ],
+        "doc_categories": [
+          "budget",
+          "center"
+        ],
+        "location_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": false,
+        "type_mismatch_penalty": true,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": false
+      }
+    },
+    {
+      "rank": 6,
+      "hotel_name": "Duy Vinh Hotel Dalat",
+      "hybrid_score": 3.6363290493465454,
+      "debug": {
+        "hotel_id": "3000020008671",
+        "hotel_name": "Duy Vinh Hotel Dalat",
+        "review_count": 16,
+        "score_after_aggregation": 2.886,
+        "score_after_location_boost": 1.6033,
+        "score_final": 3.6363,
+        "hotel_acc_types": [
+          "hotel"
+        ],
+        "query_detected_location": "lâm_đồng",
+        "query_categories_detected": [
+          "budget"
+        ],
+        "doc_categories": [
+          "budget",
+          "center"
+        ],
+        "location_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": false,
+        "type_mismatch_penalty": true,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": false
+      }
+    },
+    {
+      "rank": 7,
+      "hotel_name": "The Grace Hotel Dalat",
+      "hybrid_score": 3.6217205244317214,
+      "debug": {
+        "hotel_id": "3000010042556",
+        "hotel_name": "The Grace Hotel Dalat",
+        "review_count": 18,
+        "score_after_aggregation": 2.8744,
+        "score_after_location_boost": 1.5969,
+        "score_final": 3.6217,
+        "hotel_acc_types": [
+          "hotel"
+        ],
+        "query_detected_location": "lâm_đồng",
+        "query_categories_detected": [
+          "budget"
+        ],
+        "doc_categories": [
+          "budget",
+          "center"
+        ],
+        "location_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": false,
+        "type_mismatch_penalty": true,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": false
+      }
+    },
+    {
+      "rank": 8,
+      "hotel_name": "Q's House Dalat",
+      "hybrid_score": 3.618049833789958,
+      "debug": {
+        "hotel_id": "9000001069855",
+        "hotel_name": "Q's House Dalat",
+        "review_count": 15,
+        "score_after_aggregation": 2.8715,
+        "score_after_location_boost": 1.5953,
+        "score_final": 3.618,
+        "hotel_acc_types": [
+          "hotel"
+        ],
+        "query_detected_location": "lâm_đồng",
+        "query_categories_detected": [
+          "budget"
+        ],
+        "doc_categories": [
+          "budget"
+        ],
+        "location_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": false,
+        "type_mismatch_penalty": true,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": false
+      }
+    },
+    {
+      "rank": 9,
+      "hotel_name": "Minh Chien Hotel",
+      "hybrid_score": 3.591857203169522,
+      "debug": {
+        "hotel_id": "3000020015788",
+        "hotel_name": "Minh Chien Hotel",
+        "review_count": 14,
+        "score_after_aggregation": 2.8507,
+        "score_after_location_boost": 1.5837,
+        "score_final": 3.5919,
+        "hotel_acc_types": [
+          "hotel"
+        ],
+        "query_detected_location": "lâm_đồng",
+        "query_categories_detected": [
+          "budget"
+        ],
+        "doc_categories": [
+          "budget",
+          "luxury"
+        ],
+        "location_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": false,
+        "type_mismatch_penalty": true,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": false
+      }
+    },
+    {
+      "rank": 10,
+      "hotel_name": "Cherry House Dalat",
+      "hybrid_score": 3.5799516202417885,
+      "debug": {
+        "hotel_id": "3000020014135",
+        "hotel_name": "Cherry House Dalat",
+        "review_count": 9,
+        "score_after_aggregation": 2.8412,
+        "score_after_location_boost": 1.5785,
+        "score_final": 3.58,
+        "hotel_acc_types": [
+          "hotel"
+        ],
+        "query_detected_location": "lâm_đồng",
+        "query_categories_detected": [
+          "budget"
+        ],
+        "doc_categories": [
+          "budget"
+        ],
+        "location_matched": true,
+        "descriptor_filtered": false,
+        "descriptor_supported": true,
+        "descriptor_tokens_used": [],
+        "type_boost_applied": false,
+        "type_mismatch_penalty": true,
+        "type_boost_keywords_found": [
+          "homestay"
+        ],
+        "types_boot_factor": 1.2,
+        "hotel_type_matched": false
+      }
+    }
+  ]
+}

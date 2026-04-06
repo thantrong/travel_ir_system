@@ -12,5 +12,15 @@ def get_database():
     db_name = db_cfg.get("db_name", "travel_ir")
     if not uri:
         raise ValueError("Missing mongodb_uri in config.yaml")
-    client = MongoClient(uri)
+    
+    # Tăng timeout + retry + heartbeat cho kết nối ổn định hơn
+    client = MongoClient(
+        uri, 
+        connectTimeoutMS=30000,      # 30s connect timeout
+        socketTimeoutMS=60000,       # 60s socket timeout  
+        serverSelectionTimeoutMS=30000,  # 30s server selection
+        heartbeatFrequencyMS=30000,  # 30s heartbeat
+        retryWrites=True,            # Retry writes
+        retryReads=True              # Retry reads
+    )
     return client[db_name]

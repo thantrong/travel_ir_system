@@ -11,10 +11,15 @@ def load_reviews(records: list[dict]) -> tuple[int, int]:
 
     place_ops = []
     review_ops = []
+    skipped_no_review_id = 0
 
     for row in records:
         source_hotel_id = str(row.get("source_hotel_id", "")).strip()
         review_id = str(row.get("review_id", "")).strip()
+
+        if not review_id:
+            skipped_no_review_id += 1
+            continue
 
         if source_hotel_id:
             place_types = row.get("place_types") or row.get("types") or ["hotel"]
@@ -80,5 +85,8 @@ def load_reviews(records: list[dict]) -> tuple[int, int]:
         places_col.bulk_write(place_ops, ordered=False)
     if review_ops:
         reviews_col.bulk_write(review_ops, ordered=False)
+
+    if skipped_no_review_id > 0:
+        print(f"  ⚠ Skipped {skipped_no_review_id} records (no review_id)")
 
     return place_count, review_count

@@ -170,14 +170,13 @@ def _descriptor_supported_by_reviews(descriptor_tokens: list[str], review_texts:
                 
         # NẾU LÀ TRUY VẤN BÌNH THƯỜNG (Giá rẻ, Trung tâm, Bể bơi...)
         else:
-            # FIX Ở ĐÂY: Dùng từ điển đồng nghĩa để không đánh rớt kết quả oan uổng
+            # Dùng từ điển đồng nghĩa để không đánh rớt kết quả oan uổng
             match_all_descs = True
             for desc in important_descs:
-                # Lấy danh sách từ đồng nghĩa của từ khóa hiện tại
                 synonyms = [desc]
                 for cat, hints in _CATEGORY_TEXT_HINTS.items():
                     if desc in hints:
-                        synonyms = hints # Ví dụ: biến 'bình dân' thành ('giá rẻ', 'bình dân',...)
+                        synonyms = hints
                         break
                 
                 # CHỈ CẦN khớp 1 từ đồng nghĩa là ĐẠT
@@ -189,6 +188,41 @@ def _descriptor_supported_by_reviews(descriptor_tokens: list[str], review_texts:
                 return True
                 
     return False
+
+
+def _sentiment_penalty_factor(query: str, review_texts: list[str], query_descriptors: list[str], query_categories: list[str]) -> float:
+    """Compute a soft penalty when negative descriptors in reviews conflict with the query intent."""
+    q = (query or "").lower()
+    review_blob = " ".join(review_texts).lower()
+
+    strong_negative = ["rất tệ", "quá tệ", "tồi tệ", "thất vọng", "không tốt", "không hài lòng", "bẩn", "dơ", "cũ", "ồn", "mùi hôi", "khó chịu", "không sạch", "không yên tĩnh", "không đáng tiền"]
+    mild_negative = ["hơi", "hơi nhỏ", "hơi cũ", "hơi ồn", "hơi bụi", "chưa", "chưa tốt", "không được tốt", "không ổn"]
+
+    negative_hits = sum(1 for x in strong_negative if x in review_blob)
+    mild_hits = sum(1 for x in mild_negative if x in review_blob)
+
+    # Nếu query có ý định đặc tả tích cực mà review đi ngược lại, phạt mạnh hơn.
+    q_forms = _query_forms(query_descriptors + query_categories)
+    conflict_keys = {
+        "cleanliness": {"sạch", "sạch sẽ", "vệ sinh"},
+        "near_beach": {"biển", "gần biển", "view biển"},
+        "pool": {"hồ bơi", "pool", "bể bơi"},
+        "quiet_room": {"yên tĩnh", "cách âm", "ít ồn"},
+        "near_center": {"trung tâm", "gần trung tâm"},
+        "room_spacious": {"rộng", "rộng rãi", "thoáng"},
+        "good_service": {"dịch vụ", "phục vụ", "nhân viên"},
+        "food_quality": {"ăn sáng", "buffet", "đồ ăn"},
+        "value": {"giá rẻ", "bình dân", "rẻ", "hợp lý"},
+    }
+    conflict_found = any(q_forms.intersection(keys) for keys in conflict_keys.values())
+
+    if negative_hits >= 2:
+        return 0.7 if conflict_found else 0.8
+    if negative_hits == 1 and mild_hits >= 1:
+        return 0.85 if conflict_found else 0.9
+    if negative_hits == 1:
+        return 0.9 if conflict_found else 0.95
+    return 1.0
 
 
 def _infer_doc_categories(doc: dict) -> set[str]:
@@ -289,12 +323,12 @@ def search_hybrid(
     index_dir: Path,
     stopwords_path: Path,
     top_k: int = 10,
-    vector_weight: float = 0.4,
-    bm25_weight: float = 0.6,
+    vector_weight: float = 0.6,
+    bm25_weight: float = 0.4,
     location_boost_factor: float = 1.8,
     types_boot : float = 1.2,
-    strict_descriptor_filter: bool = True,
-    review_pool_size: int = 4000,
+    strict_descriptor_filter: bool = False,
+    review_pool_size: int = 9000,
 ) -> tuple[list[dict], QueryUnderstandingResult]:
     
     # PHẦN 4: Query Understanding
@@ -387,9 +421,10 @@ def search_hybrid(
         if data["hybrid_score"] > 0:
             valid_reviews.append(data)
 
-    required_negative_tags = _required_negative_tags(qu)
-    if required_negative_tags:
-        valid_reviews = _filter_negative_reviews(valid_reviews, required_negative_tags)
+    # Tạm thời vô hiệu hóa bộ lọc flashtext/negative-tag filtering để tránh mất thông tin
+    # required_negative_tags = _required_negative_tags(qu)
+    # if required_negative_tags:
+    #     valid_reviews = _filter_negative_reviews(valid_reviews, required_negative_tags)
 
     # PHẦN 6: Review Aggregation (Group theo Hotel)
     hotel_groups = defaultdict(list)
@@ -418,7 +453,7 @@ def search_hybrid(
 
         top_review_texts = [r["doc"].get("review_text", "") for r in top_reviews]
 
-        # LỌC DESCRIPTOR
+        # LỌC DESCRIPTOR -> giờ là soft signal, không hard-filter mặc định
         tokens_to_check = qu.descriptor_tokens
         descriptor_supported = True
         if tokens_to_check:
@@ -426,8 +461,7 @@ def search_hybrid(
             if strict_descriptor_filter and not descriptor_supported:
                 continue
 
-        # PHẦN 7: POI / category boosting - BỎ VÌ ĐÃ CÓ FLASHTEXT FILTER
-        # FlashText đã filter reviews có tags nên không cần boost nữa
+        # PHẦN 7: POI / category boosting - soft boost theo tags và query intent
         query_categories = {c.lower() for c in qu.detected_categories}
         doc_categories = set()
         for rr in top_reviews:
@@ -440,7 +474,17 @@ def search_hybrid(
         if qu.detected_location and location_matched(qu.detected_location, first_doc.get("location", "")):
             hotel_score *= location_boost_factor
             loc_matched = True
-        
+
+        # PHẦN 8.5: Sentiment penalty - phạt review chê mạnh nếu xung đột intent query
+        sentiment_factor = _sentiment_penalty_factor(
+            qu.raw_query,
+            top_review_texts,
+            qu.descriptor_tokens,
+            list(query_categories),
+        )
+        if sentiment_factor != 1.0:
+            hotel_score *= sentiment_factor
+
         # PHẦN 9: Phân loại hình lưu trú (Accommodation Type Boosting)
         raw_q_lower = qu.raw_query.lower()
         acc_types = {
@@ -467,8 +511,8 @@ def search_hybrid(
                     hotel_score *= types_boot
                     type_boost_applied = True
                 else:
-                    # Phạt kết quả không đúng loại hình lưu trú
-                    hotel_score *= 0.7
+                    # Phạt nhẹ hơn khi lệch loại hình, tránh làm rơi candidate đúng nội dung
+                    hotel_score *= 0.85
                     type_mismatch_penalty = True
                 break
 
@@ -509,6 +553,7 @@ def search_hybrid(
             "location_matched": loc_matched,
             "descriptor_filtered": strict_descriptor_filter and not descriptor_supported,
             "descriptor_supported": descriptor_supported,
+            "sentiment_factor": round(sentiment_factor, 4),
             "descriptor_tokens_used": tokens_to_check,
             "type_boost_applied": type_boost_applied,
             "type_mismatch_penalty": type_mismatch_penalty,

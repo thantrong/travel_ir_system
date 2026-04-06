@@ -339,7 +339,7 @@ _PHOBERT_MODEL = None
 _PHOBERT_DEVICE = None
 
 def _load_phobert_model():
-    """Load PhoBERT model và tự động dùng GPU nếu có."""
+    """Load PhoBERT model và tự động dùng GPU nếu có + half precision."""
     global _PHOBERT_TOKENIZER, _PHOBERT_MODEL, _PHOBERT_DEVICE
     
     if _PHOBERT_MODEL is not None:
@@ -351,20 +351,23 @@ def _load_phobert_model():
         filterwarnings("ignore")
         
         model_name = "wonrax/phobert-base-vietnamese-sentiment"
+        print("[PhoBERT] Loading model...")
         _PHOBERT_TOKENIZER = AutoTokenizer.from_pretrained(model_name)
         _PHOBERT_MODEL = AutoModelForSequenceClassification.from_pretrained(model_name)
         
-        # Tự động dùng GPU nếu có
+        # Tự động dùng GPU nếu có + half precision
         if torch.cuda.is_available():
             _PHOBERT_DEVICE = torch.device("cuda")
-            _PHOBERT_MODEL = _PHOBERT_MODEL.to(_PHOBERT_DEVICE)
-            print(f"[PhoBERT] Using GPU: {torch.cuda.get_device_name(0)}")
+            _PHOBERT_MODEL = _PHOBERT_MODEL.to(_PHOBERT_DEVICE).half()
+            print(f"[PhoBERT] Using GPU: {torch.cuda.get_device_name(0)} (FP16)")
         else:
             _PHOBERT_DEVICE = torch.device("cpu")
             print("[PhoBERT] Using CPU")
         
         _PHOBERT_MODEL.eval()
+        print("[PhoBERT] Model ready!")
     except Exception as e:
+        print(f"[PhoBERT] Error loading model: {e}, fallback to lexicon")
         _PHOBERT_MODEL = "lexicon"
         _PHOBERT_DEVICE = "cpu"
     
@@ -372,7 +375,7 @@ def _load_phobert_model():
 
 
 def _phobert_batch_predict(contexts: list[str], batch_size: int = 32) -> list[str]:
-    """Batch inference cho PhoBERT - NHANH HƠN inference từng câu."""
+    """Batch inference cho PhoBERT - TỐI ƯU GPU với FP16."""
     model, tokenizer, device = _load_phobert_model()
     
     if model == "lexicon":
@@ -386,7 +389,8 @@ def _phobert_batch_predict(contexts: list[str], batch_size: int = 32) -> list[st
             inputs = tokenizer(batch, return_tensors="pt", padding=True, truncation=True, max_length=512)
             
             if device.type == "cuda":
-                inputs = {k: v.to(device) for k, v in inputs.items()}
+                # FP16: chuyển input tensor sang half precision
+                inputs = {k: v.half().to(device) for k, v in inputs.items()}
             
             outputs = model(**inputs)
             predictions = torch.argmax(outputs.logits, dim=-1)
@@ -536,14 +540,23 @@ def tag_review(review_text: str, hotel_name: str = "", location: str = "") -> Ta
     )
 
 
-def tag_records_batch(records: list[dict], phobert_batch_size: int = 32) -> list[dict]:
-    """Batch processing cho nhiều reviews - TỐI ƯU GPU."""
+def tag_records_batch(records: list[dict], phobert_batch_size: int = 64) -> list[dict]:
+    """Batch processing cho nhiều reviews - TỐI ƯU GPU với batch_size=64, FP16."""
+    import time
+    
+    total_records = len(records)
+    print(f"\n{'='*60}")
+    print(f"PHOBERT TAGGING PIPELINE ({total_records} records)")
+    print(f"{'='*60}")
+    
     # Bước 1: Extract contexts cho tất cả reviews
     all_contexts = []
     review_context_ranges = []  # (start_idx, end_idx) cho mỗi review
     
-    print("[Step 1/3] Extracting descriptor contexts...")
-    for record in tqdm(records, desc="Extracting contexts"):
+    print(f"[Step 1/3] Extracting descriptor contexts...")
+    start_time = time.time()
+    
+    for record in tqdm(records, desc="  Extracting", unit="rec"):
         text = _prepare_text(
             str(record.get("review_text", "")),
             str(record.get("hotel_name", "")),
@@ -558,24 +571,37 @@ def tag_records_batch(records: list[dict], phobert_batch_size: int = 32) -> list
         all_contexts.extend(contexts)
         review_context_ranges.append((start, len(all_contexts)))
     
-    # Bước 2: Batch PhoBERT inference
+    elapsed = time.time() - start_time
+    total_contexts = len(all_contexts)
+    print(f"  ✓ {total_contexts} contexts in {elapsed:.1f}s")
+    
+    # Bước 2: Batch PhoBERT inference với progress bar
     if all_contexts:
-        print(f"\n[Step 2/3] Running PhoBERT inference on {len(all_contexts)} contexts (batch_size={phobert_batch_size})...")
+        print(f"[Step 2/3] PhoBERT sentiment inference ({total_contexts} contexts, batch_size={phobert_batch_size})...")
         sentiments = []
-        for i in tqdm(range(0, len(all_contexts), phobert_batch_size), desc="PhoBERT inference"):
-            batch_contexts = [ctx["context"] for ctx in all_contexts[i:i+phobert_batch_size]]
+        start_time = time.time()
+        
+        total_batches = (len(all_contexts) + phobert_batch_size - 1) // phobert_batch_size
+        for batch_start in tqdm(range(0, len(all_contexts), phobert_batch_size), desc="  PhoBERT", unit="batch", total=total_batches):
+            batch_contexts = [ctx["context"] for ctx in all_contexts[batch_start:batch_start+phobert_batch_size]]
             batch_sentiments = _phobert_batch_predict(batch_contexts, batch_size=phobert_batch_size)
             sentiments.extend(batch_sentiments)
+        
+        elapsed = time.time() - start_time
+        speed = total_contexts / elapsed if elapsed > 0 else 0
+        print(f"  ✓ {len(sentiments)} sentiments in {elapsed:.1f}s ({speed:.0f} contexts/s)")
         
         for ctx, sent in zip(all_contexts, sentiments):
             ctx["phobert_sentiment"] = sent
     else:
-        print("\n[Step 2/3] No contexts to process, skipping PhoBERT.")
+        print("  ⊘ No contexts, skipping PhoBERT.")
     
     # Bước 3: Assign tags cho mỗi review
-    print("\n[Step 3/3] Assigning tags to reviews...")
+    print(f"[Step 3/3] Assigning tags to reviews...")
     output = []
-    for i, record in enumerate(tqdm(records, desc="Assigning tags")):
+    start_time = time.time()
+    
+    for i, record in enumerate(tqdm(records, desc="  Tags", unit="rec")):
         start, end = review_context_ranges[i]
         contexts = all_contexts[start:end]
         
@@ -612,6 +638,10 @@ def tag_records_batch(records: list[dict], phobert_batch_size: int = 32) -> list
         }
         tagged["contexts"] = contexts
         output.append(tagged)
+    
+    elapsed = time.time() - start_time
+    print(f"  ✓ {len(output)} records tagged in {elapsed:.1f}s")
+    print(f"{'='*60}\n")
     
     return output
 

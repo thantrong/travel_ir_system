@@ -11,6 +11,13 @@ chrome_profile/
 
 data/raw/
 data/processed/
+data/index/*.pkl
+debug_logs/
 
 .DS_Store
 config/.env
+llm_judge.py
+.env
+.env.*
+*.pem
+*.key
