@@ -21,3 +21,5 @@ llm_judge.py
 .env.*
 *.pem
 *.key
+*.pkl
+*.log
