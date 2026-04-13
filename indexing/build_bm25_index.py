@@ -14,7 +14,7 @@ sys.path.insert(0, str(project_root))
 
 from rank_bm25 import BM25Okapi
 
-from database.mongo_connection import get_database
+from database.mongo_connection import get_collection_names, get_database
 from nlp.tokenizer import tokenize_vi
 
 
@@ -30,10 +30,34 @@ def _normalize_tag_token(tag: str) -> list[str]:
     return [value] if value else []
 
 
+# Danh sách các tiền tố tag tiêu cực cần loại bỏ khi indexing
+_NEGATIVE_TAG_PREFIXES = ("!", "not_", "no_", "non_", "bad_", "poor_", "worst_")
+
+
+def _is_negative_tag(tag: str) -> bool:
+    """Kiểm tra xem tag có mang ý nghĩa tiêu cực/cảm xúc xấu không."""
+    value = str(tag or "").strip().lower()
+    if not value:
+        return True
+    # Tag bắt đầu bằng tiền tố phủ định
+    if any(value.startswith(prefix) for prefix in _NEGATIVE_TAG_PREFIXES):
+        return True
+    # Tag có từ tiêu cực mạnh trong danh sách
+    strong_negative_words = {
+        "tệ", "tồi_tệ", "dở", "bẩn", "dơ", "ồn", "hôi",
+        "thất_vọng", "không_đáng_tiền", "không_hài_lòng",
+        "tệ_hại", "kinh_khủng", "thảm_họa", "rác_rưởi",
+        "vỡi", "lừa_đảo", "phẫn_nộ", "gay_phẫn"
+    }
+    if value in strong_negative_words:
+        return True
+    return False
+
+
 def _extend_tags(doc_tokens: list[str], tags: list[str], weight: int = 1) -> None:
     for tag in tags or []:
         token = str(tag or "").strip().lower().replace(" ", "_")
-        if not token or token.startswith("!"):
+        if not token or _is_negative_tag(token):
             continue
         doc_tokens.extend([token] * weight)
 
@@ -41,8 +65,9 @@ def _extend_tags(doc_tokens: list[str], tags: list[str], weight: int = 1) -> Non
 def fetch_reviews_for_indexing() -> list[dict]:
     """Kéo dữ liệu review và append thông tin hotel."""
     db = get_database()
-    places_col = db["places"]
-    reviews_col = db["reviews"]
+    collections = get_collection_names()
+    places_col = db[collections["places"]]
+    reviews_col = db[collections["reviews"]]
 
     place_map = {}
     for doc in places_col.find():

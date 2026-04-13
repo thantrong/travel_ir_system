@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
 from typing import Iterable
+import os
 
 import yaml
 import torch
@@ -16,6 +17,7 @@ from preprocessing.clean_text import clean_review_text
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 RULE_FILE = PROJECT_ROOT / "config" / "review_tag_rules.yaml"
+DEFAULT_CONTEXT_WINDOW = int(os.getenv("ASPECT_CONTEXT_WINDOW", "3"))
 
 
 @dataclass
@@ -250,7 +252,7 @@ def _find_phrase_in_tokens(tokens: list[str], phrase_tokens: tuple[str, ...]) ->
     return positions
 
 
-def _get_token_window(tokens: list[str], center_idx: int, window: int = 5) -> str:
+def _get_token_window(tokens: list[str], center_idx: int, window: int = DEFAULT_CONTEXT_WINDOW) -> str:
     start = max(0, center_idx - window)
     end = min(len(tokens), center_idx + window + 1)
     return " ".join(tokens[start:end])
@@ -281,7 +283,7 @@ def _validate_subject(tokens: list[str], tag: str, descriptor_pos: int, window: 
     return False
 
 
-def _extract_descriptor_contexts(text: str, window: int = 5) -> list[dict]:
+def _extract_descriptor_contexts(text: str, window: int = DEFAULT_CONTEXT_WINDOW) -> list[dict]:
     _build_phrase_maps()
     tokens = tokenize_vi(text.lower())
     matches = []
@@ -339,7 +341,7 @@ _PHOBERT_MODEL = None
 _PHOBERT_DEVICE = None
 
 def _load_phobert_model():
-    """Load PhoBERT model và tự động dùng GPU nếu có + half precision."""
+    """Load PhoBERT model với device resolver: cuda -> mps -> cpu."""
     global _PHOBERT_TOKENIZER, _PHOBERT_MODEL, _PHOBERT_DEVICE
     
     if _PHOBERT_MODEL is not None:
@@ -355,11 +357,18 @@ def _load_phobert_model():
         _PHOBERT_TOKENIZER = AutoTokenizer.from_pretrained(model_name)
         _PHOBERT_MODEL = AutoModelForSequenceClassification.from_pretrained(model_name)
         
-        # Tự động dùng GPU nếu có + half precision
-        if torch.cuda.is_available():
+        device_mode = os.getenv("DEVICE_MODE", "auto").strip().lower()
+        cuda_ok = torch.cuda.is_available() and device_mode in {"auto", "cuda"}
+        mps_ok = hasattr(torch.backends, "mps") and torch.backends.mps.is_available() and device_mode in {"auto", "mps"}
+
+        if cuda_ok:
             _PHOBERT_DEVICE = torch.device("cuda")
             _PHOBERT_MODEL = _PHOBERT_MODEL.to(_PHOBERT_DEVICE).half()
             print(f"[PhoBERT] Using GPU: {torch.cuda.get_device_name(0)} (FP16)")
+        elif mps_ok:
+            _PHOBERT_DEVICE = torch.device("mps")
+            _PHOBERT_MODEL = _PHOBERT_MODEL.to(_PHOBERT_DEVICE)
+            print("[PhoBERT] Using Apple Silicon MPS")
         else:
             _PHOBERT_DEVICE = torch.device("cpu")
             print("[PhoBERT] Using CPU")
@@ -387,12 +396,13 @@ def _phobert_batch_predict(contexts: list[str], batch_size: int = 32) -> list[st
         for i in range(0, len(contexts), batch_size):
             batch = contexts[i:i + batch_size]
             inputs = tokenizer(batch, return_tensors="pt", padding=True, truncation=True, max_length=512)
-            
+
+            inputs = {k: v.to(device) for k, v in inputs.items()}
             if device.type == "cuda":
-                # FP16: chuyển input tensor sang half precision
-                inputs = {k: v.half().to(device) for k, v in inputs.items()}
-            
-            outputs = model(**inputs)
+                with torch.autocast(device_type="cuda", dtype=torch.float16):
+                    outputs = model(**inputs)
+            else:
+                outputs = model(**inputs)
             predictions = torch.argmax(outputs.logits, dim=-1)
             
             for pred in predictions:
@@ -509,7 +519,7 @@ def tag_review(review_text: str, hotel_name: str = "", location: str = "") -> Ta
     category_tags, category_matches = _apply_tag_group(text, category_rules)
     
     # Descriptor tags with PhoBERT sentiment
-    contexts = _extract_descriptor_contexts(text, window=5)
+    contexts = _extract_descriptor_contexts(text, window=DEFAULT_CONTEXT_WINDOW)
     
     # Predict sentiment for each context
     for ctx in contexts:
@@ -566,7 +576,7 @@ def tag_records_batch(records: list[dict], phobert_batch_size: int = 64) -> list
             review_context_ranges.append((0, 0))
             continue
         
-        contexts = _extract_descriptor_contexts(text, window=5)
+        contexts = _extract_descriptor_contexts(text, window=DEFAULT_CONTEXT_WINDOW)
         start = len(all_contexts)
         all_contexts.extend(contexts)
         review_context_ranges.append((start, len(all_contexts)))

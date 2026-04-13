@@ -6,6 +6,7 @@ PHẦN 10: RANKING PIPELINE
 """
 
 import pickle
+import yaml
 from pathlib import Path
 from collections import defaultdict
 from functools import lru_cache
@@ -89,9 +90,103 @@ def _filter_negative_reviews(reviews: list[dict], required_tags: set[str]) -> li
         filtered.append(data)
     return filtered
 
-def load_index(path: Path) -> dict:
+# Đường dẫn tới file config synonyms
+_CONFIG_DIR = Path(__file__).resolve().parent.parent / "config"
+_SYNONYMS_PATH = _CONFIG_DIR / "query_synonyms.yaml"
+
+# Cache cho conflict_keys loaded từ YAML
+_conflict_keys_cache: dict[str, set[str]] | None = None
+
+
+def _load_conflict_keys_from_yaml() -> dict[str, set[str]]:
+    """Load conflict_keys (ý định query → từ khóa liên quan) từ file YAML synonyms."""
+    global _conflict_keys_cache
+    if _conflict_keys_cache is not None:
+        return _conflict_keys_cache
+
+    default_conflict_keys: dict[str, set[str]] = {
+        "cleanliness": {"sạch", "sạch sẽ", "vệ sinh"},
+        "near_beach": {"biển", "gần biển", "view biển"},
+        "pool": {"hồ bơi", "pool", "bể bơi"},
+        "quiet_room": {"yên tĩnh", "cách âm", "ít ồn"},
+        "near_center": {"trung tâm", "gần trung tâm"},
+        "room_spacious": {"rộng", "rộng rãi", "thoáng"},
+        "good_service": {"dịch vụ", "phục vụ", "nhân viên"},
+        "food_quality": {"ăn sáng", "buffet", "đồ ăn"},
+        "value": {"giá rẻ", "bình dân", "rẻ", "hợp lý"},
+        "luxury": {"sang trọng", "cao cấp", "luxury", "5 sao", "đẳng cấp"},
+        "family": {"gia đình", "trẻ em", "family", "kid"},
+        "couple": {"lãng mạn", "cặp đôi", "honeymoon"},
+        "pet": {"thú cưng", "chó", "mèo", "pet"},
+        "view": {"view", "nhìn", "hướng", "cảnh", "ban công"},
+        "airport": {"sân bay", "đưa đón", "gần sân bay"},
+        "spa_gym": {"gym", "spa", "massage", "thể hình", "xông hơi", "fitness"},
+        "kitchen": {"bếp", "nấu ăn", "bbq", "nướng", "bếp riêng"},
+        "business": {"công tác", "business", "phòng họp", "meeting"},
+    }
+
+    yaml_path = _SYNONYMS_PATH
+    if yaml_path.exists():
+        try:
+            with yaml_path.open("r", encoding="utf-8") as f:
+                data = yaml.safe_load(f)
+            synonyms = data.get("synonyms", {})
+            if synonyms:
+                synonym_to_category = {
+                    "sạch sẽ": "cleanliness", "sạch": "cleanliness",
+                    "vệ sinh tốt": "cleanliness", "gọn gàng": "cleanliness",
+                    "yên tĩnh": "quiet_room", "ít ồn": "quiet_room",
+                    "tĩnh lặng": "quiet_room", "riêng tư": "quiet_room",
+                    "hồ bơi": "pool", "bể bơi": "pool", "pool": "pool",
+                    "swimming pool": "pool",
+                    "giá rẻ": "value", "bình dân": "value", "giá mềm": "value",
+                    "giá tốt": "value", "tiết kiệm": "value",
+                    "buffet sáng": "food_quality", "ăn sáng buffet": "food_quality",
+                    "bữa sáng buffet": "food_quality",
+                    "gần trung tâm": "near_center", "ngay trung tâm": "near_center",
+                    "sát trung tâm": "near_center", "thuận tiện đi lại": "near_center",
+                    "gia đình": "family", "cho trẻ em": "family", "đi cùng con nhỏ": "family",
+                    "cặp đôi": "couple", "honeymoon": "couple", "lãng mạn": "couple",
+                    "công tác": "business", "business": "business", "đi công tác": "business",
+                    "cao cấp": "luxury", "sang trọng": "luxury", "upscale": "luxury",
+                    "thân thiện": "good_service", "nhiệt tình": "good_service",
+                    "hiếu khách": "good_service", "gần sân bay": "airport",
+                    "sát sân bay": "airport",
+                    "bãi đậu xe": "convenience", "chỗ đậu xe": "convenience",
+                    "parking": "convenience", "đỗ xe": "convenience",
+                    "view đẹp": "view", "view biển": "view", "view núi": "view",
+                    "cảnh đẹp": "view", "góc nhìn đẹp": "view",
+                }
+                for key, aliases in synonyms.items():
+                    category = synonym_to_category.get(str(key).lower())
+                    if category:
+                        if category not in default_conflict_keys:
+                            default_conflict_keys[category] = set()
+                        default_conflict_keys[category].add(str(key).lower().replace("_", " "))
+                        for alias in aliases:
+                            default_conflict_keys[category].add(str(alias).lower().replace("_", " "))
+        except Exception:
+            pass
+
+    result = {k: v if isinstance(v, set) else set(v) for k, v in default_conflict_keys.items()}
+    _conflict_keys_cache = result
+    return result
+
+
+def _load_index_uncached(path: Path) -> dict:
     with path.open("rb") as f:
         return pickle.load(f)
+
+
+@lru_cache(maxsize=8)
+def _load_index_cached(path_str: str, mtime_ns: int) -> dict:
+    return _load_index_uncached(Path(path_str))
+
+
+def load_index(path: Path) -> dict:
+    resolved = Path(path).resolve()
+    stat = resolved.stat()
+    return _load_index_cached(str(resolved), int(stat.st_mtime_ns))
 
 
 @lru_cache(maxsize=2)
@@ -203,25 +298,15 @@ def _sentiment_penalty_factor(query: str, review_texts: list[str], query_descrip
 
     # Nếu query có ý định đặc tả tích cực mà review đi ngược lại, phạt mạnh hơn.
     q_forms = _query_forms(query_descriptors + query_categories)
-    conflict_keys = {
-        "cleanliness": {"sạch", "sạch sẽ", "vệ sinh"},
-        "near_beach": {"biển", "gần biển", "view biển"},
-        "pool": {"hồ bơi", "pool", "bể bơi"},
-        "quiet_room": {"yên tĩnh", "cách âm", "ít ồn"},
-        "near_center": {"trung tâm", "gần trung tâm"},
-        "room_spacious": {"rộng", "rộng rãi", "thoáng"},
-        "good_service": {"dịch vụ", "phục vụ", "nhân viên"},
-        "food_quality": {"ăn sáng", "buffet", "đồ ăn"},
-        "value": {"giá rẻ", "bình dân", "rẻ", "hợp lý"},
-    }
+    conflict_keys = _load_conflict_keys_from_yaml()
     conflict_found = any(q_forms.intersection(keys) for keys in conflict_keys.values())
 
     if negative_hits >= 2:
-        return 0.7 if conflict_found else 0.8
+        return 0.6 if conflict_found else 0.7
     if negative_hits == 1 and mild_hits >= 1:
-        return 0.85 if conflict_found else 0.9
+        return 0.75 if conflict_found else 0.8
     if negative_hits == 1:
-        return 0.9 if conflict_found else 0.95
+        return 0.8 if conflict_found else 0.85
     return 1.0
 
 
@@ -533,7 +618,7 @@ def search_hybrid(
             if type_boost_applied:
                 score_after_type = score_after_location / types_boot
             elif type_mismatch_penalty:
-                score_after_type = score_after_location / 0.7
+                score_after_type = score_after_location / 0.85
             else:
                 score_after_type = score_after_location
         else:

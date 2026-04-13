@@ -4,7 +4,7 @@ app:
   debug: false
 
 database:
-  mongodb_uri: "mongodb+srv://thanvinhtrongsv:trong1532000@dbtest.vsj0kew.mongodb.net/?appName=DBTest" # Set private URI locally, do not commit credentials
+  mongodb_uri: "" # Set via env MONGODB_URI in production/dev
   db_name: "travel_ir"
   collections:
     places: "places"

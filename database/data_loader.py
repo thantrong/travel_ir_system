@@ -1,13 +1,14 @@
 from pymongo import UpdateOne
 
-from database.mongo_connection import get_database
+from database.mongo_connection import get_collection_names, get_database
 
 
 def load_reviews(records: list[dict]) -> tuple[int, int]:
     """Upsert places and reviews into MongoDB, in batches."""
     db = get_database()
-    places_col = db["places"]
-    reviews_col = db["reviews"]
+    collections = get_collection_names()
+    places_col = db[collections["places"]]
+    reviews_col = db[collections["reviews"]]
 
     place_ops = []
     review_ops = []

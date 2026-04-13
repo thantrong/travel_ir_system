@@ -14,13 +14,42 @@ import numpy as np
 project_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(project_root))
 
-from database.mongo_connection import get_database
+from database.mongo_connection import get_collection_names, get_database
+
+
+# Danh sách các tiền tố tag tiêu cực cần loại bỏ khi indexing
+_NEGATIVE_TAG_PREFIXES = ("!", "not_", "no_", "non_", "bad_", "poor_", "worst_")
+
+
+def _filter_negative_tags(tags: list[str]) -> list[str]:
+    """Lọc bỏ các tag mang ý nghĩa tiêu cực/cảm xúc xấu khỏi danh sách."""
+    strong_negative_words = {
+        "tệ", "tồi_tệ", "dở", "bẩn", "dơ", "ồn", "hôi",
+        "thất_vọng", "không_đáng_tiền", "không_hài_lòng",
+        "tệ_hại", "kinh_khủng", "thảm_họa", "rác_rưởi",
+        "vỡi", "lừa_đảo", "phẫn_nộ", "gay_phẫn"
+    }
+    
+    filtered = []
+    for tag in tags or []:
+        value = str(tag or "").strip().lower()
+        if not value:
+            continue
+        # Loại tag bắt đầu bằng tiền tố phủ định
+        if any(value.startswith(prefix) for prefix in _NEGATIVE_TAG_PREFIXES):
+            continue
+        # Loại tag có từ tiêu cực mạnh
+        if value in strong_negative_words:
+            continue
+        filtered.append(tag)
+    return filtered
 
 
 def fetch_reviews_for_indexing() -> list[dict]:
     db = get_database()
-    places_col = db["places"]
-    reviews_col = db["reviews"]
+    collections = get_collection_names()
+    places_col = db[collections["places"]]
+    reviews_col = db[collections["reviews"]]
 
     place_map = {}
     for doc in places_col.find():
@@ -83,8 +112,9 @@ def build_vector_index(
         if r["location"]:
             parts.append(f"Location: {r['location']}")
 
-        category_tags = list(r.get("category_tags", []) or [])
-        descriptor_tags = list(r.get("descriptor_tags", []) or [])
+        # Lọc bỏ các tag tiêu cực trước khi đưa vào embedding
+        category_tags = _filter_negative_tags(list(r.get("category_tags", []) or []))
+        descriptor_tags = _filter_negative_tags(list(r.get("descriptor_tags", []) or []))
         if category_tags:
             parts.append("Category tags: " + ", ".join(category_tags))
         if descriptor_tags:
@@ -99,6 +129,7 @@ def build_vector_index(
             "_id": r["_id"],
             "source_hotel_id": r["source_hotel_id"],
             "hotel_name": r["hotel_name"],
+            "types": r["types"],
             "location": r["location"],
             "review_text": r["review_text"],
             "review_rating": r["review_rating"],

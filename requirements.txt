@@ -13,3 +13,6 @@ torch
 transformers
 flashtext
 tqdm
+fastapi
+uvicorn
+psutil

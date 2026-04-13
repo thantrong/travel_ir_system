@@ -535,6 +535,65 @@ Tính đến hiện tại, phần IR của hệ thống đã có:
 - Chất lượng query understanding phụ thuộc khá nhiều vào bộ từ khóa, synonym và luật nhận diện location.
 - Chất lượng retrieval phụ thuộc trực tiếp vào chất lượng dữ liệu đã qua bước preprocessing.
 
+## Cơ chế kiểm soát nội dung tiêu cực
+
+Hệ thống tích hợp nhiều lớp lọc để đảm bảo kết quả tìm kiếm phản ánh đúng ý định người dùng và hạn chế đưa review mang cảm xúc xấu lên cao.
+
+### Các lớp lọc trong pipeline
+
+| Lớp lọc | Vị trí | Trạng thái | Mô tả |
+|---------|--------|-----------|-------|
+| **Spam Filter** | `preprocessing/remove_spam.py` | Bật | Loại review quá ngắn, lặp ký tự, chứa từ quảng cáo |
+| **Candidate Mask** | `search_engine.py` | Bật | Lọc candidate theo location + category |
+| **Negative Tag Filter** | `search_engine.py` | Tắt (hard filter) | Loại review có tag tiêu cực khi query quan tâm khía cạnh đó |
+| **Sentiment Penalty** | `search_engine.py` | Bật (soft filter) | Giảm điểm review chứa từ tiêu cực |
+| **Indexing Tag Filter** | `indexing/build_*_index.py` | Bật | Lọc tag tiêu cực khi build index |
+
+### Sentiment Penalty
+
+Khi review chứa từ tiêu cực, hệ thống không loại bỏ hoàn toàn mà áp dụng hệ số phạt vào score:
+
+- **Từ tiêu cực mạnh**: "rất tệ", "tồi tệ", "thất vọng", "bẩn", "dơ", "ồn", "không sạch"...
+- **Từ tiêu cực nhẹ**: "hơi nhỏ", "hơi cũ", "hơi ồn", "chưa tốt", "không ổn"...
+
+Hệ số phạt phụ thuộc vào số lượng từ tiêu cực và có xung đột với intent query hay không:
+
+- Xung đột detected + nhiều từ mạnh → phạt nặng hơn (×0.70)
+- Không xung đột + ít từ tiêu cực → phạt nhẹ (×0.95)
+- Không có từ tiêu cực → không phạt (×1.00)
+
+### Lọc tag tiêu cực khi Indexing
+
+Khi build BM25 và Vector index, hệ thống tự động loại các tag mang ý nghĩa tiêu cực khỏi corpus:
+
+- **Tiền tố phủ định**: `!`, `not_`, `no_`, `non_`, `bad_`, `poor_`, `worst_`
+- **Từ tiêu cực tiếng Việt**: "tệ", "tồi_tệ", "bẩn", "dơ", "ồn", "thất_vọng", "không_đáng_tiền"...
+
+Việc lọc ở giai đoạn indexing giúp embedding và BM25 scores không bị ảnh hưởng bởi nội dung tiêu cực, thay vì phải xử lý lúc runtime.
+
+## Hệ thống đánh giá (Evaluation)
+
+### Test Queries Bucketed
+
+Hệ thống có bộ 200 truy vấn đánh giá được chia thành 5 buckets để kiểm tra các khía cạnh khác nhau:
+
+| Bucket | Tên | Số queries | Mục đích |
+|--------|-----|-----------|----------|
+| 1 | `short_1_2_attributes` | 40 | Truy vấn ngắn, 1-2 thuộc tính |
+| 2 | `long_context_rich` | 40 | Truy vấn dài, nhiều ràng buộc |
+| 3 | `geo_diverse_priority_minor_provinces` | 40 | Đa dạng địa lý, ưu tiên tỉnh lẻ |
+| 4 | `natural_language_semantic_queries` | 40 | Chỉ location, kiểm tra semantic |
+| 5 | `random_mix_robustness` | 40 | Hỗn hợp, kiểm tra độ bền vững |
+
+File: `data/evaluation/test_queries_200_bucketed.json`
+
+### Pool-based Evaluation
+
+Hệ thống hỗ trợ đánh giá pool-based với các file:
+- `pool_results.json` / `pool_results.csv` — kết quả pool
+- `pool_results_labeled.csv` — kết quả đã gán nhãn
+- `evaluate_pool_results.py` — script đánh giá
+
 ## Thứ tự nên dùng khi thuyết trình hoặc viết báo cáo
 
 1. Giới thiệu mục tiêu bài toán

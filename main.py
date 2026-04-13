@@ -1,6 +1,7 @@
 import argparse
 import json
 from pathlib import Path
+import gc
 
 from torch.utils.data import DataLoader, Dataset
 from multiprocessing import cpu_count
@@ -83,7 +84,7 @@ def process_records_dataloader(records: list[dict], stopwords_path: Path, batch_
     stopwords = load_stopwords(stopwords_path)
     
     # Chia records thành các lô để xử lý
-    all_tagged = []
+    total_tagged_count = 0
     total_batches = (total + mongo_batch_size - 1) // mongo_batch_size
     
     for batch_idx in range(total_batches):
@@ -123,19 +124,23 @@ def process_records_dataloader(records: list[dict], stopwords_path: Path, batch_
         
         # Bước 2: Batch PhoBERT tagging
         tagged = tag_records_batch(valid_records, phobert_batch_size=phobert_batch_size)
-        all_tagged.extend(tagged)
+        total_tagged_count += len(tagged)
         
         # Bước 3: Save batch
-        processed_path = PROJECT_ROOT / "data" / "processed" / "reviews_processed.json"
-        processed_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        # Append hoặc ghi file
-        if processed_path.exists() and batch_idx > 0:
-            existing = json.loads(processed_path.read_text(encoding="utf-8"))
-            existing.extend(tagged)
-            processed_path.write_text(json.dumps(existing, ensure_ascii=False, indent=2), encoding="utf-8")
+        processed_json = PROJECT_ROOT / "data" / "processed" / "reviews_processed.json"
+        processed_jsonl = PROJECT_ROOT / "data" / "processed" / "reviews_processed.jsonl"
+        processed_json.parent.mkdir(parents=True, exist_ok=True)
+
+        # Duy trì file JSON cho tương thích cũ + thêm JSONL append để tránh O(n^2) I/O.
+        if batch_idx == 0:
+            processed_json.write_text(json.dumps(tagged, ensure_ascii=False, indent=2), encoding="utf-8")
+            with processed_jsonl.open("w", encoding="utf-8") as jf:
+                for item in tagged:
+                    jf.write(json.dumps(item, ensure_ascii=False) + "\n")
         else:
-            processed_path.write_text(json.dumps(tagged, ensure_ascii=False, indent=2), encoding="utf-8")
+            with processed_jsonl.open("a", encoding="utf-8") as jf:
+                for item in tagged:
+                    jf.write(json.dumps(item, ensure_ascii=False) + "\n")
         
         print(f"  ✓ Saved batch {batch_idx+1} ({len(tagged)} records)")
         
@@ -150,12 +155,19 @@ def process_records_dataloader(records: list[dict], stopwords_path: Path, batch_
                 print(f"  ✗ MongoDB error: {e}")
                 print(f"  → Data saved to JSON, you can retry later with:")
                 print(f"    python scripts/import_batch_mongo.py")
+
+        # Giảm peak memory khi chạy lô lớn liên tục.
+        del valid_records
+        del tagged
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
     
     print(f"\n{'='*60}")
-    print(f"[Summary] Done. {len(all_tagged)} records processed.")
+    print(f"[Summary] Done. {total_tagged_count} records processed.")
     print(f"{'='*60}\n")
     
-    return all_tagged
+    return []
 
 
 def process_records(records: list[dict], stopwords_path: Path) -> list[dict]:

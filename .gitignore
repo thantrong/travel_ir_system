@@ -23,3 +23,5 @@ llm_judge.py
 *.key
 *.pkl
 *.log
+*.txt
+*.csv
