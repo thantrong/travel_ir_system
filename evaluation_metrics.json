@@ -1,0 +1,273 @@
+{
+  "annotation_source": "data/evaluation/pool_results_labeled.csv",
+  "query_source": "data/evaluation/test_queries_200_bucketed.json",
+  "models": {
+    "bm25": {
+      "precision@5": 0.0,
+      "precision@10": 0.0,
+      "recall@10": 0.0,
+      "MAP": 0.0,
+      "nDCG@10": 0.0,
+      "strong_precision@10": 0.0,
+      "strong_recall@10": 0.0
+    },
+    "vector": {
+      "precision@5": 0.0,
+      "precision@10": 0.0,
+      "recall@10": 0.0,
+      "MAP": 0.0,
+      "nDCG@10": 0.0,
+      "strong_precision@10": 0.0,
+      "strong_recall@10": 0.0
+    },
+    "hybrid": {
+      "precision@5": 0.0,
+      "precision@10": 0.0,
+      "recall@10": 0.0,
+      "MAP": 0.0,
+      "nDCG@10": 0.0,
+      "strong_precision@10": 0.0,
+      "strong_recall@10": 0.0
+    }
+  },
+  "bucket_metrics": {
+    "bucket_1_short": {
+      "meta": {
+        "bucket_id": "bucket_1_short",
+        "bucket_name": "short_1_2_attributes",
+        "bucket_description": "Short queries with 1?2 attributes.",
+        "bucket_order": 1
+      },
+      "count": 40,
+      "bm25": {
+        "precision@5": 0.0,
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "MAP": 0.0,
+        "nDCG@10": 0.0,
+        "strong_precision@10": 0.0,
+        "strong_recall@10": 0.0
+      },
+      "vector": {
+        "precision@5": 0.0,
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "MAP": 0.0,
+        "nDCG@10": 0.0,
+        "strong_precision@10": 0.0,
+        "strong_recall@10": 0.0
+      },
+      "hybrid": {
+        "precision@5": 0.0,
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "MAP": 0.0,
+        "nDCG@10": 0.0,
+        "strong_precision@10": 0.0,
+        "strong_recall@10": 0.0
+      },
+      "winners": {
+        "precision@5": "bm25",
+        "precision@10": "bm25",
+        "recall@10": "bm25",
+        "MAP": "bm25",
+        "nDCG@10": "bm25",
+        "strong_precision@10": "bm25",
+        "strong_recall@10": "bm25"
+      }
+    },
+    "bucket_2_long_context": {
+      "meta": {
+        "bucket_id": "bucket_2_long_context",
+        "bucket_name": "long_context_rich",
+        "bucket_description": "Long, context-rich queries with multiple constraints.",
+        "bucket_order": 2
+      },
+      "count": 40,
+      "bm25": {
+        "precision@5": 0.0,
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "MAP": 0.0,
+        "nDCG@10": 0.0,
+        "strong_precision@10": 0.0,
+        "strong_recall@10": 0.0
+      },
+      "vector": {
+        "precision@5": 0.0,
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "MAP": 0.0,
+        "nDCG@10": 0.0,
+        "strong_precision@10": 0.0,
+        "strong_recall@10": 0.0
+      },
+      "hybrid": {
+        "precision@5": 0.0,
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "MAP": 0.0,
+        "nDCG@10": 0.0,
+        "strong_precision@10": 0.0,
+        "strong_recall@10": 0.0
+      },
+      "winners": {
+        "precision@5": "bm25",
+        "precision@10": "bm25",
+        "recall@10": "bm25",
+        "MAP": "bm25",
+        "nDCG@10": "bm25",
+        "strong_precision@10": "bm25",
+        "strong_recall@10": "bm25"
+      }
+    },
+    "bucket_3_geo_diverse": {
+      "meta": {
+        "bucket_id": "bucket_3_geo_diverse",
+        "bucket_name": "geo_diverse_priority_minor_provinces",
+        "bucket_description": "Geo-diverse normal queries with location emphasis.",
+        "bucket_order": 3
+      },
+      "count": 40,
+      "bm25": {
+        "precision@5": 0.0,
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "MAP": 0.0,
+        "nDCG@10": 0.0,
+        "strong_precision@10": 0.0,
+        "strong_recall@10": 0.0
+      },
+      "vector": {
+        "precision@5": 0.0,
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "MAP": 0.0,
+        "nDCG@10": 0.0,
+        "strong_precision@10": 0.0,
+        "strong_recall@10": 0.0
+      },
+      "hybrid": {
+        "precision@5": 0.0,
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "MAP": 0.0,
+        "nDCG@10": 0.0,
+        "strong_precision@10": 0.0,
+        "strong_recall@10": 0.0
+      },
+      "winners": {
+        "precision@5": "bm25",
+        "precision@10": "bm25",
+        "recall@10": "bm25",
+        "MAP": "bm25",
+        "nDCG@10": "bm25",
+        "strong_precision@10": "bm25",
+        "strong_recall@10": "bm25"
+      }
+    },
+    "bucket_4_natural_language_semantic": {
+      "meta": {
+        "bucket_id": "bucket_4_natural_language_semantic",
+        "bucket_name": "natural_language_semantic_queries",
+        "bucket_description": "Location-only queries across many provinces.",
+        "bucket_order": 4
+      },
+      "count": 40,
+      "bm25": {
+        "precision@5": 0.0,
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "MAP": 0.0,
+        "nDCG@10": 0.0,
+        "strong_precision@10": 0.0,
+        "strong_recall@10": 0.0
+      },
+      "vector": {
+        "precision@5": 0.0,
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "MAP": 0.0,
+        "nDCG@10": 0.0,
+        "strong_precision@10": 0.0,
+        "strong_recall@10": 0.0
+      },
+      "hybrid": {
+        "precision@5": 0.0,
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "MAP": 0.0,
+        "nDCG@10": 0.0,
+        "strong_precision@10": 0.0,
+        "strong_recall@10": 0.0
+      },
+      "winners": {
+        "precision@5": "bm25",
+        "precision@10": "bm25",
+        "recall@10": "bm25",
+        "MAP": "bm25",
+        "nDCG@10": "bm25",
+        "strong_precision@10": "bm25",
+        "strong_recall@10": "bm25"
+      }
+    },
+    "bucket_5_random_mix": {
+      "meta": {
+        "bucket_id": "bucket_5_random_mix",
+        "bucket_name": "random_mix_robustness",
+        "bucket_description": "Mixed and noisy robustness queries.",
+        "bucket_order": 5
+      },
+      "count": 40,
+      "bm25": {
+        "precision@5": 0.0,
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "MAP": 0.0,
+        "nDCG@10": 0.0,
+        "strong_precision@10": 0.0,
+        "strong_recall@10": 0.0
+      },
+      "vector": {
+        "precision@5": 0.0,
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "MAP": 0.0,
+        "nDCG@10": 0.0,
+        "strong_precision@10": 0.0,
+        "strong_recall@10": 0.0
+      },
+      "hybrid": {
+        "precision@5": 0.0,
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "MAP": 0.0,
+        "nDCG@10": 0.0,
+        "strong_precision@10": 0.0,
+        "strong_recall@10": 0.0
+      },
+      "winners": {
+        "precision@5": "bm25",
+        "precision@10": "bm25",
+        "recall@10": "bm25",
+        "MAP": "bm25",
+        "nDCG@10": "bm25",
+        "strong_precision@10": "bm25",
+        "strong_recall@10": "bm25"
+      }
+    }
+  },
+  "threshold_check": {
+    "precision@10>0.6": false,
+    "nDCG@10>0.7": false,
+    "MAP>0.5": false
+  },
+  "conclusion": "not_deploy_ready",
+  "precision@5": 0.0,
+  "precision@10": 0.0,
+  "recall@10": 0.0,
+  "MAP": 0.0,
+  "nDCG@10": 0.0,
+  "strong_precision@10": 0.0,
+  "strong_recall@10": 0.0
+}
