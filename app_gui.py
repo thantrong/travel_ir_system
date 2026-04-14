@@ -10,8 +10,8 @@ project_root = Path(__file__).resolve().parent
 if str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
 
-import json
 import streamlit as st
+from api.service import answer_with_rag
 from retrieval.search_engine import search_hybrid
 from summarization.debug_logger import save_debug_log
 
@@ -52,6 +52,34 @@ def run_search(
     return results, qu, None
 
 
+def run_rag(
+    query: str,
+    top_k_retrieval: int,
+    top_k_context: int,
+    max_citations: int,
+    vector_weight: float,
+    bm25_weight: float,
+    loc_boost: float,
+    chat_history: list[dict],
+):
+    try:
+        payload = answer_with_rag(
+            query=query.strip(),
+            top_k_retrieval=top_k_retrieval,
+            top_k_context=top_k_context,
+            max_citations=max_citations,
+            vector_weight=vector_weight,
+            bm25_weight=bm25_weight,
+            location_boost_factor=loc_boost,
+            chat_history=chat_history,
+            allow_fallback_to_ir=True,
+            explain=True,
+        )
+    except Exception as e:
+        return None, f"Lỗi RAG: {e}"
+    return payload, None
+
+
 def main():
     st.set_page_config(
         page_title="Hotel Search Engine",
@@ -75,133 +103,150 @@ def main():
         </style>
     """, unsafe_allow_html=True)
 
-    st.title("🏨 Hotel Search Engine (Hybrid IR)")
-    st.caption("Tìm kiếm ngữ nghĩa + từ khóa + location boosting trên cấp độ Khách sạn.")
+    st.title("🏨 Hotel Advisor Chatbot (RAG)")
+    st.caption("Chatbot tư vấn khách sạn theo nhu cầu người dùng, trả lời tự nhiên dựa trên dữ liệu retrieval.")
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
+    if "last_payload" not in st.session_state:
+        st.session_state.last_payload = None
 
     with st.sidebar:
-        st.header("⚙️ Ranking Weights")
+        st.header("🧩 Bối cảnh tư vấn")
+        scene = st.selectbox(
+            "Khách hàng thuộc nhóm nào?",
+            [
+                "Không xác định",
+                "Gia đình có trẻ nhỏ",
+                "Cặp đôi nghỉ dưỡng",
+                "Du lịch tiết kiệm",
+                "Chuyến công tác",
+                "Nhóm bạn trẻ",
+            ],
+        )
+        budget = st.selectbox("Ngân sách", ["Không rõ", "Tiết kiệm", "Trung cấp", "Cao cấp"])
+        priority = st.multiselect(
+            "Ưu tiên chính",
+            ["Gần biển", "Gần trung tâm", "Yên tĩnh", "Ăn sáng ngon", "Hồ bơi", "View đẹp", "Di chuyển thuận tiện"],
+            default=["Gần biển"],
+        )
+
+        st.header("⚙️ Retrieval Settings")
         vector_weight = st.slider("Vector Weight (Semantic)", 0.0, 1.0, 0.6, 0.1)
         bm25_weight = st.slider("BM25 Weight (Keyword)", 0.0, 1.0, 0.4, 0.1)
         loc_boost = st.slider("Location Boost Factor", 1.0, 3.0, 1.8, 0.1)
-        
-        top_k = st.number_input("Số kết quả (Top-K)", min_value=1, max_value=50, value=10)
-        
-    query = st.text_input(
-        "Nhập câu truy vấn (tiếng Việt)",
-        placeholder="Ví dụ: khách sạn view biển đẹp ở phú quốc",
-        key="query_input",
-    )
 
+        top_k = st.number_input("Top-K retrieval", min_value=1, max_value=50, value=12)
+        top_k_context = st.number_input("Số context cho RAG", min_value=1, max_value=20, value=6)
+        max_citations = st.number_input("Số citation tối đa", min_value=1, max_value=10, value=4)
+        show_debug = st.toggle("Hiện debug payload", value=False)
 
-    if st.button("🔍 Tìm kiếm", type="primary", use_container_width=True):
-        if not query or not query.strip():
-            st.warning("Vui lòng nhập truy vấn.")
-            return
+    st.caption("Mẹo: hỏi theo kiểu hội thoại, ví dụ: 'Tôi đi gia đình 4 người, cần gần biển Đà Nẵng, tầm giá trung cấp'.")
+    if st.button("🧹 Xóa hội thoại", use_container_width=True):
+        st.session_state.chat_history = []
+        st.session_state.last_payload = None
 
-        with st.spinner("Đang trích xuất và tìm kiếm..."):
-            results, qu, err = run_search(query, top_k, vector_weight, bm25_weight, loc_boost)
+    for turn in st.session_state.chat_history:
+        with st.chat_message("user" if turn["role"] == "user" else "assistant"):
+            st.write(turn["content"])
 
-        if err:
-            st.error(err)
-            return
-            
-        # Hiển thị Query Understanding
-        with st.expander("🧠 Trích xuất Ngữ nghĩa (Query Understanding)", expanded=True):
-            cols = st.columns(4)
-            cols[0].metric("Tokens cốt lõi", ", ".join(qu.core_tokens) if qu.core_tokens else "Trống")
-            cols[1].metric("Tokens nâng cao (Synonyms)", ", ".join(qu.expanded_tokens) if qu.expanded_tokens else "Trống")
-            cols[2].metric("Điểm đến (Location)", qu.detected_location.replace("_", " ").title() if qu.detected_location else "Không rõ")
-            cols[3].metric("Từ khoá nổi bật", ", ".join(qu.descriptor_tokens) if qu.descriptor_tokens else "Trống")
+    user_input = st.chat_input("Nhập yêu cầu khách sạn của bạn...")
+    if user_input:
+        scene_context = (
+            f"Boi canh khach hang: {scene}. "
+            f"Ngan sach: {budget}. "
+            f"Uu tien: {', '.join(priority) if priority else 'khong ro'}."
+        )
+        augmented_query = f"{user_input}\n{scene_context}"
 
-        # Lưu debug log
-        weights_info = {
-            "vector_weight": vector_weight,
-            "bm25_weight": bm25_weight,
-            "location_boost": loc_boost,
-            "top_k": top_k,
-        }
-        qu_info = {
-            "core_tokens": qu.core_tokens,
-            "expanded_tokens": qu.expanded_tokens,
-            "detected_location": qu.detected_location,
-            "descriptor_tokens": qu.descriptor_tokens,
-            "detected_categories": qu.detected_categories,
-        }
-        debug_path = save_debug_log(query, results, qu_info, weights_info)
-        st.info(f"📋 Đã lưu debug log: `{debug_path.name}`")
+        st.session_state.chat_history.append({"role": "user", "content": user_input})
+        with st.chat_message("user"):
+            st.write(user_input)
 
-        if not results:
-            st.info("Không tìm thấy khách sạn phù hợp với truy vấn.")
-            return
+        with st.chat_message("assistant"):
+            with st.spinner("Đang tư vấn..."):
+                rag_payload, err = run_rag(
+                    query=augmented_query,
+                    top_k_retrieval=int(top_k),
+                    top_k_context=int(top_k_context),
+                    max_citations=int(max_citations),
+                    vector_weight=vector_weight,
+                    bm25_weight=bm25_weight,
+                    loc_boost=loc_boost,
+                    chat_history=st.session_state.chat_history,
+                )
 
-        st.success(f"Tìm thấy top {len(results)} khách sạn phù hợp nhất.")
+            if err:
+                st.error(err)
+                st.session_state.chat_history.append({"role": "assistant", "content": f"Lỗi hệ thống: {err}"})
+                return
 
-        # Debug Panel
-        with st.expander("🔧 Debug: Score Breakdown", expanded=False):
-            st.caption("Phân tích điểm số từng khách sạn - Giúp hiểu tại sao khách sạn ở vị trí này")
-            for i, r in enumerate(results, 1):
-                d = r.get("debug_info", {})
-                if d:
-                    with st.container(border=True):
-                        st.markdown(f"**{i}. {d.get('hotel_name', r.get('hotel_name', ''))}** (Score: {r.get('hybrid_score', 0):.4f})")
-                        cols = st.columns([2, 1, 1, 1, 2])
-                        cols[0].metric("Aggregation", d.get("score_after_aggregation", 0))
-                        cols[1].metric("Category", d.get("score_after_category_boost", 0))
-                        cols[2].metric("Location", d.get("score_after_location_boost", 0))
-                        cols[3].metric("Final", d.get("score_final", 0))
-                        
-                        st.markdown(f"- Location detected: `{d.get('query_detected_location', 'Không')}` | Matched: {'✅' if d.get('location_matched') else '❌'}")
-                        st.markdown(f"- Categories detected: `{d.get('query_categories_detected', [])}` | Doc: `{d.get('doc_categories', [])}`")
-                        st.markdown(f"- Category matched: {'✅' if d.get('category_matched') else '❌'}")
-                        st.markdown(f"- Descriptor tokens: `{d.get('descriptor_tokens_used', [])}` | Supported: {'✅' if d.get('descriptor_supported') else '❌'}")
-                        type_status = ""
-                        if d.get('type_boost_applied'):
-                            type_status = f"✅ Boosted x{d.get('types_boot_factor', '')}"
-                        elif d.get('type_mismatch_penalty'):
-                            type_status = "⚠️ Penalty (0.7x) - Không đúng loại hình"
-                        else:
-                            type_status = "❌ Không áp dụng"
-                        st.markdown(f"- Type boost applied: {type_status}")
-                        if d.get('type_boost_keywords_found'):
-                            st.markdown(f"- Keywords tìm loại hình: `{d.get('type_boost_keywords_found')}`")
-                        st.markdown(f"- Acc types khách sạn: `{d.get('hotel_acc_types', [])}`")
-                        if d.get('hotel_type_matched') is not None:
-                            st.markdown(f"- Hotel type matched query: {'✅' if d.get('hotel_type_matched') else '❌'}")
+            answer = rag_payload.get("answer", "Mình chưa có đủ dữ liệu để tư vấn lúc này.")
+            st.write(answer)
+            st.session_state.chat_history.append({"role": "assistant", "content": answer})
+            st.session_state.last_payload = rag_payload
 
-        for i, r in enumerate(results, 1):
-            name = r.get("hotel_name", "Không tên")
-            loc = r.get("location", "Không rõ")
-            rating = r.get("rating", "—")
-            reviews_count = r.get("review_count", 0)
-            
-            score_hybrid = r.get("hybrid_score", 0.0)
-            score_vec = r.get("vector_score", 0.0)
-            score_bm25 = r.get("bm25_score", 0.0)
-            
-            loc_matched = r.get("location_matched", False)
+            mode = rag_payload.get("mode", "rag")
+            grounded = rag_payload.get("grounded", False)
+            fallback_used = rag_payload.get("fallback_used", False)
+            st.caption(f"Mode: `{mode}` | Grounded: {'✅' if grounded else '❌'} | Fallback: {'✅' if fallback_used else '❌'}")
 
-            with st.container():
-                st.markdown('<div class="hotel-card">', unsafe_allow_html=True)
-                
-                c1, c2 = st.columns([5, 2])
-                with c1:
-                    badges = ""
-                    if loc_matched:
-                        badges += ' <span class="loc-badge">📍 Đúng khu vực</span>'
-                    st.markdown(f"### {i}. {name} {badges}", unsafe_allow_html=True)
-                    st.caption(f"📍 {loc}  •  ⭐ {rating}  •  💬 {reviews_count} đánh giá tham chiếu")
-                
-                with c2:
-                    st.markdown(f'<div style="text-align: right;"><span class="score-badge">🏆 Score: {score_hybrid:.3f}</span></div>', unsafe_allow_html=True)
-                    st.markdown(f'<div style="text-align: right; font-size: 0.8rem; color: #64748b; margin-top: 4px;">Top Vec: {score_vec:.3f} | Top BM25: {score_bm25:.3f}</div>', unsafe_allow_html=True)
+            citations = rag_payload.get("citations", [])
+            if citations:
+                with st.expander("📚 Nguồn tham chiếu", expanded=False):
+                    for c in citations:
+                        st.markdown(
+                            f"- **[{c.get('id')}] {c.get('hotel_name')}** ({c.get('location')})  \n"
+                            f"  _{c.get('snippet')}_"
+                        )
 
-                top_reviews = r.get("top_reviews", [])
-                if top_reviews:
-                    with st.expander("📝 Top đánh giá liên quan nhất từ khách hàng"):
-                        for txt in top_reviews:
-                            st.markdown(f'<div class="review-box">💬 "{txt}"</div>', unsafe_allow_html=True)
+            ir_results = rag_payload.get("ir_results", [])
+            if ir_results:
+                with st.expander("🔁 Kết quả IR fallback", expanded=False):
+                    for i, r in enumerate(ir_results, 1):
+                        st.markdown(
+                            f"**{i}. {r.get('hotel_name', 'Không tên')}** — {r.get('location', 'Không rõ')} "
+                            f"(score: {r.get('hybrid_score', 0):.3f})"
+                        )
 
-                st.markdown('</div>', unsafe_allow_html=True)
+    if show_debug and st.session_state.last_payload:
+        with st.expander("🔧 Debug payload (lần trả lời gần nhất)", expanded=False):
+            st.json(st.session_state.last_payload)
+            if st.session_state.last_payload.get("query_understanding"):
+                save_debug_log(
+                    query=st.session_state.last_payload.get("query", ""),
+                    results=st.session_state.last_payload.get("ir_results", []),
+                    query_understanding=st.session_state.last_payload.get("query_understanding", {}),
+                    weights={
+                        "vector_weight": vector_weight,
+                        "bm25_weight": bm25_weight,
+                        "location_boost": loc_boost,
+                        "top_k_retrieval": int(top_k),
+                    },
+                )
+
+    # Chế độ IR cũ giữ để đối chiếu nhanh khi cần.
+    with st.expander("🧪 So sánh nhanh IR truyền thống", expanded=False):
+        ir_query = st.text_input("Truy vấn IR nhanh", placeholder="VD: khách sạn gần biển ở Đà Nẵng")
+        if st.button("Chạy IR nhanh"):
+            results, qu, err = run_search(ir_query, int(top_k), vector_weight, bm25_weight, loc_boost)
+            if err:
+                st.error(err)
+            elif not results:
+                st.info("Không có kết quả IR.")
+            else:
+                st.success(f"IR trả về {len(results)} kết quả.")
+                st.write(
+                    {
+                        "detected_location": qu.detected_location,
+                        "detected_categories": qu.detected_categories,
+                        "descriptor_tokens": qu.descriptor_tokens,
+                    }
+                )
+                for i, r in enumerate(results[:5], 1):
+                    st.markdown(
+                        f"**{i}. {r.get('hotel_name', 'Không tên')}** — {r.get('location', 'Không rõ')} "
+                        f"(score: {r.get('hybrid_score', 0):.3f})"
+                    )
 
 if __name__ == "__main__":
     main()

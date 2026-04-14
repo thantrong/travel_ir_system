@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 from typing import Any
 
 from rag import answer_from_ir_results
@@ -51,9 +52,14 @@ def answer_with_rag(
     vector_weight: float = 0.6,
     bm25_weight: float = 0.4,
     location_boost_factor: float = 1.8,
+    chat_history: list[dict[str, str]] | None = None,
     allow_fallback_to_ir: bool = True,
     explain: bool = False,
 ) -> dict[str, Any]:
+    llm_base_url = os.getenv("LLM_BASE_URL", "").strip() or None
+    llm_model = os.getenv("LLM_MODEL", "").strip() or None
+    llm_timeout_s = float(os.getenv("LLM_TIMEOUT_S", "30"))
+
     try:
         ir_payload = search_hotels(
             query=query,
@@ -95,6 +101,10 @@ def answer_with_rag(
             ir_results=ir_results,
             top_k_context=top_k_context,
             max_citations=max_citations,
+            llm_base_url=llm_base_url,
+            llm_model=llm_model,
+            llm_timeout_s=llm_timeout_s,
+            chat_history=chat_history,
         )
 
         if not rag_payload.get("grounded", False):
@@ -115,6 +125,8 @@ def answer_with_rag(
                 "context_items_used": rag_payload.get("context_items_used", 0),
                 "top_k_retrieval": top_k_retrieval,
                 "top_k_context": top_k_context,
+                "answer_mode": rag_payload.get("answer_mode"),
+                "llm_enabled": bool(llm_base_url and llm_model),
             }
         return response
     except Exception:

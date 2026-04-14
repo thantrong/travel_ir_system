@@ -71,6 +71,7 @@ def rag_answer(payload: RagRequest) -> dict:
         vector_weight=payload.vector_weight,
         bm25_weight=payload.bm25_weight,
         location_boost_factor=payload.location_boost_factor,
+        chat_history=[t.model_dump() for t in payload.chat_history],
         allow_fallback_to_ir=payload.allow_fallback_to_ir,
         explain=payload.explain,
     )
