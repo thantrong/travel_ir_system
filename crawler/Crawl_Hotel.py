@@ -5,8 +5,8 @@ Crawler mới để thu thập HTML trang chi tiết khách sạn sau render.
 
 Thiết kế:
 - Discovery khách sạn qua response API search list (nhanh, ít click UI).
-- Mỗi khách sạn mở detail URL; lưu HTML đã nén (bỏ script/head rác, thuộc tính dư)
-  nhưng vẫn giữ đủ body + JSON-LD + script dữ liệu phòng/gallery.
+- Mỗi khách sạn mở detail URL; lưu HTML gốc sau render (raw, không compact)
+  để đảm bảo tính toàn vẹn dữ liệu nguồn cho bước clean phía sau.
 - "HTML tĩnh" từ server không chứa DOM sau React — ta chụp snapshot sau
   scroll + chờ network + mở modal/expand (xem _materialize_dom_snapshot).
 - Không thay đổi crawler IR cũ.
@@ -714,11 +714,10 @@ async def capture_full_html(context, city: Dict, targets: List[Dict], max_worker
             # Đưa tối đa nội dung lazy vào DOM trước khi serialize HTML (scroll + modal chính sách).
             policy_ok = await _materialize_dom_snapshot(page)
 
-            html = await page.content()
-            # Lưu HTML đã cắt rác; fallback phòng dùng HTML đầy đủ trong RAM (trước khi nén).
-            stored_html = compact_html_for_storage(html)
+            raw_html = await page.content()
+            # Lưu raw HTML sau render để giữ toàn vẹn dữ liệu nguồn.
             html_path = build_html_path(city, target)
-            html_path.write_text(stored_html, encoding="utf-8")
+            html_path.write_text(raw_html, encoding="utf-8")
 
             row = {
                 "captured_at": datetime.now(timezone.utc).isoformat(),
@@ -728,8 +727,8 @@ async def capture_full_html(context, city: Dict, targets: List[Dict], max_worker
                 "hotel_name": target.get("hotel_name"),
                 "detail_url": detail_url,
                 "html_path": str(html_path),
-                "html_size_bytes": len(stored_html.encode("utf-8")),
-                "html_bytes_full_page": len(html.encode("utf-8")),
+                "html_size_bytes": len(raw_html.encode("utf-8")),
+                "html_raw_integrity": True,
                 "policy_modal_attempted": True,
                 "policy_modal_visible": bool(policy_ok),
                 "room_api_files": [],
@@ -747,7 +746,7 @@ async def capture_full_html(context, city: Dict, targets: List[Dict], max_worker
                 rooms_api_path.write_text(json.dumps(merged, ensure_ascii=False, indent=2), encoding="utf-8")
                 row["room_api_files"].append(str(rooms_api_path))
             else:
-                fallback_payload = _extract_room_fallback_from_html(html)
+                fallback_payload = _extract_room_fallback_from_html(raw_html)
                 if fallback_payload:
                     merged = {
                         "captured_at": datetime.now(timezone.utc).isoformat(),
