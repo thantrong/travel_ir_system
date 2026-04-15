@@ -127,6 +127,12 @@ def hotel_id_from_detail_url(url: str) -> str:
     return tail if tail.isdigit() else ""
 
 
+def normalize_space(value: str) -> str:
+    if not value:
+        return ""
+    return re.sub(r"\s+", " ", value).strip()
+
+
 def parse_args():
     ap = argparse.ArgumentParser(description="Crawl full HTML detail page for hotels")
     ap.add_argument("--cities", type=str, default="", help="City code list, vd: --cities LD,PQ")
@@ -490,15 +496,12 @@ async def capture_full_html(context, city: Dict, targets: List[Dict], max_worker
         """
         Để chuỗi HTML lưu ra *gần* với DOM đầy đủ sau render:
         1) chờ mạng tương đối ổn định
-        2) scroll cả trang (lazy mount)
-        3) mở modal/expand chính sách lưu trú nếu có
+        2) mở tab chính sách + modal "Đọc tất cả" (nếu có)
 
         Không thể đảm bảo toàn bộ tab/modal (cần click từng loại UI nếu cần).
         """
         await _wait_network_idle_soft(page)
         await asyncio.sleep(0.35)
-        await _scroll_full_page_for_lazy(page)
-        await asyncio.sleep(0.45)
         return await _expand_accommodation_policy(page)
 
     async def _scroll_policy_dialog_content(page) -> None:
@@ -525,20 +528,46 @@ async def capture_full_html(context, city: Dict, targets: List[Dict], max_worker
         Chính sách lưu trú: scroll tới khối 'Chính sách', bấm 'Đọc tất cả',
         cuộn trong modal — DOM đầy đủ mới serialize vào HTML lưu file.
         """
-        try:
-            await page.mouse.wheel(0, 2000)
-            await asyncio.sleep(0.4)
-        except Exception:
-            pass
+        async def _click_policy_tab_once() -> bool:
+            tab_candidates = [
+                # Selector ổn định do người dùng cung cấp.
+                page.locator("[data-testid='link-POLICY']").first,
+                page.get_by_role("tab", name=re.compile(r"^\s*Chính\s*sách\s*$", re.I)).first,
+                page.get_by_role("link", name=re.compile(r"^\s*Chính\s*sách\s*$", re.I)).first,
+                page.get_by_role("button", name=re.compile(r"^\s*Chính\s*sách\s*$", re.I)).first,
+                page.locator("a,button,div[role='button']", has_text=re.compile(r"^\s*Chính\s*sách\s*$", re.I)).first,
+            ]
+            for tab in tab_candidates:
+                try:
+                    if await tab.count() == 0:
+                        continue
+                    await tab.scroll_into_view_if_needed(timeout=5000)
+                    await asyncio.sleep(0.2)
+                    await tab.click(timeout=5000, force=True)
+                    await asyncio.sleep(1.0)
+                    logger.info("[Policy] Đã click tab/menu 'Chính sách'")
+                    return True
+                except Exception:
+                    continue
+            return False
 
-        for heading in (
+        headings = (
             "Chính sách lưu trú",
             "Chính sách khách sạn",
             "Chính sách nhận phòng",
             "Accommodation policy",
             "Hotel policy",
             "Chính sách",
-        ):
+        )
+        tab_clicked = await _click_policy_tab_once()
+        if not tab_clicked:
+            logger.info("[Policy] Chưa click được tab/menu 'Chính sách' ở lượt chính")
+
+        await _wait_network_idle_soft(page)
+        await asyncio.sleep(0.4)
+
+        # Một lượt chính: không lặp nhiều vòng/reload để giảm tín hiệu anti-bot.
+        for heading in headings:
             try:
                 h = page.get_by_text(heading, exact=False).first
                 if await h.count() == 0:
@@ -546,70 +575,68 @@ async def capture_full_html(context, city: Dict, targets: List[Dict], max_worker
                 await h.scroll_into_view_if_needed(timeout=6000)
                 await asyncio.sleep(0.5)
                 logger.info("[Policy] Đã scroll tới khu vực %r", heading)
-                break
-            except Exception:
-                continue
-
-        read_pattern = re.compile(r"Đọc tất cả|Xem tất cả|Read more|See all", re.I)
-        try:
-            btns = page.locator("a, button", has_text=read_pattern)
-            n = await btns.count()
-            for i in range(min(n, 6)):
-                try:
-                    await btns.nth(i).scroll_into_view_if_needed(timeout=4000)
-                    await asyncio.sleep(0.25)
-                    await btns.nth(i).click(timeout=4000)
-                    await asyncio.sleep(1.0)
-                    dlg = page.locator('[role="dialog"]')
-                    if await dlg.count() > 0:
-                        try:
-                            await dlg.first.wait_for(state="visible", timeout=12000)
-                            await _scroll_policy_dialog_content(page)
-                            logger.info("[Policy] Modal mở (click nút thứ %s)", i)
-                            return True
-                        except Exception:
-                            pass
-                    for hint in ("nhận phòng", "check-in", "Giấy tờ", "cọc", "deposit"):
-                        if await page.get_by_text(hint, exact=False).count() > 0:
-                            logger.info("[Policy] Có nội dung chính sách sau click nút thứ %s", i)
-                            return True
-                except Exception:
+                # Chỉ click đúng nút "Đọc tất cả" trong hoặc ngay sau khu vực chính sách.
+                read_btn = h.locator(
+                    "xpath=ancestor::*[self::section or self::article or self::div][1]"
+                    "//a[contains(normalize-space(.), 'Đọc tất cả')] | "
+                    "ancestor::*[self::section or self::article or self::div][1]"
+                    "//button[contains(normalize-space(.), 'Đọc tất cả')] | "
+                    "ancestor::*[self::section or self::article or self::div][1]"
+                    "//div[@role='button' and contains(normalize-space(.), 'Đọc tất cả')]"
+                ).first
+                if await read_btn.count() == 0:
+                    read_btn = h.locator(
+                        "xpath=ancestor::*[self::section or self::article or self::div][1]"
+                        "/following-sibling::*[1]//a[contains(normalize-space(.), 'Đọc tất cả')] | "
+                        "ancestor::*[self::section or self::article or self::div][1]"
+                        "/following-sibling::*[1]//button[contains(normalize-space(.), 'Đọc tất cả')] | "
+                        "ancestor::*[self::section or self::article or self::div][1]"
+                        "/following-sibling::*[1]//div[@role='button' and contains(normalize-space(.), 'Đọc tất cả')]"
+                    ).first
+                # Fallback theo DOM thực tế Traveloka: div aria-live polite + role=button.
+                if await read_btn.count() == 0:
+                    read_btn = page.locator(
+                        "div[role='button'][aria-live='polite']",
+                        has_text=re.compile(r"Đọc\s*tất\s*cả", re.I),
+                    ).first
+                if await read_btn.count() == 0:
+                    logger.info("[Policy] Không thấy nút 'Đọc tất cả' gần khu vực %r", heading)
                     continue
-        except Exception:
-            pass
 
-        triggers = [
-            "Chính sách lưu trú",
-            "Chính sách khách sạn",
-            "Đọc tất cả",
-            "Xem thêm",
-            "Read more",
-        ]
-        for label in triggers:
-            try:
-                loc = page.get_by_text(label, exact=False).first
-                if await loc.count() == 0:
-                    continue
-                await loc.scroll_into_view_if_needed(timeout=4000)
-                await asyncio.sleep(0.35)
-                await loc.click(timeout=4000)
+                await read_btn.scroll_into_view_if_needed(timeout=4000)
+                await asyncio.sleep(0.25)
+                await read_btn.click(timeout=5000, force=True)
                 await asyncio.sleep(1.0)
+
                 dlg = page.locator('[role="dialog"]')
                 if await dlg.count() > 0:
                     try:
-                        await dlg.first.wait_for(state="visible", timeout=10000)
+                        await dlg.first.wait_for(state="visible", timeout=12000)
                         await _scroll_policy_dialog_content(page)
-                        logger.info("[Policy] Đã mở modal (fallback trigger=%r)", label)
+                        logger.info("[Policy] Modal mở bằng nút 'Đọc tất cả' (%r)", heading)
                         return True
                     except Exception:
                         pass
-                for hint in ("nhận phòng", "check-in", "Giấy tờ", "deposit", "cọc"):
-                    try:
-                        if await page.get_by_text(hint, exact=False).count() > 0:
-                            logger.info("[Policy] Có văn bản chính sách (fallback trigger=%r)", label)
-                            return True
-                    except Exception:
-                        continue
+                for hint in ("nhận phòng", "check-in", "Giấy tờ", "cọc", "deposit"):
+                    if await page.get_by_text(hint, exact=False).count() > 0:
+                        logger.info("[Policy] Có nội dung chính sách sau khi bấm 'Đọc tất cả' (%r)", heading)
+                        return True
+            except Exception:
+                continue
+        # Fallback cuối: một số hotel không có nút "Đọc tất cả", nhưng policy hiển thị inline.
+        for heading in headings:
+            try:
+                h = page.get_by_text(heading, exact=False).first
+                if await h.count() == 0:
+                    continue
+                container = h.locator("xpath=ancestor::*[self::section or self::article or self::div][1]").first
+                text = normalize_space(await container.inner_text(timeout=5000))
+                if len(text) < 120:
+                    continue
+                lower = text.lower()
+                if ("nhận phòng" in lower or "check-in" in lower) and ("trả phòng" in lower or "check-out" in lower):
+                    logger.info("[Policy] Không có 'Đọc tất cả' nhưng đã lấy được policy inline (%r)", heading)
+                    return True
             except Exception:
                 continue
         logger.info("[Policy] Không mở được modal/expand chính sách (bỏ qua, không fail crawl)")

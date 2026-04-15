@@ -380,6 +380,190 @@ def extract_accommodation_policy_modal_text(soup: BeautifulSoup) -> str:
     return best
 
 
+def extract_accommodation_policy_inline_text(soup: BeautifulSoup) -> str:
+    """
+    Fallback khi không có modal 'Đọc tất cả':
+    lấy policy hiển thị inline trong section/tab Chính sách.
+    """
+    candidates = []
+    # Ưu tiên section có id/testid chứa policy
+    for node in soup.select(
+        "section[id*='policy' i],"
+        "div[id*='policy' i],"
+        "section[data-testid*='policy' i],"
+        "div[data-testid*='policy' i]"
+    ):
+        txt = normalize_space(node.get_text(" ", strip=True))
+        if txt:
+            candidates.append(txt)
+
+    # Fallback text-anchor quanh tiêu đề "Chính sách"
+    if not candidates:
+        for tag in soup.find_all(string=re.compile(r"Chính\s*Sách|Chính sách", re.IGNORECASE)):
+            parent = tag.parent
+            if not parent:
+                continue
+            block = parent.find_parent(["section", "article", "div"]) or parent
+            txt = normalize_space(block.get_text(" ", strip=True))
+            if txt:
+                candidates.append(txt)
+
+    if not candidates:
+        return ""
+
+    # Chọn block dài nhất có dấu hiệu policy thực
+    best = ""
+    for c in candidates:
+        low = c.lower()
+        if ("nhận phòng" in low or "check-in" in low or "trả phòng" in low or "chính sách" in low) and len(c) > len(best):
+            best = c
+    if best:
+        return best
+    return max(candidates, key=len)
+
+
+def _extract_money_vnd(text: str) -> str:
+    m = re.search(r"([0-9][0-9\.,]*)\s*VND|VND\s*([0-9][0-9\.,]*)", text, flags=re.IGNORECASE)
+    if not m:
+        return ""
+    raw = m.group(1) or m.group(2) or ""
+    return normalize_space(raw.replace(".", ","))
+
+
+def extract_policy_structured(policy_text: str) -> dict:
+    """
+    Chuẩn hóa policy từ modal để tránh lộn xộn giữa các block VI/EN.
+    Ưu tiên block "Chính Sách Bổ Sung" (thường là bản cập nhật mới hơn).
+    """
+    if not policy_text:
+        return {}
+
+    txt = normalize_space(policy_text)
+    out = {}
+
+    ci = re.search(r"Giờ nhận phòng:\s*Từ\s*([0-2]?\d:[0-5]\d)", txt, flags=re.IGNORECASE)
+    co = re.search(r"Giờ trả phòng:\s*Trước\s*([0-2]?\d:[0-5]\d)", txt, flags=re.IGNORECASE)
+    if ci:
+        out["check_in_time"] = ci.group(1)
+    if co:
+        out["check_out_time"] = co.group(1)
+
+    m_breakfast = re.search(
+        r"Bữa sáng bổ sung.*?(VND\s*[0-9][0-9\.,]*|[0-9][0-9\.,]*\s*VND)",
+        txt,
+        flags=re.IGNORECASE,
+    )
+    if m_breakfast:
+        out["breakfast_extra_fee_vnd"] = _extract_money_vnd(m_breakfast.group(0))
+
+    m_airport = re.search(
+        r"Đưa đón sân bay.*?(VND\s*[0-9][0-9\.,]*|[0-9][0-9\.,]*\s*VND)",
+        txt,
+        flags=re.IGNORECASE,
+    )
+    if m_airport:
+        out["airport_transfer_fee_vnd"] = _extract_money_vnd(m_airport.group(0))
+
+    # Ưu tiên block "Chính Sách Bổ Sung" để tránh mâu thuẫn mốc tuổi từ block cũ.
+    child_block = ""
+    m_child_new = re.search(
+        r"Chính Sách Bổ Sung(.*?)(Child's Policy|Chính sách giường phụ|Extra bed Policy|Đưa đón sân bay|$)",
+        txt,
+        flags=re.IGNORECASE,
+    )
+    if m_child_new:
+        child_block = normalize_space(m_child_new.group(1))
+    if not child_block:
+        m_child_old = re.search(
+            r"Hướng Dẫn Nhận Phòng Chung(.*?)(Bữa sáng bổ sung|Chính Sách Bổ Sung|$)",
+            txt,
+            flags=re.IGNORECASE,
+        )
+        if m_child_old:
+            child_block = normalize_space(m_child_old.group(1))
+    if child_block:
+        out["child_policy_text"] = child_block
+
+    m_extra_bed_vi = re.search(
+        r"Chính sách giường phụ:\s*(.*?)(Extra bed Policy|Đưa đón sân bay|$)",
+        txt,
+        flags=re.IGNORECASE,
+    )
+    if m_extra_bed_vi:
+        out["extra_bed_policy_text"] = normalize_space(m_extra_bed_vi.group(1))
+    else:
+        m_extra_bed_en = re.search(
+            r"Extra bed Policy:\s*(.*?)(Đưa đón sân bay|$)",
+            txt,
+            flags=re.IGNORECASE,
+        )
+        if m_extra_bed_en:
+            out["extra_bed_policy_text"] = normalize_space(m_extra_bed_en.group(1))
+
+    return out
+
+
+def extract_nearby_attractions(page_text: str, policy_text: str) -> list[dict]:
+    """
+    Trích các địa điểm gần khách sạn cùng khoảng cách (km) theo best-effort.
+    """
+    source = normalize_space(f"{page_text} {policy_text}")
+    if not source:
+        return []
+
+    pattern = re.compile(
+        r"([A-ZÀ-Ỹ][A-Za-zÀ-ỹ0-9'’\-/\s]{2,48}?)\s+([0-9]+(?:[.,][0-9]+)?)\s*km\b",
+        flags=re.IGNORECASE,
+    )
+    out = []
+    seen = set()
+    for m in pattern.finditer(source):
+        name = normalize_space(m.group(1))
+        dist_raw = normalize_space(m.group(2)).replace(",", ".")
+        try:
+            dist = float(dist_raw)
+        except Exception:
+            continue
+
+        low = name.lower()
+        noise = (
+            "đánh giá",
+            "số lượng",
+            "xếp hạng",
+            "nhận phòng",
+            "trả phòng",
+            "vnd",
+            "wifi",
+            "bữa sáng",
+            "chính sách",
+        )
+        if any(n in low for n in noise):
+            continue
+        if len(name) < 3 or len(name) > 48:
+            continue
+        # Loại các cụm bị dính / không phải tên địa điểm đơn.
+        if " m " in low or "  " in name:
+            continue
+        # Loại tên mở đầu bằng cụm mô tả không phải điểm đến cụ thể.
+        bad_prefixes = ("gần ", "trung tâm ", "khoảng cách ", "khác ", "ơi ", "ảo ", "cách ")
+        if low.startswith(bad_prefixes):
+            continue
+        # Loại cụm mô tả khoảng cách chung, không phải điểm đến.
+        if low.endswith("khoảng") or " khoảng " in low:
+            continue
+        if not name[0].isalpha() or not name[0].isupper():
+            continue
+
+        key = (name.lower(), round(dist, 3))
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append({"name": name, "distance_km": dist})
+
+    out.sort(key=lambda x: x.get("distance_km", 10**9))
+    return out
+
+
 def extract_summary_description_from_html(soup: BeautifulSoup) -> str:
     node = soup.select_one("article#summary-description[role='article']")
     if node:
@@ -416,12 +600,188 @@ def extract_faq_items(objs: list[dict]) -> list[dict]:
     return faq_rows
 
 
-def process_hotel_folder(hotel_dir: Path) -> tuple[dict | None, list[dict]]:
+def _to_int_or_none(value):
+    try:
+        if value is None:
+            return None
+        return int(str(value).replace(",", "").strip())
+    except Exception:
+        return None
+
+
+def _to_float_or_none(value):
+    try:
+        if value is None:
+            return None
+        v = str(value).strip().replace(",", ".")
+        if not v:
+            return None
+        return float(v)
+    except Exception:
+        return None
+
+
+def _normalize_price_payload(rate_display: dict) -> dict:
+    if not isinstance(rate_display, dict):
+        return {}
+    total = (rate_display.get("totalFare") or {}).get("amount")
+    base = (rate_display.get("baseFare") or {}).get("amount")
+    taxes = (rate_display.get("taxes") or {}).get("amount")
+    currency = (rate_display.get("totalFare") or {}).get("currency") or (rate_display.get("baseFare") or {}).get("currency")
+    return {
+        "currency": normalize_space(str(currency)) if currency else "",
+        "total_fare": _to_int_or_none(total),
+        "base_fare": _to_int_or_none(base),
+        "taxes": _to_int_or_none(taxes),
+    }
+
+
+def process_room_types_folder(hotel_dir: Path) -> dict | None:
+    hotel_id = hotel_dir.name
+    room_candidates = sorted(hotel_dir.glob("rooms_*.json"), reverse=True)
+    if not room_candidates:
+        return None
+    room_path = room_candidates[0]
+    try:
+        raw = json.loads(room_path.read_text(encoding="utf-8", errors="ignore"))
+    except Exception:
+        return None
+
+    responses = raw.get("responses") or []
+    room_map = {}
+    for resp in responses:
+        payload = (resp or {}).get("payload") or {}
+        data = payload.get("data") or {}
+        entries = data.get("recommendedEntries") or []
+        if not isinstance(entries, list):
+            continue
+
+        for entry in entries:
+            if not isinstance(entry, dict):
+                continue
+            rid = normalize_space(str(entry.get("hotelRoomId", "")))
+            if not rid:
+                continue
+            name = normalize_space(str(entry.get("name", "")))
+            desc = normalize_space(str(entry.get("description", "")))
+            room_images = []
+            for u in entry.get("roomImages") or []:
+                uv = normalize_space(str(u))
+                if uv and uv not in room_images:
+                    room_images.append(uv)
+
+            amenity_names = []
+            abc = entry.get("amenitiesByCategory") or {}
+            if isinstance(abc, dict):
+                for _, arr in abc.items():
+                    if not isinstance(arr, list):
+                        continue
+                    for item in arr:
+                        if not isinstance(item, dict):
+                            continue
+                        nm = normalize_space(str(item.get("name", "")))
+                        if nm and nm not in amenity_names:
+                            amenity_names.append(nm)
+
+            room_obj = room_map.setdefault(
+                rid,
+                {
+                    "room_id": rid,
+                    "room_name": name,
+                    "description": desc,
+                    # room_size chỉ là số (m2), không lưu đơn vị.
+                    "room_size": None,
+                    "base_occupancy": entry.get("baseOccupancy"),
+                    "images": room_images,
+                    "amenities": amenity_names,
+                    "rate_options": [],
+                },
+            )
+            if not room_obj.get("room_name") and name:
+                room_obj["room_name"] = name
+            if not room_obj.get("description") and desc:
+                room_obj["description"] = desc
+            for img in room_images:
+                if img not in room_obj["images"]:
+                    room_obj["images"].append(img)
+            for am in amenity_names:
+                if am not in room_obj["amenities"]:
+                    room_obj["amenities"].append(am)
+
+            # Kích thước phòng
+            size_display = entry.get("hotelRoomSizeDisplay") or {}
+            if isinstance(size_display, dict):
+                room_obj["room_size"] = _to_float_or_none(size_display.get("value"))
+
+            # Bố trí giường (best-effort)
+            bed = entry.get("bedArrangements")
+            bed_obj = {}
+            if isinstance(bed, dict):
+                for k in ("displayBedType", "displayName", "bedType", "name"):
+                    vv = normalize_space(str(bed.get(k, "")))
+                    if vv:
+                        bed_obj[k] = vv
+            if bed_obj:
+                room_obj["bed_arrangements"] = bed_obj
+
+            inv_list = entry.get("hotelRoomInventoryList") or []
+            if not isinstance(inv_list, list):
+                continue
+            for inv in inv_list:
+                if not isinstance(inv, dict):
+                    continue
+                final_price = (inv.get("finalPrice") or {}).get("totalPriceRateDisplay") or {}
+                rate = {
+                    "inventory_id": normalize_space(str(inv.get("hotelRoomInventoryId", ""))),
+                    "inventory_name": normalize_space(str(inv.get("inventoryName", ""))),
+                    "is_breakfast_included": bool(inv.get("isBreakfastIncluded", False)),
+                    "is_refundable": bool(inv.get("isRefundable", False)),
+                    "num_remaining_rooms": _to_int_or_none(inv.get("numRemainingRooms")),
+                    "price": _normalize_price_payload(final_price),
+                }
+                key = (
+                    rate.get("inventory_id", ""),
+                    rate.get("inventory_name", ""),
+                    rate.get("price", {}).get("total_fare"),
+                )
+                if key not in {
+                    (
+                        r.get("inventory_id", ""),
+                        r.get("inventory_name", ""),
+                        (r.get("price") or {}).get("total_fare"),
+                    )
+                    for r in room_obj["rate_options"]
+                }:
+                    room_obj["rate_options"].append(rate)
+
+    room_types = list(room_map.values())
+    for room in room_types:
+        # Ước tính số lượng phòng theo yêu cầu: max số phòng còn của các rate option.
+        remaining = [
+            _to_int_or_none((opt or {}).get("num_remaining_rooms"))
+            for opt in (room.get("rate_options") or [])
+        ]
+        remaining = [x for x in remaining if x is not None]
+        room["estimated_total_rooms"] = max(remaining) if remaining else None
+
+        # Không để field rỗng trong dữ liệu sạch.
+        if not room.get("bed_arrangements"):
+            room.pop("bed_arrangements", None)
+
+    return {
+        "_id": hotel_id,
+        "hotel_id": hotel_id,
+        "room_types": room_types,
+        "source": "traveloka",
+        "raw_room_file": str(room_path),
+    }
+
+
+def process_hotel_folder(hotel_dir: Path) -> tuple[dict | None, list[dict], dict]:
     hotel_id = hotel_dir.name
     html_candidates = sorted(hotel_dir.glob("*.html"), reverse=True)
     if not html_candidates:
-        return None, []
-
+        return None, [], {}
     html_path = html_candidates[0]
     html = html_path.read_text(encoding="utf-8", errors="ignore")
     soup = BeautifulSoup(html, "html.parser")
@@ -457,8 +817,16 @@ def process_hotel_folder(hotel_dir: Path) -> tuple[dict | None, list[dict]]:
     amenities = infer_amenities(page_text)
     policies = extract_policies(page_text)
     policy_modal_text = extract_accommodation_policy_modal_text(soup)
+    if not policy_modal_text:
+        policy_modal_text = extract_accommodation_policy_inline_text(soup)
+    policy_structured = extract_policy_structured(policy_modal_text)
     faq_items = extract_faq_items(objs)
+    nearby_attractions = extract_nearby_attractions(page_text, policy_modal_text)
     check_in_time, check_out_time = extract_checkin_checkout_from_faq(faq_items)
+    if not check_in_time:
+        check_in_time = normalize_space(str(policy_structured.get("check_in_time", "")))
+    if not check_out_time:
+        check_out_time = normalize_space(str(policy_structured.get("check_out_time", "")))
     if not check_in_time and not check_out_time:
         check_in_time, check_out_time = extract_checkin_checkout(page_text)
 
@@ -472,15 +840,19 @@ def process_hotel_folder(hotel_dir: Path) -> tuple[dict | None, list[dict]]:
         "property_type": property_type,
         "hotel_category_tags": category_tags,
         "amenities": amenities,
-        "policies": policies,
-        "policy_modal_text": policy_modal_text,
+        "nearby_attractions": nearby_attractions,
         "check_in_time": check_in_time,
         "check_out_time": check_out_time,
         "images": images,
         "description": description,
         "source": "traveloka",
     }
-    return hotel_doc, faq_items
+    policy_payload = {
+        "policies": policies,
+        "policy_text": policy_modal_text,
+        "policy_structured": policy_structured,
+    }
+    return hotel_doc, faq_items, policy_payload
 
 
 def main():
@@ -493,36 +865,52 @@ def main():
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     hotel_clean_dir = output_dir / "hotel_clean"
-    faq_dir = output_dir / "faq"
+    policy_dir = output_dir / "policy_fag"
+    room_type_dir = output_dir / "room_types"
     hotel_clean_dir.mkdir(parents=True, exist_ok=True)
-    faq_dir.mkdir(parents=True, exist_ok=True)
+    policy_dir.mkdir(parents=True, exist_ok=True)
+    room_type_dir.mkdir(parents=True, exist_ok=True)
 
     hotels = []
-    faq_map = {}
+    policy_map = {}
+    room_type_map = {}
     hotel_dirs = [p for p in input_dir.iterdir() if p.is_dir() and p.name.isdigit()]
     hotel_dirs.sort(key=lambda p: p.name)
 
     for hotel_dir in hotel_dirs:
-        row, faq_items = process_hotel_folder(hotel_dir)
+        row, faq_items, policy_payload = process_hotel_folder(hotel_dir)
         if not row:
             continue
         hotels.append(row)
         hid = row["hotel_id"]
-        faq_map[hid] = {
+        policy_map[hid] = {
             "_id": hid,
             "hotel_id": hid,
             "hotel_name": row["name"],
-            "faqs": faq_items,
+            "policy_text": policy_payload.get("policy_text", ""),
+            "policy_structured": policy_payload.get("policy_structured", {}),
+            "policies": policy_payload.get("policies", {}),
+            # Gộp toàn bộ FAQ vào policy doc để tránh tách dữ liệu trùng.
+            "policy_related_faqs": faq_items,
             "source": "traveloka",
         }
+        room_doc = process_room_types_folder(hotel_dir)
+        if room_doc:
+            room_type_map[hid] = room_doc
         (hotel_clean_dir / f"{row['hotel_id']}.json").write_text(
             json.dumps(row, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
 
-    for hid, faq_doc in faq_map.items():
-        (faq_dir / f"{hid}.json").write_text(
-            json.dumps(faq_doc, ensure_ascii=False, indent=2),
+    for hid, policy_doc in policy_map.items():
+        (policy_dir / f"{hid}.json").write_text(
+            json.dumps(policy_doc, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
+    for hid, room_doc in room_type_map.items():
+        (room_type_dir / f"{hid}.json").write_text(
+            json.dumps(room_doc, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
 
@@ -535,9 +923,11 @@ def main():
         legacy_faq.unlink()
 
     print(f"Processed hotels: {len(hotels)}")
-    print(f"Processed hotel FAQ docs: {len(faq_map)}")
+    print(f"Processed hotel policy docs: {len(policy_map)}")
+    print(f"Processed hotel room-type docs: {len(room_type_map)}")
     print(f"Hotel clean dir: {hotel_clean_dir}")
-    print(f"FAQ dir: {faq_dir}")
+    print(f"Policy dir: {policy_dir}")
+    print(f"Room type dir: {room_type_dir}")
 
 
 if __name__ == "__main__":
