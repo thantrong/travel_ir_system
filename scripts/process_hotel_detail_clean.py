@@ -636,6 +636,72 @@ def _normalize_price_payload(rate_display: dict) -> dict:
     }
 
 
+def _extract_reviews_list_from_payload(payload: dict) -> list[dict]:
+    if not isinstance(payload, dict):
+        return []
+    data = payload.get("data")
+    if isinstance(data, dict) and isinstance(data.get("reviews"), list):
+        return [r for r in data.get("reviews", []) if isinstance(r, dict)]
+    if isinstance(payload.get("reviews"), list):
+        return [r for r in payload.get("reviews", []) if isinstance(r, dict)]
+    return []
+
+
+def process_reviews_folder(hotel_dir: Path) -> dict | None:
+    hotel_id = hotel_dir.name
+    review_candidates = sorted(hotel_dir.glob("reviews_*.json"), reverse=True)
+    if not review_candidates:
+        return None
+    review_path = review_candidates[0]
+    try:
+        raw = json.loads(review_path.read_text(encoding="utf-8", errors="ignore"))
+    except Exception:
+        return None
+
+    max_reviews = _to_int_or_none(raw.get("max_reviews_per_hotel")) or 100
+    responses = raw.get("responses") or []
+    seen_ids = set()
+    cleaned = []
+    for resp in responses:
+        payload = (resp or {}).get("payload") or {}
+        items = _extract_reviews_list_from_payload(payload)
+        for item in items:
+            source_review_id = normalize_space(str(item.get("reviewId", "")))
+            if not source_review_id:
+                continue
+            if source_review_id in seen_ids:
+                continue
+            seen_ids.add(source_review_id)
+
+            review_text = normalize_space(
+                str(item.get("reviewOriginalText") or item.get("reviewContentText") or "")
+            )
+            if not review_text:
+                continue
+
+            row = {
+                "source_review_id": source_review_id,
+                "review_text": review_text,
+                "review_rating": _to_float_or_none(item.get("reviewScore")),
+                "review_date": normalize_space(str(item.get("reviewTimestamp", ""))),
+                "reviewer_name": normalize_space(str((item.get("reviewer") or {}).get("reviewerName", ""))),
+            }
+            cleaned.append(row)
+            if len(cleaned) >= max_reviews:
+                break
+        if len(cleaned) >= max_reviews:
+            break
+
+    return {
+        "_id": hotel_id,
+        "hotel_id": hotel_id,
+        "max_reviews_per_hotel": max_reviews,
+        "reviews": cleaned,
+        "source": "traveloka",
+        "raw_review_file": str(review_path),
+    }
+
+
 def process_room_types_folder(hotel_dir: Path) -> dict | None:
     hotel_id = hotel_dir.name
     room_candidates = sorted(hotel_dir.glob("rooms_*.json"), reverse=True)
@@ -867,13 +933,16 @@ def main():
     hotel_clean_dir = output_dir / "hotel_clean"
     policy_dir = output_dir / "policy_fag"
     room_type_dir = output_dir / "room_types"
+    review_dir = output_dir / "reviews_clean"
     hotel_clean_dir.mkdir(parents=True, exist_ok=True)
     policy_dir.mkdir(parents=True, exist_ok=True)
     room_type_dir.mkdir(parents=True, exist_ok=True)
+    review_dir.mkdir(parents=True, exist_ok=True)
 
     hotels = []
     policy_map = {}
     room_type_map = {}
+    review_map = {}
     hotel_dirs = [p for p in input_dir.iterdir() if p.is_dir() and p.name.isdigit()]
     hotel_dirs.sort(key=lambda p: p.name)
 
@@ -897,6 +966,9 @@ def main():
         room_doc = process_room_types_folder(hotel_dir)
         if room_doc:
             room_type_map[hid] = room_doc
+        review_doc = process_reviews_folder(hotel_dir)
+        if review_doc:
+            review_map[hid] = review_doc
         (hotel_clean_dir / f"{row['hotel_id']}.json").write_text(
             json.dumps(row, ensure_ascii=False, indent=2),
             encoding="utf-8",
@@ -914,6 +986,12 @@ def main():
             encoding="utf-8",
         )
 
+    for hid, review_doc in review_map.items():
+        (review_dir / f"{hid}.json").write_text(
+            json.dumps(review_doc, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
     # Xóa file tổng hợp cũ (nếu có) để tránh nhầm luồng sử dụng.
     legacy_hotels = output_dir / "hotels_clean.json"
     legacy_faq = output_dir / "hotel_faq_clean.json"
@@ -925,9 +1003,11 @@ def main():
     print(f"Processed hotels: {len(hotels)}")
     print(f"Processed hotel policy docs: {len(policy_map)}")
     print(f"Processed hotel room-type docs: {len(room_type_map)}")
+    print(f"Processed hotel review docs: {len(review_map)}")
     print(f"Hotel clean dir: {hotel_clean_dir}")
     print(f"Policy dir: {policy_dir}")
     print(f"Room type dir: {room_type_dir}")
+    print(f"Review dir: {review_dir}")
 
 
 if __name__ == "__main__":

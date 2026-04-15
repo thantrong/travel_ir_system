@@ -64,6 +64,11 @@ ROOM_API_PATTERNS = (
     "/api/v2/hotel/room",
     "/api/v2/accom/room",
 )
+# Chỉ giữ endpoint trả về danh sách review thực tế, tránh nhầm với count/aggregate/filter.
+REVIEW_LIST_API_PATTERNS = (
+    "listreview",
+    "getreviews",
+)
 
 # Ảnh khách sạn: cùng file asset, chỉ khác query resize (imagekit / CDN).
 _HOTEL_ASSET_URL_RE = re.compile(
@@ -139,7 +144,18 @@ def parse_args():
     ap.add_argument("--geo-id", type=str, default="", help="Override geo_id, vd: 10010000")
     ap.add_argument("--city-name", type=str, default="", help="Override city name, vd: Lâm Đồng")
     ap.add_argument("--city-code", type=str, default="CUSTOM", help="Override city code")
-    ap.add_argument("--max-hotels", type=int, default=2, help="Số khách sạn cần lấy HTML")
+    ap.add_argument(
+        "--max-hotels",
+        type=int,
+        default=0,
+        help="Override số khách sạn/city (0 = dùng max_hotels_per_city trong cities.yaml)",
+    )
+    ap.add_argument(
+        "--max-reviews",
+        type=int,
+        default=0,
+        help="Override số review/hotel (0 = dùng max_reviews_per_hotel trong cities.yaml)",
+    )
     ap.add_argument("--max-workers", type=int, default=2, help="Số tab chạy song song (mặc định 2)")
     ap.add_argument(
         "--detail-url",
@@ -208,6 +224,14 @@ def build_rooms_api_path(target: Dict) -> Path:
     hotel_dir.mkdir(parents=True, exist_ok=True)
     day = datetime.now(timezone.utc).strftime("%Y%m%d")
     return hotel_dir / f"rooms_{day}.json"
+
+
+def build_reviews_api_path(target: Dict) -> Path:
+    source_hotel_id = str(target.get("source_hotel_id", "")).strip() or "unknown"
+    hotel_dir = HOTEL_DETAIL_ROOT / source_hotel_id
+    hotel_dir.mkdir(parents=True, exist_ok=True)
+    day = datetime.now(timezone.utc).strftime("%Y%m%d")
+    return hotel_dir / f"reviews_{day}.json"
 
 
 def _script_is_hotel_relevant(script_text: str, script_type: str, script_id: str) -> bool:
@@ -428,36 +452,57 @@ async def capture_full_html(context, city: Dict, targets: List[Dict], max_worker
             await asyncio.sleep(0.25)
         return bool(captured_room_responses)
 
-    async def _trigger_room_ui(page):
-        """Kích hoạt section phòng để frontend có khả năng bắn rooms API."""
-        try:
-            await page.mouse.wheel(0, 1200)
-            await asyncio.sleep(0.5)
-            await page.mouse.wheel(0, 1800)
-            await asyncio.sleep(0.5)
-            await page.mouse.wheel(0, 2400)
-        except Exception:
-            pass
+    async def _wait_for_review_api(page, captured_review_responses, timeout_seconds: float) -> bool:
+        """Chờ đến khi có review API hoặc hết timeout; trả về True nếu đã bắt được."""
+        deadline = asyncio.get_event_loop().time() + timeout_seconds
+        while asyncio.get_event_loop().time() < deadline:
+            if captured_review_responses:
+                return True
+            await asyncio.sleep(0.25)
+        return bool(captured_review_responses)
 
-        # Thử click các nút/link thường dùng để mở danh sách phòng.
-        candidate_texts = [
-            "Xem phòng",
-            "Chọn phòng",
-            "Xem tất cả phòng",
-            "Room",
-            "Rooms",
-            "Select Room",
-        ]
-        for text in candidate_texts:
-            try:
-                locator = page.get_by_text(text, exact=False).first
-                if await locator.count() > 0:
-                    await locator.scroll_into_view_if_needed(timeout=2000)
-                    await locator.click(timeout=2000)
-                    await asyncio.sleep(0.8)
-                    return
-            except Exception:
-                continue
+    async def _replay_getreviews_once(page, source_hotel_id: str, review_limit: int):
+        """
+        Theo IR cũ: chủ động gọi getReviews bằng header phiên hiện tại.
+        Cách này không cần trigger UI nhưng vẫn lấy được list review.
+        """
+        if not source_hotel_id:
+            return None
+        try:
+            headers = await ir_crawler.build_dynamic_ugc_headers(page, page.url)
+            payload = ir_crawler.build_get_reviews_payload(
+                source_hotel_id,
+                skip=0,
+                limit=max(1, min(int(review_limit or 20), 20)),
+            )
+            api_url = "https://www.traveloka.com/api/v2/ugc/review/consumption/v2/getReviews"
+            response = await page.context.request.post(
+                api_url,
+                data=payload,
+                headers=headers if headers else None,
+                timeout=TIMEOUT,
+            )
+            if not response.ok:
+                return None
+            data = await response.json()
+            # Chỉ nhận payload có list review thật.
+            reviews = None
+            if isinstance(data, dict):
+                inner = data.get("data")
+                if isinstance(inner, dict) and isinstance(inner.get("reviews"), list):
+                    reviews = inner.get("reviews")
+                elif isinstance(data.get("reviews"), list):
+                    reviews = data.get("reviews")
+            if not reviews:
+                return None
+            return {
+                "url": api_url,
+                "status": response.status,
+                "payload": data,
+                "source": "replay_getreviews",
+            }
+        except Exception:
+            return None
 
     async def _wait_network_idle_soft(page) -> None:
         """SPA thường không bao giờ 'idle' hẳn — chờ tối đa ~12s, lỗi thì bỏ qua."""
@@ -682,9 +727,63 @@ async def capture_full_html(context, city: Dict, targets: List[Dict], max_worker
             "payload": best,
         }
 
+    def _limit_review_payload(payload: Dict, limit: int) -> Dict:
+        """Cắt payload review về tối đa `limit` item để bám city config."""
+        if limit <= 0:
+            return payload
+        try:
+            copied = json.loads(json.dumps(payload, ensure_ascii=False))
+        except Exception:
+            return payload
+
+        if not isinstance(copied, dict):
+            return payload
+
+        data = copied.get("data")
+        if isinstance(data, dict) and isinstance(data.get("reviews"), list):
+            data["reviews"] = data["reviews"][:limit]
+            return copied
+
+        if isinstance(copied.get("reviews"), list):
+            copied["reviews"] = copied["reviews"][:limit]
+            return copied
+
+        return copied
+
+    def _build_limited_review_responses(responses: List[Dict], limit: int) -> List[Dict]:
+        """Giữ tối đa `limit` review trên toàn bộ response list theo thứ tự capture."""
+        if limit <= 0:
+            return responses
+        remaining = limit
+        output = []
+        for item in responses:
+            if remaining <= 0:
+                break
+            payload = item.get("payload")
+            if not isinstance(payload, dict):
+                continue
+            limited_payload = _limit_review_payload(payload, remaining)
+
+            # Ước lượng số review đã lấy từ payload vừa cắt.
+            taken = 0
+            data = limited_payload.get("data") if isinstance(limited_payload, dict) else None
+            if isinstance(data, dict) and isinstance(data.get("reviews"), list):
+                taken = len(data["reviews"])
+            elif isinstance(limited_payload, dict) and isinstance(limited_payload.get("reviews"), list):
+                taken = len(limited_payload["reviews"])
+
+            if taken <= 0:
+                continue
+            copied_item = dict(item)
+            copied_item["payload"] = limited_payload
+            output.append(copied_item)
+            remaining -= taken
+        return output
+
     async def _scrape_one(idx: int, target: Dict):
         page = await context.new_page()
         captured_room_responses = []
+        captured_review_responses = []
 
         async def _handle_room_response(resp):
             try:
@@ -705,8 +804,29 @@ async def capture_full_html(context, city: Dict, targets: List[Dict], max_worker
             except Exception:
                 return
 
+        async def _handle_review_response(resp):
+            try:
+                if resp.status != 200:
+                    return
+                low = str(resp.url or "").lower()
+                if not any(pattern in low for pattern in REVIEW_LIST_API_PATTERNS):
+                    return
+                ctype = str((resp.headers or {}).get("content-type", "")).lower()
+                if "json" not in ctype:
+                    return
+                payload = await resp.json()
+                captured_review_responses.append({
+                    "url": str(resp.url),
+                    "status": resp.status,
+                    "payload": payload,
+                    "source": "passive_capture",
+                })
+            except Exception:
+                return
+
         def _on_response(resp):
             asyncio.create_task(_handle_room_response(resp))
+            asyncio.create_task(_handle_review_response(resp))
 
         page.on("response", _on_response)
         try:
@@ -717,26 +837,46 @@ async def capture_full_html(context, city: Dict, targets: List[Dict], max_worker
             logger.info("[HTML %s/%s] Opening: %s", idx, len(targets), detail_url)
             await page.goto(detail_url, timeout=TIMEOUT, wait_until="domcontentloaded")
 
-            # Stage 1: trigger nhẹ + chờ ngắn.
-            await _trigger_room_ui(page)
-            has_room_api = await _wait_for_room_api(page, captured_room_responses, timeout_seconds=4.0)
-
-            # Stage 2: chưa có thì trigger lại sâu hơn và chờ thêm.
-            if not has_room_api:
-                await _trigger_room_ui(page)
-                has_room_api = await _wait_for_room_api(page, captured_room_responses, timeout_seconds=5.0)
+            # Không trigger UI: chỉ đợi 3-4s để SPA tự load API room/review.
+            await asyncio.sleep(4)
+            has_room_api = bool(captured_room_responses) or await _wait_for_room_api(
+                page, captured_room_responses, timeout_seconds=2.0
+            )
+            has_review_api = bool(captured_review_responses) or await _wait_for_review_api(
+                page, captured_review_responses, timeout_seconds=2.0
+            )
 
             # Fallback theo yêu cầu:
             # nếu chưa có API thì đợi 5s, reload lại trang, rồi đợi thêm tối đa 4s.
-            if not has_room_api:
+            if not has_room_api or not has_review_api:
                 logger.info(
-                    "[RoomAPI] No response yet for hotel_id=%s, wait 5s then reload + wait 4s",
+                    "[RoomAPI/ReviewAPI] Missing api for hotel_id=%s, wait 5s then reload + wait 4s",
                     target.get("source_hotel_id", ""),
                 )
                 await asyncio.sleep(5)
                 await page.reload(timeout=TIMEOUT, wait_until="domcontentloaded")
-                await _trigger_room_ui(page)
-                has_room_api = await _wait_for_room_api(page, captured_room_responses, timeout_seconds=4.0)
+                await asyncio.sleep(4)
+                has_room_api = bool(captured_room_responses) or await _wait_for_room_api(
+                    page, captured_room_responses, timeout_seconds=2.0
+                )
+                has_review_api = bool(captured_review_responses) or await _wait_for_review_api(
+                    page, captured_review_responses, timeout_seconds=2.0
+                )
+
+            # Theo IR: nếu passive capture vẫn miss thì replay getReviews 1 lần.
+            if not captured_review_responses:
+                review_limit = max(1, int(city.get("max_reviews_per_hotel", 100)))
+                replay_response = await _replay_getreviews_once(
+                    page,
+                    str(target.get("source_hotel_id", "")).strip(),
+                    review_limit,
+                )
+                if replay_response:
+                    captured_review_responses.append(replay_response)
+                    logger.info(
+                        "[ReviewAPI] Replayed getReviews thành công cho hotel_id=%s",
+                        target.get("source_hotel_id", ""),
+                    )
 
             # Đưa tối đa nội dung lazy vào DOM trước khi serialize HTML (scroll + modal chính sách).
             policy_ok = await _materialize_dom_snapshot(page)
@@ -759,6 +899,7 @@ async def capture_full_html(context, city: Dict, targets: List[Dict], max_worker
                 "policy_modal_attempted": True,
                 "policy_modal_visible": bool(policy_ok),
                 "room_api_files": [],
+                "review_api_files": [],
             }
 
             room_api_dir = build_room_api_dir(city, target)
@@ -788,14 +929,53 @@ async def capture_full_html(context, city: Dict, targets: List[Dict], max_worker
                         target.get("source_hotel_id", ""),
                     )
 
+            reviews_api_path = build_reviews_api_path(target)
+            if captured_review_responses:
+                review_limit = max(1, int(city.get("max_reviews_per_hotel", 100)))
+                limited_review_responses = _build_limited_review_responses(
+                    captured_review_responses,
+                    review_limit,
+                )
+                merged = {
+                    "captured_at": datetime.now(timezone.utc).isoformat(),
+                    "hotel_id": target.get("source_hotel_id") or "",
+                    "detail_url": detail_url,
+                    "max_reviews_per_hotel": review_limit,
+                    "responses": limited_review_responses,
+                }
+                if limited_review_responses:
+                    reviews_api_path.write_text(json.dumps(merged, ensure_ascii=False, indent=2), encoding="utf-8")
+                    row["review_api_files"].append(str(reviews_api_path))
+                else:
+                    if reviews_api_path.exists():
+                        try:
+                            reviews_api_path.unlink()
+                        except Exception:
+                            pass
+                    logger.warning(
+                        "[ReviewAPI] Bắt được response nhưng không có list review hữu dụng cho hotel_id=%s",
+                        target.get("source_hotel_id", ""),
+                    )
+            else:
+                if reviews_api_path.exists():
+                    try:
+                        reviews_api_path.unlink()
+                    except Exception:
+                        pass
+                logger.warning(
+                    "[ReviewAPI] Chưa bắt được review-list API (listreview/getreviews) cho hotel_id=%s",
+                    target.get("source_hotel_id", ""),
+                )
+
             results.append(row)
             manifest_path = build_manifest_path(target)
             manifest_path.write_text(json.dumps(row, ensure_ascii=False, indent=2), encoding="utf-8")
             logger.info(
-                "[HTML] Saved: %s (%s bytes), room_api=%s",
+                "[HTML] Saved: %s (%s bytes), room_api=%s, review_api=%s",
                 html_path,
                 row["html_size_bytes"],
                 len(row["room_api_files"]),
+                len(row["review_api_files"]),
             )
         except Exception as e:
             logger.error("[HTML] Failed %s: %s", target.get("hotel_name"), e)
@@ -821,14 +1001,8 @@ async def run():
         logger.error("No city selected. Dùng --geo-id/--city-name hoặc bật enabled=true trong cities.yaml.")
         return
 
-    max_hotels = max(1, int(args.max_hotels))
     max_workers = max(1, int(getattr(args, "max_workers", 2) or 2))
-    logger.info(
-        "Starting Crawl_Hotel for cities=%s, max_hotels=%s, max_workers=%s",
-        [c["name"] for c in cities],
-        max_hotels,
-        max_workers,
-    )
+    logger.info("Starting Crawl_Hotel for cities=%s, max_workers=%s", [c["name"] for c in cities], max_workers)
 
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=HEADLESS)
@@ -851,7 +1025,30 @@ async def run():
 
         try:
             for city in cities:
+                city_max_hotels = max(
+                    1,
+                    int(
+                        args.max_hotels
+                        or city.get("max_hotels_per_city")
+                        or TRAVELOKA_CFG.get("max_hotels_per_city", 100)
+                    ),
+                )
+                city_max_reviews = max(
+                    1,
+                    int(
+                        args.max_reviews
+                        or city.get("max_reviews_per_hotel")
+                        or TRAVELOKA_CFG.get("max_reviews_per_hotel", 100)
+                    ),
+                )
+                city["max_reviews_per_hotel"] = city_max_reviews
                 logger.info("=== CITY: %s (%s) ===", city["name"], city["geo_id"])
+                logger.info(
+                    "[CityConfig] %s: max_hotels=%s, max_reviews_per_hotel=%s",
+                    city["name"],
+                    city_max_hotels,
+                    city_max_reviews,
+                )
                 if getattr(args, "detail_urls", None):
                     targets = []
                     for u in args.detail_urls:
@@ -868,7 +1065,7 @@ async def run():
                         )
                     logger.info("[Targets] Direct URLs: %s", len(targets))
                 else:
-                    targets = await collect_targets_from_search(context, city, max_hotels)
+                    targets = await collect_targets_from_search(context, city, city_max_hotels)
                 if not targets:
                     logger.warning("No targets found for %s", city["name"])
                     continue
