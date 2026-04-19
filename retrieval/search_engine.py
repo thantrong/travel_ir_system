@@ -465,8 +465,9 @@ def search_hybrid(
                     vector_scores[masked_idx] = np.dot(embeddings[masked_idx], q_vec.T)
             else:
                 vector_scores = np.dot(embeddings, q_vec.T)
-        except Exception:
+        except Exception as exc:
             vector_fallback_to_bm25 = True
+            print(f"[WARN] Vector encode failed, fallback to BM25-aligned scores: {exc}")
             for i, doc in enumerate(vec_docs):
                 rid = str(doc.get("_id", doc.get("review_id", vec_ids[i] if i < len(vec_ids) else ""))).strip()
                 if not rid:

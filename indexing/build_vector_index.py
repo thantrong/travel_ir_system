@@ -11,6 +11,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from pymongo.errors import PyMongoError
 
 project_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(project_root))
@@ -24,13 +25,14 @@ def _load_processed_records() -> list[dict]:
 
     rows: list[dict] = []
     if processed_jsonl.exists():
-        for line in processed_jsonl.read_text(encoding="utf-8").splitlines():
+        for line_no, line in enumerate(processed_jsonl.read_text(encoding="utf-8").splitlines(), start=1):
             line = line.strip()
             if not line:
                 continue
             try:
                 item = json.loads(line)
-            except Exception:
+            except json.JSONDecodeError as exc:
+                print(f"[WARN] Skip malformed JSONL line {line_no} in {processed_jsonl}: {exc}")
                 continue
             if isinstance(item, dict):
                 rows.append(item)
@@ -42,7 +44,8 @@ def _load_processed_records() -> list[dict]:
             payload = json.loads(processed_json.read_text(encoding="utf-8"))
             if isinstance(payload, list):
                 rows = [x for x in payload if isinstance(x, dict)]
-        except Exception:
+        except json.JSONDecodeError as exc:
+            print(f"[WARN] Invalid JSON in {processed_json}: {exc}")
             rows = []
     return rows
 
@@ -152,8 +155,10 @@ def fetch_reviews_for_indexing() -> list[dict]:
 
         if docs:
             return docs
-    except Exception as exc:
+    except (ValueError, PyMongoError) as exc:
         print(f"MongoDB unavailable ({exc}), fallback sang data/processed...")
+    except Exception as exc:
+        print(f"MongoDB unexpected error ({exc}), fallback sang data/processed...")
 
     docs = _fetch_reviews_for_indexing_from_processed_files()
     if docs:
