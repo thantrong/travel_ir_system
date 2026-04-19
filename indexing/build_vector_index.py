@@ -5,6 +5,7 @@ PHẦN 3: XÂY DỰNG INDEXING PIPELINE
 """
 
 import argparse
+import json
 import pickle
 import sys
 from pathlib import Path
@@ -15,6 +16,66 @@ project_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(project_root))
 
 from database.mongo_connection import get_collection_names, get_database
+
+
+def _load_processed_records() -> list[dict]:
+    processed_jsonl = project_root / "data" / "processed" / "reviews_processed.jsonl"
+    processed_json = project_root / "data" / "processed" / "reviews_processed.json"
+
+    rows: list[dict] = []
+    if processed_jsonl.exists():
+        for line in processed_jsonl.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                item = json.loads(line)
+            except Exception:
+                continue
+            if isinstance(item, dict):
+                rows.append(item)
+        if rows:
+            return rows
+
+    if processed_json.exists():
+        try:
+            payload = json.loads(processed_json.read_text(encoding="utf-8"))
+            if isinstance(payload, list):
+                rows = [x for x in payload if isinstance(x, dict)]
+        except Exception:
+            rows = []
+    return rows
+
+
+def _fetch_reviews_for_indexing_from_processed_files() -> list[dict]:
+    rows = _load_processed_records()
+    docs = []
+    for row in rows:
+        sid = str(row.get("source_hotel_id", "")).strip()
+        if not sid:
+            continue
+        clean_text = str(row.get("clean_text", "")).strip()
+        if not clean_text:
+            continue
+        review_id = str(row.get("review_id", row.get("_id", ""))).strip()
+        if not review_id:
+            continue
+
+        docs.append({
+            "_id": review_id,
+            "source": row.get("source", ""),
+            "source_hotel_id": sid,
+            "hotel_name": row.get("hotel_name", row.get("name", "")),
+            "types": list(row.get("types", row.get("place_types", [])) or []),
+            "location": row.get("location", ""),
+            "rating": row.get("rating", row.get("review_rating", "")),
+            "review_rating": row.get("review_rating", ""),
+            "review_text": row.get("review_text", ""),
+            "clean_text": clean_text,
+            "category_tags": list(row.get("category_tags", []) or []),
+            "descriptor_tags": list(row.get("descriptor_tags", []) or []),
+        })
+    return docs
 
 
 # Danh sách các tiền tố tag tiêu cực cần loại bỏ khi indexing
@@ -46,59 +107,63 @@ def _filter_negative_tags(tags: list[str]) -> list[str]:
 
 
 def fetch_reviews_for_indexing() -> list[dict]:
-    db = get_database()
-    collections = get_collection_names()
-    places_col = db[collections["places"]]
-    reviews_col = db[collections["reviews"]]
+    try:
+        db = get_database()
+        collections = get_collection_names()
+        places_col = db[collections["places"]]
+        reviews_col = db[collections["reviews"]]
 
-    place_map = {}
-    for doc in places_col.find():
-        sid = str(doc.get("_id", doc.get("source_hotel_id", ""))).strip()
-        if sid:
-            place_map[sid] = {
-                "types": list(doc.get("types", []) or []),
-                "location": doc.get("location", ""),
-                "rating": doc.get("rating", ""),
-                "hotel_name": doc.get("name", doc.get("hotel_name", "")),
-            }
+        place_map = {}
+        for doc in places_col.find():
+            sid = str(doc.get("_id", doc.get("source_hotel_id", ""))).strip()
+            if sid:
+                place_map[sid] = {
+                    "types": list(doc.get("types", []) or []),
+                    "location": doc.get("location", ""),
+                    "rating": doc.get("rating", ""),
+                    "hotel_name": doc.get("name", doc.get("hotel_name", "")),
+                }
 
-    docs = []
-    cursor = reviews_col.find({"clean_text": {"$exists": True}})
-    for row in cursor:
-        sid = str(row.get("source_hotel_id", "")).strip()
-        if sid not in place_map:
-            continue
+        docs = []
+        cursor = reviews_col.find({"clean_text": {"$exists": True}})
+        for row in cursor:
+            sid = str(row.get("source_hotel_id", "")).strip()
+            if sid not in place_map:
+                continue
 
-        rtxt = str(row.get("clean_text", "")).strip()
-        if not rtxt:
-            continue
+            rtxt = str(row.get("clean_text", "")).strip()
+            if not rtxt:
+                continue
 
-        docs.append({
-            "_id": str(row.get("_id", row.get("review_id", ""))).strip(),
-            "source": row.get("source", ""),
-            "source_hotel_id": sid,
-            "hotel_name": place_map[sid].get("hotel_name", ""),
-            "types": list(place_map[sid].get("types", []) or []),
-            "location": place_map[sid]["location"],
-            "rating": place_map[sid].get("rating", row.get("review_rating", "")),
-            "review_rating": row.get("review_rating", ""),
-            "review_text": row.get("review_text", ""),
-            "clean_text": rtxt,
-            "category_tags": list(row.get("category_tags", []) or []),
-            "descriptor_tags": list(row.get("descriptor_tags", []) or []),
-        })
+            docs.append({
+                "_id": str(row.get("_id", row.get("review_id", ""))).strip(),
+                "source": row.get("source", ""),
+                "source_hotel_id": sid,
+                "hotel_name": place_map[sid].get("hotel_name", ""),
+                "types": list(place_map[sid].get("types", []) or []),
+                "location": place_map[sid]["location"],
+                "rating": place_map[sid].get("rating", row.get("review_rating", "")),
+                "review_rating": row.get("review_rating", ""),
+                "review_text": row.get("review_text", ""),
+                "clean_text": rtxt,
+                "category_tags": list(row.get("category_tags", []) or []),
+                "descriptor_tags": list(row.get("descriptor_tags", []) or []),
+            })
 
+        if docs:
+            return docs
+    except Exception as exc:
+        print(f"MongoDB unavailable ({exc}), fallback sang data/processed...")
+
+    docs = _fetch_reviews_for_indexing_from_processed_files()
+    if docs:
+        print(f"Fallback indexing from processed files: {len(docs)} reviews")
     return docs
 
 
 def build_vector_index(
     model_name: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 ) -> dict:
-    try:
-        from sentence_transformers import SentenceTransformer  # type: ignore
-    except ImportError:
-        raise ImportError("Cài đặt: pip install sentence-transformers")
-
     reviews = fetch_reviews_for_indexing()
     print(f"Đang chuẩn bị {len(reviews)} reviews để embed...")
 
@@ -137,6 +202,21 @@ def build_vector_index(
             "category_tags": category_tags,
             "descriptor_tags": descriptor_tags,
         })
+
+    if not texts:
+        return {
+            "embeddings": np.zeros((0, 0), dtype=np.float32),
+            "documents": [],
+            "review_ids": [],
+            "review_id_to_idx": {},
+            "model_name": model_name,
+            "corpus_size": 0,
+        }
+
+    try:
+        from sentence_transformers import SentenceTransformer  # type: ignore
+    except ImportError:
+        raise ImportError("Cài đặt: pip install sentence-transformers")
 
     model = SentenceTransformer(model_name)
     print(f"Đang chạy Sentence-BERT ({model_name}) cho {len(texts)} review documents...")

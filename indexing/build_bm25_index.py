@@ -5,6 +5,7 @@ PHẦN 3: XÂY DỰNG INDEXING PIPELINE (Weight: hotel_name=3, location=2, text=
 """
 
 import argparse
+import json
 import pickle
 import sys
 from pathlib import Path
@@ -16,6 +17,78 @@ from rank_bm25 import BM25Okapi
 
 from database.mongo_connection import get_collection_names, get_database
 from nlp.tokenizer import tokenize_vi
+
+
+def _load_processed_records() -> list[dict]:
+    processed_jsonl = project_root / "data" / "processed" / "reviews_processed.jsonl"
+    processed_json = project_root / "data" / "processed" / "reviews_processed.json"
+
+    rows: list[dict] = []
+    if processed_jsonl.exists():
+        for line in processed_jsonl.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                item = json.loads(line)
+            except Exception:
+                continue
+            if isinstance(item, dict):
+                rows.append(item)
+        if rows:
+            return rows
+
+    if processed_json.exists():
+        try:
+            payload = json.loads(processed_json.read_text(encoding="utf-8"))
+            if isinstance(payload, list):
+                rows = [x for x in payload if isinstance(x, dict)]
+        except Exception:
+            rows = []
+    return rows
+
+
+def _fetch_reviews_for_indexing_from_processed_files() -> list[dict]:
+    rows = _load_processed_records()
+    docs = []
+    for row in rows:
+        sid = str(row.get("source_hotel_id", "")).strip()
+        if not sid:
+            continue
+
+        tokens_field = row.get("tokens")
+        tokens = []
+        if isinstance(tokens_field, list) and tokens_field:
+            tokens = [str(tok).strip() for tok in tokens_field if str(tok).strip()]
+        else:
+            clean = str(row.get("clean_text", "")).strip()
+            if clean:
+                try:
+                    tokens = tokenize_vi(clean)
+                except Exception:
+                    tokens = _tokenize_text(clean)
+        if not tokens:
+            continue
+
+        review_id = str(row.get("review_id", row.get("_id", ""))).strip()
+        if not review_id:
+            continue
+
+        docs.append({
+            "review_id": review_id,
+            "source": row.get("source", ""),
+            "source_hotel_id": sid,
+            "hotel_name": row.get("hotel_name", row.get("name", "")),
+            "types": list(row.get("types", row.get("place_types", [])) or []),
+            "location": row.get("location", ""),
+            "rating": row.get("rating", row.get("review_rating", "")),
+            "review_rating": row.get("review_rating", ""),
+            "review_text": row.get("review_text", ""),
+            "tokens": tokens,
+            "category_tags": list(row.get("category_tags", []) or []),
+            "descriptor_tags": list(row.get("descriptor_tags", []) or []),
+        })
+    return docs
 
 
 def _tokenize_text(text: str) -> list[str]:
@@ -64,64 +137,68 @@ def _extend_tags(doc_tokens: list[str], tags: list[str], weight: int = 1) -> Non
 
 def fetch_reviews_for_indexing() -> list[dict]:
     """Kéo dữ liệu review và append thông tin hotel."""
-    db = get_database()
-    collections = get_collection_names()
-    places_col = db[collections["places"]]
-    reviews_col = db[collections["reviews"]]
+    try:
+        db = get_database()
+        collections = get_collection_names()
+        places_col = db[collections["places"]]
+        reviews_col = db[collections["reviews"]]
 
-    place_map = {}
-    for doc in places_col.find():
-        sid = doc.get("_id", doc.get("source_hotel_id", ""))
-        if sid:
-            place_map[str(sid)] = {
-                "types": list(doc.get("types", []) or []),
-                "location": doc.get("location", ""),
-                "rating": doc.get("rating", ""),
-                # backfill hotel_name similar to vector index
-                "hotel_name": doc.get("name", doc.get("hotel_name", "")),
-            }
+        place_map = {}
+        for doc in places_col.find():
+            sid = doc.get("_id", doc.get("source_hotel_id", ""))
+            if sid:
+                place_map[str(sid)] = {
+                    "types": list(doc.get("types", []) or []),
+                    "location": doc.get("location", ""),
+                    "rating": doc.get("rating", ""),
+                    "hotel_name": doc.get("name", doc.get("hotel_name", "")),
+                }
 
-    docs = []
-    cursor = reviews_col.find({"$or": [{"tokens": {"$exists": True, "$type": "array"}}, {"clean_text": {"$exists": True}}]})
-    for row in cursor:
-        sid = str(row.get("source_hotel_id", "")).strip()
-        if sid not in place_map:
-            continue
+        docs = []
+        cursor = reviews_col.find({"$or": [{"tokens": {"$exists": True, "$type": "array"}}, {"clean_text": {"$exists": True}}]})
+        for row in cursor:
+            sid = str(row.get("source_hotel_id", "")).strip()
+            if sid not in place_map:
+                continue
 
-        # Prefer existing token list from preprocessing
-        tokens_field = row.get("tokens")
-        tokens = []
-        if isinstance(tokens_field, list) and tokens_field:
-            tokens = [str(tok).strip() for tok in tokens_field if str(tok).strip()]
-        else:
-            # fallback to tokenize clean_text with Vietnamese tokenizer
-            clean = str(row.get("clean_text", "")).strip()
-            if clean:
-                try:
-                    tokens = tokenize_vi(clean)
-                except Exception:
-                    # fallback to simple regex tokenization
-                    tokens = _tokenize_text(clean)
+            tokens_field = row.get("tokens")
+            tokens = []
+            if isinstance(tokens_field, list) and tokens_field:
+                tokens = [str(tok).strip() for tok in tokens_field if str(tok).strip()]
+            else:
+                clean = str(row.get("clean_text", "")).strip()
+                if clean:
+                    try:
+                        tokens = tokenize_vi(clean)
+                    except Exception:
+                        tokens = _tokenize_text(clean)
 
-        if not tokens:
-            # If still no tokens, skip this review for BM25 indexing
-            continue
+            if not tokens:
+                continue
 
-        docs.append({
-            "review_id": str(row.get("_id", row.get("review_id", ""))).strip(),
-            "source": row.get("source", ""),
-            "source_hotel_id": sid,
-            "hotel_name": place_map[sid].get("hotel_name", ""),
-            "types": list(place_map[sid].get("types", []) or []),
-            "location": place_map[sid]["location"],
-            "rating": place_map[sid].get("rating", row.get("review_rating", "")),
-            "review_rating": row.get("review_rating", ""),
-            "review_text": row.get("review_text", ""),
-            "tokens": tokens,
-            "category_tags": list(row.get("category_tags", []) or []),
-            "descriptor_tags": list(row.get("descriptor_tags", []) or []),
-        })
+            docs.append({
+                "review_id": str(row.get("_id", row.get("review_id", ""))).strip(),
+                "source": row.get("source", ""),
+                "source_hotel_id": sid,
+                "hotel_name": place_map[sid].get("hotel_name", ""),
+                "types": list(place_map[sid].get("types", []) or []),
+                "location": place_map[sid]["location"],
+                "rating": place_map[sid].get("rating", row.get("review_rating", "")),
+                "review_rating": row.get("review_rating", ""),
+                "review_text": row.get("review_text", ""),
+                "tokens": tokens,
+                "category_tags": list(row.get("category_tags", []) or []),
+                "descriptor_tags": list(row.get("descriptor_tags", []) or []),
+            })
 
+        if docs:
+            return docs
+    except Exception as exc:
+        print(f"MongoDB unavailable ({exc}), fallback sang data/processed...")
+
+    docs = _fetch_reviews_for_indexing_from_processed_files()
+    if docs:
+        print(f"Fallback indexing from processed files: {len(docs)} reviews")
     return docs
 
 

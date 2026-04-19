@@ -444,22 +444,37 @@ def search_hybrid(
 
     # 1. BM25 Retrieval
     search_tokens = qu.expanded_tokens if qu.expanded_tokens else qu.core_tokens
-    bm25_scores = bm25_model.get_scores(search_tokens) if search_tokens else np.zeros(len(bm25_docs))
+    bm25_scores = (
+        bm25_model.get_scores(search_tokens)
+        if (bm25_model is not None and search_tokens)
+        else np.zeros(len(bm25_docs))
+    )
     if len(bm25_mask) == len(bm25_scores):
         bm25_scores = bm25_scores * bm25_mask.astype(float)
     bm25_scores_norm = _normalize_scores(bm25_scores)
 
     # 2. Vector Retrieval
-    q_vec = encode_query(qu.raw_query, model_name)
-    if len(vec_mask) == len(embeddings):
-        masked_idx = np.where(vec_mask)[0]
-        if len(masked_idx) > 0:
-            vector_scores = np.zeros(len(embeddings), dtype=np.float32)
-            vector_scores[masked_idx] = np.dot(embeddings[masked_idx], q_vec.T)
-        else:
-            vector_scores = np.zeros(len(embeddings), dtype=np.float32)
-    else:
-        vector_scores = np.dot(embeddings, q_vec.T)
+    vector_scores = np.zeros(len(vec_docs), dtype=np.float32)
+    vector_fallback_to_bm25 = False
+    if len(vec_docs) > 0 and len(embeddings) > 0:
+        try:
+            q_vec = encode_query(qu.raw_query, model_name)
+            if len(vec_mask) == len(embeddings):
+                masked_idx = np.where(vec_mask)[0]
+                if len(masked_idx) > 0:
+                    vector_scores[masked_idx] = np.dot(embeddings[masked_idx], q_vec.T)
+            else:
+                vector_scores = np.dot(embeddings, q_vec.T)
+        except Exception:
+            vector_fallback_to_bm25 = True
+            for i, doc in enumerate(vec_docs):
+                rid = str(doc.get("_id", doc.get("review_id", vec_ids[i] if i < len(vec_ids) else ""))).strip()
+                if not rid:
+                    continue
+                bm_idx = bm25_id_to_idx.get(rid)
+                if bm_idx is None or bm_idx >= len(bm25_scores_norm):
+                    continue
+                vector_scores[i] = float(bm25_scores_norm[bm_idx])
     vector_scores_norm = _normalize_scores(vector_scores)
 
     # 3. Hybrid Scoring cấp độ Review (PHẦN 5)
@@ -645,6 +660,7 @@ def search_hybrid(
             "type_boost_keywords_found": type_boost_keywords_found,
             "types_boot_factor": types_boot,
             "hotel_type_matched": type_query_keyword in hotel_acc_types if type_query_keyword else False,
+            "vector_fallback_to_bm25": vector_fallback_to_bm25,
         }
 
         results.append({

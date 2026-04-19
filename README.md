@@ -515,6 +515,18 @@ python indexing/build_vector_index.py
 streamlit run app_gui.py
 ```
 
+### 5. Chạy pipeline end-to-end RAG (crawl → làm sạch → index → kiểm tra RAG)
+
+```bash
+python scripts/run_end_to_end_rag.py --skip-crawl --skip-hotel-clean
+```
+
+Gợi ý:
+
+- Bỏ `--skip-crawl` nếu muốn crawl mới từ Traveloka.
+- Bỏ `--skip-hotel-clean` nếu muốn xử lý lại dữ liệu HTML chi tiết khách sạn.
+- Script sẽ chạy smoke test RAG ở cuối để đảm bảo pipeline không văng lỗi.
+
 ## Những gì hệ thống đã làm được
 
 Tính đến hiện tại, phần IR của hệ thống đã có:
